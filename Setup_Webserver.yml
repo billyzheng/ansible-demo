@@ -1,6 +1,7 @@
 
 ---
 - name: Install and start Apache HTTPD
+  become: true
   hosts: webservers
   tasks:
     - name: httpd service installing
