@@ -1,0 +1,12 @@
+
+---
+- name: UnInstall Maria DB
+  hosts: dbserver
+  tasks:
+    - name: Maria DB package will be uninstalled
+      yum:
+        name:
+          - mariadb-server
+        state: absent
+
+

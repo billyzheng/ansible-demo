@@ -1,0 +1,24 @@
+---
+- name:  Splunk installation 
+  hosts: Linux_all
+  tasks:
+    - name: Copy a file to managed hosts
+      ansible.builtin.copy:
+        src: /root/software/Splunk/Linux/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
+        dest: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
+
+    - name: Install Splunk  package.
+      yum:
+        name: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
+        state: present
+        
+    - name: Obtain Splunk agent status .
+      shell: rpm -qa splunkforwarder
+      args:
+        warn: false  
+      register: splunk_status
+
+    - debug: 
+        msg: "display splunk agent status = {{ splunk_status.stdout }}"
+
+      

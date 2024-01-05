@@ -1,0 +1,23 @@
+- name: Install mariadb-server on the db server
+  hosts: dbserver
+  tasks:
+    - name: Install the latest version of mariadb-server
+      yum:
+        name: mariadb-server
+        state: latest
+
+    - name: start up Mariadb service  
+      service:
+        name: mariadb
+        enabled: true
+        state: started
+
+    - name: obtain mariadb status 
+      shell: rpm -qa mariadb-server
+      args:
+        warn: false
+      register: mariadb_status
+
+    - debug:
+        msg: "display mariadb status = {{ mariadb_status.stdout }}"
+

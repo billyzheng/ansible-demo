@@ -1,0 +1,24 @@
+---
+
+- hosts: windows_group
+
+  tasks:
+
+  - name: Windows | Create a directory
+    ansible.windows.win_file:
+      path: C:\temp\FNMS
+      state: directory
+
+
+  - name: Copy File to remote windows server
+    ansible.windows.win_copy:
+      src: /root/software/FNMS/Windows
+      dest: C:\temp\FNMS
+     
+ 
+  - name: Install FNMS agent
+    win_package:
+      path: C:\temp\FNMS\Windows\FlexNet Inventory Agent.msi
+      state: present
+      arguments: >-
+        REBOOT=ReallySuppress

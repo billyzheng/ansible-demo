@@ -1,0 +1,12 @@
+
+---
+- name: UnInstall  Apache HTTPD
+  hosts: webservers
+  tasks:
+    - name: httpd package will be uninstalled 
+      yum:
+        name:
+          - httpd
+        state: absent
+
+

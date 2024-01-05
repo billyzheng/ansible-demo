@@ -1,0 +1,31 @@
+
+---
+- name: Install and start Apache HTTPD
+  hosts: webservers
+  tasks:
+    - name: httpd service installing
+      yum:
+        name:
+          - httpd
+        state: present
+
+    - name: Create an Index.HTML File
+      copy:
+        content: This is a test page on Apache!!
+        dest: /var/www/html/index.html
+
+    - name: httpd is started
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: obtain httpd service status
+      shell: rpm -qa httpd
+      args:
+        warn: false
+      register: httpd_status
+
+    - debug:
+        msg: "display httpd service status = {{ httpd_status.stdout }}"
+
