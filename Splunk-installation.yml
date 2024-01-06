@@ -1,6 +1,7 @@
 ---
-- name:  Splunk installation 
+- name: Copy Splunk installation package to Remote system
   hosts: Linux_all
+  become: ture
   tasks:
     - name: Copy a file to managed hosts
       ansible.builtin.copy:
@@ -11,14 +12,18 @@
       yum:
         name: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
         state: present
-        
-    - name: Obtain Splunk agent status .
-      shell: rpm -qa splunkforwarder
-      args:
-        warn: false  
-      register: splunk_status
 
-    - debug: 
-        msg: "display splunk agent status = {{ splunk_status.stdout }}"
 
-      
+    - name: "Check if Splunk agent is installed"
+      package_facts:
+        manager: "auto"
+
+    - name: "Splunk agent installation result"
+      debug: 
+        msg: "Splunk agent installed"
+      when: "'splunkforwarder' in ansible_facts.packages"
+
+    - name: "Splunk agent installation result"
+      debug: 
+        msg: "Splunk agent is not installed"
+      when: "'splunkforwarder' not in ansible_facts.packages"
