@@ -12,6 +12,7 @@
       yum:
         name: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
         state: present
+        disable_gpg_check: true
 
 
     - name: "Check if Splunk agent is installed"
