@@ -11,13 +11,11 @@ dbserver
 
 
 [windows_domain]
-10.0.0.8
+10.0.0.10
 10.0.0.9
 
 [windows_domain:vars]
 ansible_port=5985
-ansible_user=administrator@testlab.com
-ansible_password=P@ssw0rd
 ansible_connection=winrm
 ansible_winrm_transport=ntlm
 ansible_winrm_scheme=http
@@ -25,12 +23,10 @@ ansible_winrm_server_cert_validation=ignore
 #ansible_python_interpreter=/usr/bin/python3
 
 [windows_group]
-10.0.0.10
+10.0.0.8
 
 [windows_group:vars]
 ansible_port=5985
-ansible_user=administrator
-ansible_password=P@ssw0rd
 ansible_connection=winrm
 ansible_winrm_transport=ntlm
 ansible_winrm_scheme=http
