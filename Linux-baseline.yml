@@ -1,0 +1,23 @@
+---
+- name: 
+  hosts: Linux_all
+  become: ture
+  tasks:
+  - name: Stop firewalld
+    service: name=firewalld state=stopped enabled=no
+
+  - name: update selinux configuration
+    lineinfile:
+      dest: /etc/selinux/config
+      regexp: "^SELINUX="
+      line: "SELINUX=disabled"
+  
+  - name: update swap configuration
+    lineinfile:
+      dest: /etc/fstab
+      regexp: ".*swap"
+      line: ""
+
+  - name: Disable selinux and swap
+    shell: setenforce 0 ; swapoff -a
+
