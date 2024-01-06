@@ -2,6 +2,7 @@
 ---
 - name: UnInstall  Apache HTTPD
   hosts: webservers
+  become: ture
   tasks:
     - name: httpd package will be uninstalled 
       yum:
