@@ -2,7 +2,7 @@
 ---
 - name: UnInstall Maria DB
   hosts: dbserver
-  become :ture
+  become: yes
   tasks:
     - name: Maria DB package will be uninstalled
       yum:
