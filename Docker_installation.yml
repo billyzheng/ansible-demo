@@ -1,12 +1,13 @@
 ---
 - name: Docker installation  
   hosts: dbserver
+  become: yes
   tasks:
 
     - name: Download the Docker installer
       get_url:
         url: https://get.docker.com/
-        dest: /root/install_docker.sh
+        dest: /tmp/install_docker.sh
         mode: 0700
 
     - name: Install Docker
