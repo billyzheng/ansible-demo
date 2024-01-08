@@ -1,17 +1,24 @@
 ---
 - name: Docker installation  
   hosts: dbserver
-  become: yes
   tasks:
 
-    - name: Download the Docker installer
-      get_url:
-        url: https://get.docker.com/
-        dest: /tmp/install_docker.sh
-        mode: 0700
+    - name: add yum-utils
+      yum:
+        name: 
+          - yum-utils
+        state: present
+        
+    - name: Add docker repository
+      ansible.builtin.yum_repository:
+        name: Docker
+        description: docker repository
+        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
 
-    - name: Install Docker
-      shell: /tmp/install_docker.sh
+    - name: install docker
+      yum: name={{ item }} state=latest update_cache=true
+      loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
+
 
 
     - name: start docker
