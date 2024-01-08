@@ -10,11 +10,11 @@
           - yum-utils
         state: present
         
-    - name: Add docker repository
-      ansible.builtin.yum_repository:
-        name: Docker
-        description: docker repository
-        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Add docker Repo
+        get_url:
+          url: https://download.docker.com/linux/centos/docker-ce.repo
+          dest: /etc/yum.repos.d/docker.repo
 
     - name: install docker
       yum: name={{ item }} state=latest update_cache=true
