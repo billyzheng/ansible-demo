@@ -1,0 +1,25 @@
+---
+- name: Docker installation  
+  hosts: dbserver
+  tasks:
+
+    - name: Download the Docker installer
+      get_url:
+        url: https://get.docker.com/
+        dest: /root/install_docker.sh
+        mode: 0700
+
+    - name: Install Docker
+      shell: /root/install_docker.sh
+
+
+    - name: start docker
+      systemd: name=docker state=restarted enabled=yes daemon_reload=yes
+
+    - name: check docker status
+      shell: docker info
+      register: docker 
+    - debug: var=docker.stdout_lines
+
+      
+
