@@ -4,7 +4,7 @@
   tasks:
 
     
-    - name: install docker
-      yum: name={{ item }}  update_cache=true
-      loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
-      state: absent
+    - name: Uninstall docker
+        yum: name={{ item }}  update_cache=true
+        loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
+        state: absent
