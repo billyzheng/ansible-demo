@@ -30,5 +30,16 @@
       register: docker 
     - debug: var=docker.stdout_lines
 
+    - name: Configure Nginx Container
+        docker_container:
+        name: my_nginx
+        image: nginx
+        state: started
+        ports:
+          - "8080:80"
+        volumes:
+          - "/var/www/html:/tmp/nginx/html"
+
+
       
 
