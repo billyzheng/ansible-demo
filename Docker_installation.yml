@@ -38,6 +38,10 @@
     - name: Load nginx image 
       shell:  docker load --input /tmp/nginx_image_latest.docker
 
+    - name: start Nginx 
+      shell: docker run -p 8080:80 -v /tmp/docker-mount/:/usr/share/nginx/html nginx &
+
+
     
 
       
