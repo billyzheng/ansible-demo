@@ -9,7 +9,7 @@
     client_id: "227c41d3-4a02-4f98-bf0f-53c27787587d"
     client_secret: "HGW8Q~1NFGGdBRL-Qf486mtbBgwQTS_tnXj6LbOv"
     aks_name: myAKSCluster
-    aks_version: 1.27
+    aks_version: 1.27.3
   tasks:
   - name: Create resource group
     azure_rm_resourcegroup:
