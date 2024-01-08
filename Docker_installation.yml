@@ -31,7 +31,7 @@
     - debug: var=docker.stdout_lines
 
     - name: Configure Nginx Container
-        docker_container:
+      docker_container:
         name: my_nginx
         image: nginx
         state: started
