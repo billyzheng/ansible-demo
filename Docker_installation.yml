@@ -12,9 +12,9 @@
         
 
     - name: Add docker Repo
-        get_url:
-          url: https://download.docker.com/linux/centos/docker-ce.repo
-          dest: /etc/yum.repos.d/docker.repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker.repo
 
     - name: install docker
       yum: name={{ item }} state=latest update_cache=true
