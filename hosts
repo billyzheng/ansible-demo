@@ -1,6 +1,5 @@
 [webservers]
 10.0.0.5
-10.0.0.6
 
 [dbserver]
 10.0.0.7
@@ -11,7 +10,6 @@ dbserver
 
 
 [windows_domain]
-10.0.0.10
 10.0.0.9
 
 [windows_domain:vars]
