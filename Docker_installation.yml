@@ -30,8 +30,15 @@
       register: docker 
     - debug: var=docker.stdout_lines
 
-    - name: Configure Nginx Container
-      shell: docker run -p 8080:80 -v /tmp/docker-mount:/usr/share/nginx/html nginx
+    - name: Copy Nginx image 
+      ansible.builtin.copy:
+        src: "nginx_image_latest.docker"
+        dest: /tmp/nginx_image_latest.docker
+        
+    - name: Load nginx image 
+      shell:  docker load --input /tmp/nginx_image_latest.docker
+
+    
 
       
 
