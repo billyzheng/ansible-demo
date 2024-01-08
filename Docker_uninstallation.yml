@@ -6,8 +6,12 @@
     
     - name: Uninstall docker
       yum: 
-        name: 
-          - {{ item }} 
+        name: '{{ item }} '
         state: absent
-      loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
+      with_items:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io 
+        - docker-buildx-plugin 
+        - docker-compose-plugin]
         
