@@ -12,7 +12,7 @@
 
     - name: Create an Index.HTML File
       copy:
-        content: This is a test page on Apache!!
+        content: This is a test page for Furture Hosting Model managed by Ansible  
         dest: /var/www/html/index.html
 
     - name: httpd is started
