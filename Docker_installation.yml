@@ -1,6 +1,7 @@
 ---
 - name: Docker installation  
   hosts: dbserver
+  become: yes
   tasks:
 
     - name: add yum-utils
