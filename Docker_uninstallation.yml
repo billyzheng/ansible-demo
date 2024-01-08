@@ -5,6 +5,6 @@
 
     
     - name: Uninstall docker
-        yum: name={{ item }} state=latest update_cache=true
+        yum: name={{ item }} 
         loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
         state: absent
