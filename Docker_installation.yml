@@ -9,7 +9,6 @@
         name: 
           - yum-utils
         state: present
-        
 
     - name: Add docker Repo
       get_url:
@@ -20,8 +19,6 @@
       yum: name={{ item }} state=latest update_cache=true
       loop: [docker-ce , docker-ce-cli , containerd.io , docker-buildx-plugin , docker-compose-plugin]
 
-
-
     - name: start docker
       systemd: name=docker state=restarted enabled=yes daemon_reload=yes
 
@@ -29,14 +26,6 @@
       shell: docker info
       register: docker 
     - debug: var=docker.stdout_lines
-
-    #- name: Copy Nginx image 
-    #  ansible.builtin.copy:
-    #    src: "nginx_image_latest.docker"
-    #    dest: /tmp/nginx_image_latest.docker
-        
-    #- name: Load nginx image 
-    #  shell:  docker load --input /tmp/nginx_image_latest.docker
 
     - name: start Nginx 
       shell: docker run -it --rm -d -p 8080:80 --name web -v /tmp/docker-mount/:/usr/share/nginx/html nginx
