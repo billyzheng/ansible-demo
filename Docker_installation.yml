@@ -27,8 +27,8 @@
       register: docker 
     - debug: var=docker.stdout_lines
 
-    - name: start Rancher
-      shell: docker run -d --restart=unless-stopped -p 80:80 -p 443:443  rancher/rancher
+    #- name: start Rancher
+    #  shell: docker run -d --restart=unless-stopped -p 80:80 -p 443:443  rancher/rancher
 
     - name: start Nginx 
       shell: docker run -it --rm -d -p 8080:80 --name web -v /tmp/docker-mount/:/usr/share/nginx/html nginx
