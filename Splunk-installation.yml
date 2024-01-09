@@ -1,9 +1,9 @@
 ---
-- name: Copy Splunk installation package to Remote system
+- name: 
   hosts: Linux_all
   become: yes
   tasks:
-    - name: Copy a file to managed hosts
+    - name: Copy Splunk installation package to Remote system
       ansible.builtin.copy:
         src: "software/Splunk/Linux/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm"
         dest: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
