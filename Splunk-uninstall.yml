@@ -1,0 +1,10 @@
+---
+- name: 
+  hosts: Linux_all
+  become: yes
+  tasks:
+    - name: Uninstall Splunk  package.
+      yum:
+        name: splunkforwarder
+        state: absent
+        
