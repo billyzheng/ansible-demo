@@ -1,0 +1,11 @@
+  - name: Change VM size
+    hosts: localhost
+    tasks:
+    - name: Update VM
+      azure_rm_virtualmachine:
+        resource_group: ResourceGroupAAPLinuxrg
+        name: myVM
+        vm_size: Standard_DS2_v2
+        admin_username: azureuser
+        admin_password: P@ssw0rd12345
+        started: yes
