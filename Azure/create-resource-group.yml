@@ -7,4 +7,5 @@
       azure_rm_resourcegroup:
         name: "{{ resource_group }}"
         location: "{{ location }}"
-        tags: {application:AnsibleAAP}
+        tags: 
+          application: "AnsibleAAP"
