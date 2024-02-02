@@ -1,8 +1,8 @@
 ---
 - hosts: localhost
   tasks:
-    - name: Deleting resource group - "{{ rg-name }}"
+    - name: Deleting resource group - "{{ rg_name }}"
       azure_rm_resourcegroup:
-        name: "{{ rg-name }}"
+        name: "{{ rg_name }}"
         state: absent
       
