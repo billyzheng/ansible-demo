@@ -5,6 +5,4 @@
       azure_rm_resourcegroup:
         name: "{{ rg-name }}"
         state: absent
-      register: rg
-    - debug:
-        var: rg
+      
