@@ -32,31 +32,31 @@
         location: "{{ location }}"
         sku: S2
 
-- name: Create a linux web app with java framework
-  azure_rm_webapp:
-    resource_group: myResourceGroup
-    name: myLinuxWebapp
-    plan:
-      resource_group: myAppServicePlan_rg
-      name: myAppServicePlan
-    app_settings:
-      testkey: testvalue
-    frameworks:
-      - name: "java"
-        version: "8"
-        settings:
-          java_container: "Tomcat"
-          java_container_version: "8.5"
-
-- name: Create a linux web app with python framework
-  azure_rm_webapp:
-    resource_group: myResourceGroup
-    name: myLinuxWebapp
-    plan:
-      resource_group: myAppServicePlan_rg
-      name: myAppServicePlan
-    app_settings:
-      testkey: testvalue
-    frameworks:
-      - name: "python"
-        version: "3.10"
+    - name: Create a linux web app with java framework
+      azure_rm_webapp:
+        resource_group: myResourceGroup
+        name: myLinuxWebapp
+        plan:
+          resource_group: myAppServicePlan_rg
+          name: myAppServicePlan
+        app_settings:
+          testkey: testvalue
+        frameworks:
+          - name: "java"
+            version: "8"
+            settings:
+              java_container: "Tomcat"
+              java_container_version: "8.5"
+  
+    - name: Create a linux web app with python framework
+      azure_rm_webapp:
+        resource_group: myResourceGroup
+        name: myLinuxWebapp
+        plan:
+          resource_group: myAppServicePlan_rg
+          name: myAppServicePlan
+        app_settings:
+          testkey: testvalue
+        frameworks:
+          - name: "python"
+            version: "3.10"
