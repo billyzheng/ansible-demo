@@ -1,0 +1,24 @@
+---
+- name: Update SQL Server
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    resource_group: my_resource_group
+    server_name: my_sqlserver
+    administrator_login: my_admin
+    administrator_password: my_password
+    version: 12.0
+    tags:
+      environment: production
+      department: IT
+
+  tasks:
+    - name: Update SQL Server
+      azure_rm_mssqlserver:
+        resource_group: "{{ resource_group }}"
+        name: "{{ server_name }}"
+        admin_username: "{{ administrator_login }}"
+        admin_password: "{{ administrator_password }}"
+        version: "{{ version }}"
+        tags: "{{ tags }}"

@@ -1,0 +1,62 @@
+---
+- name: Create and Update App Service Plans
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    resource_group: myResourceGroup
+    app_service_plan: myAppPlan
+    location: eastus
+
+  tasks:
+    - name: Create a Windows App Service Plan
+      azure_rm_appserviceplan:
+        resource_group: "{{ resource_group }}"
+        name: "{{ app_service_plan }}"
+        location: "{{ location }}"
+        sku: S1
+
+    - name: Create a Linux App Service Plan
+      azure_rm_appserviceplan:
+        resource_group: "{{ resource_group }}"
+        name: "{{ app_service_plan }}"
+        location: "{{ location }}"
+        sku: S1
+        is_linux: true
+        number_of_workers: 1
+
+    - name: Update SKU of existing Windows App Service Plan
+      azure_rm_appserviceplan:
+        resource_group: "{{ resource_group }}"
+        name: "{{ app_service_plan }}"
+        location: "{{ location }}"
+        sku: S2
+
+- name: Create a linux web app with java framework
+  azure_rm_webapp:
+    resource_group: myResourceGroup
+    name: myLinuxWebapp
+    plan:
+      resource_group: myAppServicePlan_rg
+      name: myAppServicePlan
+    app_settings:
+      testkey: testvalue
+    frameworks:
+      - name: "java"
+        version: "8"
+        settings:
+          java_container: "Tomcat"
+          java_container_version: "8.5"
+
+- name: Create a linux web app with python framework
+  azure_rm_webapp:
+    resource_group: myResourceGroup
+    name: myLinuxWebapp
+    plan:
+      resource_group: myAppServicePlan_rg
+      name: myAppServicePlan
+    app_settings:
+      testkey: testvalue
+    frameworks:
+      - name: "python"
+        version: "3.10"

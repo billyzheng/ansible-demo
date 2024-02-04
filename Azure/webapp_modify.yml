@@ -1,0 +1,31 @@
+---
+- name: Update Web App Parameters
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    resource_group: my_resource_group
+    webapp_name: my_webapp
+    app_settings:
+      - MY_SETTING: my_value
+    https_only: true
+    always_on: true
+
+  tasks:
+    - name: Update Web App App Settings
+      azure_rm_webapp:
+        resource_group: "{{ resource_group }}"
+        name: "{{ webapp_name }}"
+        app_settings: "{{ app_settings }}"
+    
+    - name: Update Web App HTTPS Only
+      azure_rm_webapp:
+        resource_group: "{{ resource_group }}"
+        name: "{{ webapp_name }}"
+        https_only: "{{ https_only }}"
+    
+    - name: Update Web App Always On
+      azure_rm_webapp:
+        resource_group: "{{ resource_group }}"
+        name: "{{ webapp_name }}"
+        always_on: "{{ always_on }}"

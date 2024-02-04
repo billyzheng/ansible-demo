@@ -1,0 +1,23 @@
+---
+- name: Delete Azure SQL Server and Database
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    resource_group: my_resource_group
+    server_name: my_sql_server
+    database_name: my_database
+
+  tasks:
+    - name: Delete SQL Database
+      azure_rm_sqldatabase:
+        resource_group: "{{ resource_group }}"
+        server_name: "{{ server_name }}"
+        name: "{{ database_name }}"
+        state: absent
+
+    - name: Delete SQL Server
+      azure_rm_sqlserver:
+        resource_group: "{{ resource_group }}"
+        name: "{{ server_name }}"
+        state: absent
