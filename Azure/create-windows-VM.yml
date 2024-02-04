@@ -103,17 +103,17 @@
 #      settings: '{"fileUris": ["https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"],"commandToExecute": "powershell -ExecutionPolicy Unrestricted -File ConfigureRemotingForAnsible.ps1"}'
 #      auto_upgrade_minor_version: true
 
-  - name: Get facts for one Public IP
-    azure_rm_publicipaddress_info:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: pip
-    register: publicipaddresses
+#  - name: Get facts for one Public IP
+#    azure_rm_publicipaddress_info:
+#      resource_group: ResourceGroupAAPwindowsrg
+#      name: pip
+#    register: publicipaddresses
 
-  - name: set public ip address fact
-    set_fact: publicipaddress="{{ publicipaddresses | json_query('publicipaddresses[0].ip_address')}}"
+#  - name: set public ip address fact
+#    set_fact: publicipaddress="{{ publicipaddresses | json_query('publicipaddresses[0].ip_address')}}"
 
-  - name: wait for the WinRM port to come online
-    wait_for:
-      port: 5986
-      host: '{{ publicipaddress }}'
-      timeout: 600
+#  - name: wait for the WinRM port to come online
+#    wait_for:
+#      port: 5986
+#      host: '{{ publicipaddress }}'
+#      timeout: 600
