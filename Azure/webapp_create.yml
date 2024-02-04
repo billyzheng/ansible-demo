@@ -5,7 +5,8 @@
 
   vars:
     resource_group: ResourceGroupwebapprg
-    app_service_plan: myAppPlan
+    Windows_app_service_plan: myAppPlan
+    Linux_app_service_paln: LinuxAppPlan
     location: eastus
 
   tasks:
@@ -19,14 +20,14 @@
     - name: Create a Windows App Service Plan
       azure_rm_appserviceplan:
         resource_group: "{{ resource_group }}"
-        name: "{{ app_service_plan }}"
+        name: "{{ Windows_app_service_plan }}"
         location: "{{ location }}"
         sku: S1
 
     - name: Create a Linux App Service Plan
       azure_rm_appserviceplan:
         resource_group: "{{ resource_group }}"
-        name: "{{ app_service_plan }}"
+        name: "{{ Linux_app_service_plan }}"
         location: "{{ location }}"
         sku: S1
         is_linux: true
@@ -35,17 +36,17 @@
     - name: Update SKU of existing Windows App Service Plan
       azure_rm_appserviceplan:
         resource_group: "{{ resource_group }}"
-        name: "{{ app_service_plan }}"
+        name: "{{ Windows_app_service_plan }}"
         location: "{{ location }}"
         sku: S2
 
     - name: Create a linux web app with java framework
       azure_rm_webapp:
-        resource_group: myResourceGroup
+        resource_group: "{{ resource_group }}"
         name: myLinuxWebapp
         plan:
-          resource_group: myAppServicePlan_rg
-          name: myAppServicePlan
+          resource_group: "{{ resource_group }}"
+          name: "{{ Linux_app_service_plan }}"
         app_settings:
           testkey: testvalue
         frameworks:
@@ -57,11 +58,11 @@
   
     - name: Create a linux web app with python framework
       azure_rm_webapp:
-        resource_group: myResourceGroup
-        name: myLinuxWebapp
+        resource_group: "{{ resource_group }}"
+        name: myLinuxWebapp_python
         plan:
-          resource_group: myAppServicePlan_rg
-          name: myAppServicePlan
+          resource_group: "{{ resource_group }}"
+          name: "{{ Linux_app_service_plan }}"
         app_settings:
           testkey: testvalue
         frameworks:
