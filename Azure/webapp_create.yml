@@ -4,11 +4,18 @@
   gather_facts: false
 
   vars:
-    resource_group: myResourceGroup
+    resource_group: ResourceGroupwebapprg
     app_service_plan: myAppPlan
     location: eastus
 
   tasks:
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+        tags: 
+          application: "AnsibleAAP"
+
     - name: Create a Windows App Service Plan
       azure_rm_appserviceplan:
         resource_group: "{{ resource_group }}"
