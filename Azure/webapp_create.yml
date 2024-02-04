@@ -6,7 +6,7 @@
   vars:
     resource_group: ResourceGroupwebapprg
     Windows_app_service_plan: myAppPlan
-    Linux_app_service_paln: LinuxAppPlan
+    Linux_app_service_plan: LinuxAppPlan
     location: eastus
 
   tasks:
