@@ -2,9 +2,9 @@
 - name: Create Azure VM
   hosts: localhost
   connection: local
-  vars_prompt:
-    - name: password
-      prompt: "Enter local administrator password"
+#  vars_prompt:
+#    - name: password
+#      prompt: "Enter local administrator password"
   tasks:
 
   - name: Create resource group
@@ -82,7 +82,7 @@
       name: win-vm
       vm_size: Standard_DS1_v2
       admin_username: azureuser
-      admin_password: "{{ password }}"
+      admin_password: P@ssw0rd12345
       network_interfaces: nic
       os_type: Windows
       image:
