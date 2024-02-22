@@ -1,0 +1,12 @@
+- name: VMWare tasks
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+        vmname: "VMNAME"
+  tasks:
+    - name: ForcePowerOn
+      vmware_guest_powerstate:
+        name: "{{ vmname }}"
+        validate_certs: False
+        state: powered-on

@@ -1,0 +1,23 @@
+- name: VMWare tasks
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    vmname: 'VMNAME'
+  tasks:
+    - name: Wait for the virtual machine to shutdown
+      vmware_guest_powerstate:
+        name: "{{ vmname }}"
+        validate_certs: False
+        state: shutdown-guest
+        state_change_timeout: 900
+      register: wait
+      ignore_errors: yes
+
+    - name: ForcePoweroff 
+      vmware_guest_powerstate:
+        name: "{{ vmname }}"
+        validate_certs: False
+        state: powered-off
+      register: poweroff
+      when: wait.msg is search('Timeout')
