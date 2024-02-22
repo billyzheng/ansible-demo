@@ -9,7 +9,7 @@
 #    - include_vars: vars.yml
   tasks:
     - name: guest tools info
-      vmware_guest_tools_info:
+      community.vmware.vmware_guest_tools_info:
 #        hostname: "{{ vcenter_hostname }}"
 #        username: "{{ vcenter_username }}"
 #        password: "{{ vcenter_password }}"
