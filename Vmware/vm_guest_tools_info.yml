@@ -3,19 +3,22 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  collections:
-    - community.vmware
+#  collections:
+#    - community.vmware
 #  pre_tasks:
 #    - include_vars: vars.yml
   tasks:
     - name: guest tools info
-      community.vmware.vmware_guest_tools_info:
+      vmware.vmware_rest.vcenter_vm_tools_info
+#      community.vmware.vmware_guest_tools_info:
 #        hostname: "{{ vcenter_hostname }}"
 #        username: "{{ vcenter_username }}"
 #        password: "{{ vcenter_password }}"
-        validate_certs: false
-        datacenter: "{{ vcenter_datacenter }}"
-        name: "{{ vm_name }}"
+        vcenter_validate_certs: false
+#        validate_certs: false
+#        datacenter: "{{ vcenter_datacenter }}"
+#        name: "{{ vm_name }}"
+        vm: "{{ vm_name }}"
       register: vmtools_info
 
     - name: print guest tools info
