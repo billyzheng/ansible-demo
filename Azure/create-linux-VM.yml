@@ -3,7 +3,7 @@
   connection: local
   tasks:
   - name: Create resource group
-    Azure_rm_resourcegroup:
+    azure_rm_resourcegroup:
       name: ResourceGroupAAPLinuxrg
       location: eastus
   - name: Create virtual network
