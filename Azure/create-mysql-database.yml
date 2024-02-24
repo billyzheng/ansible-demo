@@ -15,7 +15,7 @@
           name: B_Gen5_1
           tier: Basic
         location: "{{ location }}"
-        version: 5.6
+        version: 5.7
         enforce_ssl: True
         admin_username: "{{ admin_username }}"
         admin_password: "{{ admin_password }}"
