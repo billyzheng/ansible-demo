@@ -9,7 +9,7 @@
     location: eastus
     account_type: Standard_LRS
 
-  task:
+  tasks:
     - name: Delete acccount
       azure_rm_storageaccount:
         resource_group: "{{ resource_group }}" 
