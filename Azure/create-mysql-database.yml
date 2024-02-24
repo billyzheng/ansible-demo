@@ -19,7 +19,6 @@
         enforce_ssl: True
         admin_username: "{{ admin_username }}"
         admin_password: "{{ admin_password }}"
-        storage_mb: 51200
     - name: Create instance of MySQL Database
       azure_rm_mysqldatabase:
         resource_group: "{{ resource_group }}"
