@@ -1,8 +1,7 @@
-
 ---
 - name: Install and start Apache HTTPD
   become: true
-  hosts: webservers
+  hosts: "{{ _hosts }}"
   tasks:
     - name: httpd service installing
       yum:
