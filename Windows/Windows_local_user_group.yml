@@ -1,9 +1,6 @@
 ---
-
-- hosts: windows_group
-
+- hosts: "{{ _hosts }}"
   tasks:
-
   - name: Windows | Create local user John Smith
     ansible.windows.win_user:
       fullname: John Smith
