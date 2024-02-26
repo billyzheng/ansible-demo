@@ -1,6 +1,6 @@
 ---
 - name: 
-  hosts: Linux_all
+  hosts: "{{ _hosts }}"
   become: yes
   tasks:
     - name: Copy Splunk installation package to Remote system
