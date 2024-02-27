@@ -11,8 +11,7 @@
         groups: users
         password: P@ssw0rd1
         expires: -1
-      when: user_check.rc != 0
-
+      
     - name: Check if user exists
       command: id John_Smith
       register: user_check
