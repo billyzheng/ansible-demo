@@ -4,6 +4,14 @@
   become: false
   gather_facts: false
   tasks:
+    - name: collect a list of the datacenters
+      vmware.vmware_rest.vcenter_datacenter_info:
+      register: XA_datacenters
+    
+    - name: print datacenter info
+      ansible.builtin.debug:
+        var: XA_datacenters
+    
     - name: Build a list of all the clusters
       vmware.vmware_rest.vcenter_cluster_info:
       register: cluster_info
@@ -11,3 +19,19 @@
     - name: print cluster info
       ansible.builtin.debug:
         var: cluster_info
+    
+    - name: Get a list of the hosts
+      vmware.vmware_rest.vcenter_host_info:
+      register: XA_hosts
+    
+    - name: print host info
+      ansible.builtin.debug:
+        var: XA_hosts
+    
+    - name: Build a list of all the datastores
+      vmware.vmware_rest.vcenter_datastore_info:
+      register: all_the_datastores
+    
+    - name: print datastore info
+      ansible.builtin.debug:
+        var: all_the_datastores
