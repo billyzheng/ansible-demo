@@ -1,0 +1,13 @@
+---
+- name: Collect vcenter information
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Build a list of all the clusters
+      vmware.vmware_rest.vcenter_cluster_info:
+      register: cluster_info
+
+    - name: print cluster info
+      ansible.builtin.debug:
+        var: cluster_info
