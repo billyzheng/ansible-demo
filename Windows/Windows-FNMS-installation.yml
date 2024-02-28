@@ -12,7 +12,7 @@
 
   - name: Copy File to remote windows server
     ansible.windows.win_copy:
-      src: "software/FNMS/Windows"
+      src: "/tmp/repo/windows_FNMS/Windows"
       dest: C:\temp\FNMS
      
  

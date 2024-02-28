@@ -8,6 +8,9 @@
         name:
           - httpd
         state: present
+      environment:
+        http_proxy: http://ssoibmlnx:TYqQ2DJ0@xe-s-lnxjump1.xe.abb.com:3128
+        https_proxy: http://ssoibmlnx:TYqQ2DJ0@xe-s-lnxjump1.xe.abb.com:3128
 
     - name: Create an Index.HTML File
       copy:

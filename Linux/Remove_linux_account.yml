@@ -1,0 +1,19 @@
+---
+- name: Remove user in Linux
+  hosts: "{{ _hosts }}"
+  become: true
+  tasks:
+    - name: Remove user
+      user:
+        name: John_Smith
+        state: absent
+        
+      
+    - name: Check if user exists
+      command: id John_Smith
+      register: user_check
+      ignore_errors: true
+      
+    - name: Display user information
+      debug:
+        var: user_check

@@ -12,7 +12,7 @@
 
   - name: Copy File to remote windows server
     ansible.windows.win_copy:
-      src: "software/Splunk/Windows/splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi"
+      src: "/tmp/repo/windows_splunk/splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi"
       dest: C:\temp\splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi
      
  

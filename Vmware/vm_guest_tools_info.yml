@@ -1,7 +1,6 @@
 ---
 - name: vmware guest tools info demo
   hosts: localhost
-  connection: local
   gather_facts: false
 #  collections:
 #    - community.vmware

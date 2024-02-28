@@ -1,0 +1,22 @@
+---
+- name: Create user in Linux
+  hosts: "{{ _hosts }}"
+  become: true
+  tasks:
+    - name: Create user
+      user:
+        name: John_Smith
+        state: present
+        shell: /bin/bash
+        groups: users
+        password: P@ssw0rd1
+        expires: -1
+      
+    - name: Check if user exists
+      command: id John_Smith
+      register: user_check
+      ignore_errors: true
+      
+    - name: Display user information
+      debug:
+        var: user_check
