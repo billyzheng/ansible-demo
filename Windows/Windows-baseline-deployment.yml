@@ -5,7 +5,6 @@
     - var.yal
   
   tasks:
-  # win baseline 1052 state
   - name: "win_baseline_1052_state | Ensure 'Devices - Allowed to format and eject removable media' is set to 'Administrators'"
     win_regedit:
       path: "{{ win_baseline_1052_state_Path }}"
@@ -14,7 +13,7 @@
       type: "{{ win_baseline_1052_state_Type }}"
     when:
       win_baseline_1052_state_Manage
-  # win baseline 1149 state
+
   - name: "win_baseline_1149_state | Ensure 'Microsoft network client - Digitally sign communications (always)' is set to 'Enabled'"
     win_regedit:
       path: "{{ win_baseline_1149_state_Path }}"
@@ -23,7 +22,7 @@
       type: "{{ win_baseline_1149_state_Type }}"
     when:
       win_baseline_1149_state_Manage
-  # win baseline 1153 state
+
   - name: "win_baseline_1153_state | Ensure 'Network access: Do not allow anonymous enumeration of SAM accounts' is set to 'Enabled'"
     win_regedit:
       path: "{{ win_baseline_1153_state_Path }}"
@@ -32,7 +31,7 @@
       type: "{{ win_baseline_1153_state_Type }}"
     when:
       win_baseline_1153_state_Manage
-  # win baseline 1155 state
+
   - name: "win_baseline_1155_state | Ensure 'Interactive logon: Number of previous logons to cache (in case domain controller is not available)' is set to '1'"
     win_regedit:
       path: "{{ win_baseline_1155_state_Path }}"
@@ -41,7 +40,7 @@
       type: "{{ win_baseline_1155_state_Type }}"
     when:
       win_baseline_1155_state_Manage
-  # win_baseline 5263 state
+
   - name: "win_baseline_5263_state | Ensure 'No auto-restart with logged on users for scheduled automatic updates installations' is set to 'Disabled'"
     win_regedit:
       path: "{{ win_baseline_5263_state_Path }}"
@@ -50,7 +49,7 @@
       type: "{{ win_baseline_5263_state_Type }}"
     when:
       win_baseline_5263_state_Manage
-  # win baseline 7805 state
+
   - name: "win_baseline_7805_state | Ensure 'Configure Automatic Updates' is set to 'Enabled'"
     win_regedit:
       path: "{{ win_baseline_7805_state_Path }}"
@@ -69,9 +68,9 @@
     when:
       win_baseline_8248_state_Manage
 
-  # -----------------------
-  # Windows total playbooks
-  # -----------------------
+  # # -----------------------
+  # # Windows total playbooks
+  # # -----------------------
   - name: "win_baseline_1048_state | Ensure 'Shutdown - Clear virtual memory pagefile' is set to 'Enabled'"
     win_regedit:
       path: "{{ win_baseline_1048_state_Path }}"
@@ -193,8 +192,8 @@
 
   - name: "win_baseline_1182_state | Ensure 'Simple Netowrk Management Protocol trap' service is set t0 'Disabled'"
     win_service:
-      name: snmptrap
-      state: stopped
+      name: "{{ win_baseline_1182_state_Name }}"
+      state: "{{ win_baseline_1182_state_State }}"
     when:
       win_baseline_1182_state_Manage
 
@@ -308,9 +307,11 @@
 
   - name: "win_baseline_1318_state | Ensure 'Enforce password history' is set to '24 or more password(s)'"
     win_security_policy:
-      section: System Access
-      key: PasswordHistorySize
-      value: 24
+      section: "{{ win_baseline_1318_state_Section }}"
+      key: "{{ win_baseline_1318_state_Key }}"
+      value: "{{ win_baseline_1318_state_Value }}"
+    when:
+      win_baseline_1318_state_Manage
 
   - name: "win_baseline_1366_state | Ensure 'Accounts - Limit local account use of blank passwords to console logon only' is set to 'Enabled'"
     win_regedit:
@@ -662,14 +663,6 @@
     when:
       win_baseline_2181_state_Manage
 
-  - name: "win_baseline_2182_state | Ensure 'Act as part of the operating system' is set to 'No One'"
-    win_user_right:
-      name: "{{ win_baseline_2182_state_Name}}"
-      users: "{{ win_baseline_2182_state_Users}}"
-      action: "{{ win_baseline_2182_state_Action}}"
-    when:
-      win_baseline_2182_state_Manage
-
   - name: "win_baseline_2183_state | Ensure 'Add workstations to domain' is set to 'Administrators'"
     win_user_right:
       name: "{{ win_baseline_2183_state_Name }}"
@@ -677,14 +670,6 @@
       action: "{{ win_baseline_2183_state_Action }}"
     when:
       win_baseline_2183_state_Manage
-
-  - name: "win_baseline_2184_state | Ensure 'Adjust memory quotas for a process' is set to 'Guests, Users, Replicators, Backup Operators, Event log Readers, Performance log Users, Print Operators'"
-    win_user_right:
-      name: "{{ win_baseline_2184_state_Name }}"
-      users: "{{ win_baseline_2184_state_Users }}"
-      action: "{{ win_baseline_2184_state_Action }}"
-    when:
-      win_baseline_2184_state_Manage
 
   - name: "win_baseline_2185_state | Ensure 'Allow logon through terminal services' is set to 'Administrators, Remote Desktop Users"
     win_user_right:
@@ -1930,46 +1915,6 @@
       type: "{{ win_baseline_8231_state_Type }}"
     when: win_baseline_8231_state_Manage
 
-  - name: "win_baseline_8249_state | Ensure 'Allow Basic authentication (client)' is set to 'Disabled'"
-    win_regedit:
-      path: "{{ win_baseline_8249_state_Path }}"
-      name: "{{ win_baseline_8249_state_Name }}"
-      data: "{{ win_baseline_8249_state_Data }}"
-      type: "{{ win_baseline_8249_state_Type }}"
-    when: win_baseline_8249_state_Manage
-
-  - name: "win_baseline_8250_state | Ensure 'Allow Basic authentication (service)' is set to 'Disabled'"
-    win_regedit:
-      path: "{{ win_baseline_8250_state_Path }}"
-      name: "{{ win_baseline_8250_state_Name }}"
-      data: "{{ win_baseline_8250_state_Data }}"
-      type: "{{ win_baseline_8250_state_Type }}"
-    when: win_baseline_8250_state_Manage
-
-  - name: "win_baseline_8251_state | Ensure 'Disallow WinRM from storing RunAs credentials' is set to 'Enabled'"
-    win_regedit:
-      path: "{{ win_baseline_8251_state_Path }}"
-      name: "{{ win_baseline_8251_state_Name }}"
-      data: "{{ win_baseline_8251_state_Data }}"
-      type: "{{ win_baseline_8251_state_Type }}"
-    when: win_baseline_8251_state_Manage
-
-  - name: "win_baseline_8252_state | Ensure 'Allow unencrypted traffic (WinRM service)' is set to 'Disabled'"
-    win_regedit:
-      path: "{{ win_baseline_8252_state_Path }}"
-      name: "{{ win_baseline_8252_state_Name }}"
-      data: "{{ win_baseline_8252_state_Data }}"
-      type: "{{ win_baseline_8252_state_Type }}"
-    when: win_baseline_8252_state_Manage
-
-  - name: "win_baseline_8253_state | Ensure 'Allow unencrypted traffic (WinRM client)' is set to 'Disabled'"
-    win_regedit:
-      path: "{{ win_baseline_8253_state_Path }}"
-      name: "{{ win_baseline_8253_state_Name }}"
-      data: "{{ win_baseline_8253_state_Data }}"
-      type: "{{ win_baseline_8253_state_Type }}"
-    when: win_baseline_8253_state_Manage
-
   - name: "win_baseline_8255_state | Ensure 'Audit Removable Storage' is set to 'Success and Failure'"
     win_audit_policy_system:
       subcategory: "{{ win_baseline_8255_state_Subcategory }}"
@@ -2984,10 +2929,43 @@
       type: "{{ win_baseline_18935_state_Type }}"
     when: win_baseline_18935_state_Manage
 
-  - name: "win_baseline_19336_state | Ensure 'Turn on Module Logging (EnableModuleLogging)' is equal to '1'"
+  - name: "win_baseline_8249_state | Ensure 'Allow Basic authentication (client)' is set to 'Disabled'"
     win_regedit:
-      path: "{{ win_baseline_19336_state_Path }}"
-      name: "{{ win_baseline_19336_state_Name }}"
-      data: "{{ win_baseline_19336_state_Data }}"
-      type: "{{ win_baseline_19336_state_Type }}"
-    when: win_baseline_19336_state_Manage
+      path: "{{ win_baseline_8249_state_Path }}"
+      name: "{{ win_baseline_8249_state_Name }}"
+      data: "{{ win_baseline_8249_state_Data }}"
+      type: "{{ win_baseline_8249_state_Type }}"
+    when: win_baseline_8249_state_Manage
+
+
+  - name: "win_baseline_8250_state | Ensure 'Allow Basic authentication (service)' is set to 'Disabled'"
+    win_regedit:
+      path: "{{ win_baseline_8250_state_Path }}"
+      name: "{{ win_baseline_8250_state_Name }}"
+      data: "{{ win_baseline_8250_state_Data }}"
+      type: "{{ win_baseline_8250_state_Type }}"
+    when: win_baseline_8250_state_Manage
+
+  - name: "win_baseline_8251_state | Ensure 'Disallow WinRM from storing RunAs credentials' is set to 'Enabled'"
+    win_regedit:
+      path: "{{ win_baseline_8251_state_Path }}"
+      name: "{{ win_baseline_8251_state_Name }}"
+      data: "{{ win_baseline_8251_state_Data }}"
+      type: "{{ win_baseline_8251_state_Type }}"
+    when: win_baseline_8251_state_Manage
+
+  - name: "win_baseline_8252_state | Ensure 'Allow unencrypted traffic (WinRM service)' is set to 'Disabled'"
+    win_regedit:
+      path: "{{ win_baseline_8252_state_Path }}"
+      name: "{{ win_baseline_8252_state_Name }}"
+      data: "{{ win_baseline_8252_state_Data }}"
+      type: "{{ win_baseline_8252_state_Type }}"
+    when: win_baseline_8252_state_Manage
+
+  - name: "win_baseline_8253_state | Ensure 'Allow unencrypted traffic (WinRM client)' is set to 'Disabled'"
+    win_regedit:
+      path: "{{ win_baseline_8253_state_Path }}"
+      name: "{{ win_baseline_8253_state_Name }}"
+      data: "{{ win_baseline_8253_state_Data }}"
+      type: "{{ win_baseline_8253_state_Type }}"
+    when: win_baseline_8253_state_Manage
