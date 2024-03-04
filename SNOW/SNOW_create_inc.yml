@@ -9,6 +9,5 @@
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
           
-      servicenow.itsm.incident:
         state: new
         short_description: Demo incident
