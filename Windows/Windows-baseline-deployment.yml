@@ -1,6 +1,6 @@
 ---
 - name: Deploy baseline into Windows server 2022
-  hosts: windows_group
+  hosts: "{{ _hostname }}"
   vars_files:
     - var.yal
   
