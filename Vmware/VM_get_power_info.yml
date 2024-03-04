@@ -1,0 +1,14 @@
+---
+- name: Collect  information
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: collect VM power state information
+      vmware.vmware_rest.vcenter_vm_guest_power_info:
+        vm: '{{ _vm }}'
+      register: VM_power_info
+    
+    - name: print datacenter info
+      ansible.builtin.debug:
+        var: VM_power_info
