@@ -1,9 +1,9 @@
 collections:
   - name: community.windows
-    source: https://galaxy.ansible.com
+    source: "https://galaxy.ansible.com"
 
   - name: ansible.windows
-    source: https://galaxy.ansible.com
+    source: "https://galaxy.ansible.com"
 
   - name: win_security_policy
-    source: https://galaxy.ansible.com
+    source: "https://galaxy.ansible.com"
