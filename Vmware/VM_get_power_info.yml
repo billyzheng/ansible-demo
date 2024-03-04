@@ -6,7 +6,7 @@
   tasks:
     - name: collect VM power state information
       vmware.vmware_rest.vcenter_vm_guest_power_info:
-        vm: '{{ _vm }}'
+        vm: '{{ _vm.id }}'
       register: VM_power_info
     
     - name: print datacenter info
