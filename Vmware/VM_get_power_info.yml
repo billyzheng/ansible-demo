@@ -4,7 +4,7 @@
   become: false
   gather_facts: false
   tasks:
-    - name: Look up the VM called test_vm1 in the inventory
+    - name: Look up the VM  in the inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
@@ -19,3 +19,7 @@
       vmware.vmware_rest.vcenter_vm_power_info:
         vm: '{{ test_vm1_info.id }}'
       register: _result
+    
+    - name: print VM power status
+      ansible.builtin.debug:
+        var: _result
