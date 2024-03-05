@@ -54,9 +54,7 @@
         other:
           comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
 #      delegate_to: localhost
-    - name: debug 
-      debug: 
-        msg: " debug info  {{ anisble_facts }} ."
+
 
     - name: Validate service is up and update/close SNOW ticket
       block:
