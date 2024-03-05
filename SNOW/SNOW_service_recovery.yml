@@ -59,7 +59,7 @@
 
 
     - name: Validate service is up and update/close SNOW ticket
-      task: 
+      tasks: 
         - name: debug srv_stat
           debug: 
             msg: " debug info  {{ srv_stat }} ."
