@@ -2,7 +2,7 @@
   gather_facts: false
   tasks:
     - name: Try to restart {{ _service_name }}
-      ansible.builtin.service:
+      ansible.windows.win_service:
         name: spooler
         state: restarted
       register: chksrvc
