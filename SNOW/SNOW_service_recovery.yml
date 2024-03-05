@@ -39,7 +39,7 @@
 
 
 - hosts: localhost
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: Update incident in ServiceNow
       servicenow.itsm.incident:
