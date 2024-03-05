@@ -26,22 +26,36 @@
       ansible.builtin.debug:
         msg: Doing real work here
 
+- hosts: localhost
+  gather_facts: false
+  tasks:
     - name: Update incident in ServiceNow
       servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
         state: in_progress
         number: "{{ ticket_number }}"
         other:
           comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
-      delegate_to: localhost
+#      delegate_to: localhost
 
-    - name: Validate service is up and update/close SNOW ticket
-      block:
-        - name: Close incident in ServiceNow
-          servicenow.itsm.incident:
-            state: closed
-            number: "{{ ticket_number }}"
-            close_code: "Solved (Permanently)"
-            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK."
-          delegate_to: localhost
+#    - name: Validate service is up and update/close SNOW ticket
+#      block:
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Close incident in ServiceNow
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: closed
+        number: "{{ ticket_number }}"
+        close_code: "Solved (Permanently)"
+        close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK."
+#          delegate_to: localhost
 
 #      when: chksrvc.state == "started"
