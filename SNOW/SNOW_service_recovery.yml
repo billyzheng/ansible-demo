@@ -13,9 +13,9 @@
         short_description: service stopped
       register: _incident
     
-    - name: display incident ticket number 
-        debug: 
-          msg: "The incident number is  {{ _incident }} ."
+    - name: display incident ticket number
+      debug: 
+        msg: "The incident number is  {{ _incident }} ."
 
 - hosts: localhost
   tasks:
