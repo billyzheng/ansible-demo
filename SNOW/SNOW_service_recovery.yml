@@ -22,7 +22,10 @@
     - name: Simulate some work
       ansible.builtin.debug:
         msg: Doing real work here
- 
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
     - name: Close incident
       servicenow.itsm.incident:
         instance:
