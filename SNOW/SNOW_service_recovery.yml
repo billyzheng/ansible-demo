@@ -14,7 +14,7 @@
       register: _incident
     
     - name: display incident ticket number 
-        ansible.builtin.debug:
+        debug: 
           msg: "The incident number is  "{{ _incident }}" ."
 
 - hosts: "{{ _hostname }}"
