@@ -10,10 +10,38 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: billy-biao.zheng
-        short_description: service stopped
+        short_description: " {{ _service_name }} service stopped "
+        description: " {{ _service_name }} is down on {{ _hostname }} reported by checkMK monitor."
       register: _incident
     
     - name: display incident ticket number
       debug: 
         msg: "The incident number is  {{ _incident.record.number }} ."
 
+    - name: Pass incident number
+      ansible.builtin.set_fact:
+        ticket_number: "{{ _incident.record.number }}"
+
+    - name: Simulate some work
+      ansible.builtin.debug:
+        msg: Doing real work here
+
+    - name: Update incident in ServiceNow
+      servicenow.itsm.incident:
+        state: in_progress
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
+      delegate_to: localhost
+
+    - name: Validate service is up and update/close SNOW ticket
+      block:
+        - name: Close incident in ServiceNow
+          servicenow.itsm.incident:
+            state: closed
+            number: "{{ ticket_number }}"
+            close_code: "Solved (Permanently)"
+            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK."
+          delegate_to: localhost
+
+#      when: chksrvc.state == "started"
