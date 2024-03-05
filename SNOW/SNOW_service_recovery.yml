@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create new incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: new
+        caller: billy-biao.zheng
+        short_description: "{{ _service_name }}" service stopped
+        description: "{{ _service_name }}" service stopped on "{{ _hostname }}"
+      register: _incident
+    
+    - name: display incident ticket number 
+        ansible.builtin.debug:
+          msg: "The incident number is  {{ _incident }}."
+
+- hosts: "{{ _hostname }}"
+  tasks:
+    - name: Simulate some work
+      ansible.builtin.debug:
+        msg: Doing real work here
+ 
+    - name: Close incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+      state: closed
+      number: {{ _incident }}
+      close_code: "Solved (Permanently)"
+      close_notes: "Closed"
