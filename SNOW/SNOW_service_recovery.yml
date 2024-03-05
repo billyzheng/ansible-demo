@@ -36,7 +36,9 @@
       ansible.builtin.set_fact:
         srv_stat: "{{ chksrvc.state }}"
 
-
+    - name: debug srv_stat
+      debug: 
+        msg: " debug info  {{ srv_stat }} ."
 
 
 - hosts: localhost
@@ -55,7 +57,12 @@
 #      delegate_to: localhost
 
 
+
     - name: Validate service is up and update/close SNOW ticket
+      task: 
+        - name: debug srv_stat
+          debug: 
+            msg: " debug info  {{ srv_stat }} ."
       block:
         - name: Close incident in ServiceNow
           servicenow.itsm.incident:
