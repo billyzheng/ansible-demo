@@ -1,0 +1,8 @@
+- hosts: "{{ _hostname }}"
+  gather_facts: false
+  tasks:
+    - name: Try to restart {{ _service_name }}
+      ansible.builtin.service:
+        name: spooler
+        state: restarted
+      register: chksrvc
