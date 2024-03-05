@@ -33,10 +33,13 @@
       register: chksrvc
 
     - name: save varible
-      set_stats:
+      ansible.builtin.set_stats:
         data:
           srv_stat: "{{ chksrvc.state }}"
 
+    - name: debug 
+      debug: 
+        msg: " debug info  {{ srv_stat }} ."
 
 - hosts: localhost
   gather_facts: true
@@ -52,10 +55,14 @@
         other:
           comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
 #      delegate_to: localhost
+    - name: debug 
+      debug: 
+        msg: " debug info  {{ srv_stat }} ."
+
     - name: save varible
-      set_stats:
+      ansible.builtin.set_stats:
         data:
-          srv_stat: "{{ srv_stat }}"
+          running_stat: "{{ srv_stat }}"
 
 
 - hosts: localhost
@@ -75,4 +82,4 @@
             close_code: "Solved (Permanently)"
             close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-      when: srv_stat == "running"
+      when: running_stat == "running"
