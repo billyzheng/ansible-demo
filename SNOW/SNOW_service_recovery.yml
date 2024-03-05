@@ -36,7 +36,8 @@
       ansible.builtin.set_stats:
         data:
           srv_stat: "{{ chksrvc.state }}"
-
+        per_host: no
+        aggregate: no
 
 
 - hosts: localhost
@@ -57,15 +58,6 @@
       debug: 
         msg: " debug info  {{ anisble_facts }} ."
 
-    - name: save varible
-      ansible.builtin.set_stats:
-        data:
-          running_stat: "{{ srv_stat }}"
-
-
-- hosts: localhost
-  gather_facts: false
-  tasks:
     - name: Validate service is up and update/close SNOW ticket
       block:
         - name: Close incident in ServiceNow
@@ -80,4 +72,4 @@
             close_code: "Solved (Permanently)"
             close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-      when: running_stat == "running"
+      when: srv_stat == "running"
