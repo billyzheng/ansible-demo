@@ -37,9 +37,7 @@
         data:
           srv_stat: "{{ chksrvc.state }}"
 
-    - name: debug 
-      debug: 
-        msg: " debug info  {{ srv_stat }} ."
+
 
 - hosts: localhost
   gather_facts: true
