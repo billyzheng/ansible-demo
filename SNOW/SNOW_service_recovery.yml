@@ -65,4 +65,4 @@
             close_code: "Solved (Permanently)"
             close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-      when: chksrvc.state == "started"
+      when: chksrvc.state == "running"
