@@ -80,7 +80,7 @@ win_baseline_1092_state_Value: "1"
 # win_baseline_1115_state | Ensure Dynamic Host Configuration Protocol (DHCP) Client' is set to 'Disabled'
 win_baseline_1115_state_Manage: True
 win_baseline_1115_state_Name: "Dhcp"
-win_baseline_1115_state_State: "stopped"
+win_baseline_1115_state_State: stopped
 win_baseline_1115_state_Mode: disabled
 
 # win baseline 1134 state | Ensure 'Logon banner title' is ser to 'This is an interest computer system of ABB Asea Brown Boveri Ltd'
@@ -240,6 +240,12 @@ win_baseline_1264_state_Path: 'HKLM:\System\Currentcontrolset\Services'
 win_baseline_1264_state_Name: "DHCP"
 win_baseline_1264_state_Data: "4"
 win_baseline_1264_state_Type: dword
+
+# win_baseline_1318_state | Ensure 'Enforce password history' is set to '24 or more password(s)'
+win_baseline_1318_state_Manage: True
+win_baseline_1318_state_Section: "System Access"
+win_baseline_1318_state_Key: "PasswordHistorySize"
+win_baseline_1318_state_Value: "24"
 
 # win_baseline_1366_state | Ensure 'Accounts - Limit local account use of blank passwords to console logon only' is set to 'Enabled'
 win_baseline_1366_state_Manage: True
@@ -1147,6 +1153,7 @@ win_baseline_4111_state_Manage: True
 win_baseline_4111_state_Path: 'HKLM:\Software\Policies\Microsoft\Power\PowerSettings\0E796Bdb-100D-47D6-A2D5-F7D2Daa51F51'
 win_baseline_4111_state_Name: "ACSettingIndex"
 win_baseline_4111_state_Data: "1"
+win_baseline_4111_state_Type: dword
 
 # win_baseline_4193_state_1 | Ensure 'Configuration of wireless settings using Windows Connect Now' is set to 'Disabled' - EnableRegistrars
 win_baseline_4193_1_state_Manage: True
@@ -1478,7 +1485,7 @@ win_baseline_5212_state_Type: multiString
 
 # win_baseline_5213_state | Configure 'Network access - Remotely accessible registry paths and sub-paths'
 win_baseline_5213_state_Manage: True
-win_baseline_5213_state_Path: 'HKLM:\System\Currentcontrolset\Control\SecurePipeServers\Winreg\AllowedPaths'
+win_baseline_5213_state_Path: 'HKLM:\System\Currentcontrolset\Control\SecurePipeServers\Winreg\AlålowedPaths'
 win_baseline_5213_state_Name: "Machine"
 win_baseline_5213_state_Data: ['System\CurrentControlSet\Control\Print\Printers', 'System\CurrentControlSet\Services\Eventlog', 'Software\Microsoft\OLAP Server', 'Software\Microsoft\Windows NT\CurrentVersion\Print', 'Software\Microsoft\Windows NT\CurrentVersion\Windows']
 win_baseline_5213_state_Type: multiString
