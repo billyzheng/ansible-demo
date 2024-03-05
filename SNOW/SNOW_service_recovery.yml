@@ -10,8 +10,7 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: billy-biao.zheng
-        short_description: "{{ _service_name }}" service stopped
-        description: "{{ _service_name }}"  service stopped on  "{{ _hostname }}"
+        short_description: service stopped
       register: _incident
     
     - name: display incident ticket number 
