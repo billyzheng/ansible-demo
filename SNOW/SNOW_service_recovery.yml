@@ -59,21 +59,23 @@
 
 
     - name: Validate service is up and update/close SNOW ticket
-      task: 
+      tasks: 
         - name: debug srv_stat
           debug: 
             msg: " debug info  {{ srv_stat }} ."
-      block:
+      
         - name: Close incident in ServiceNow
-          servicenow.itsm.incident:
-            instance:
-              host: "{{ SN_HOST }}"
-              username: "{{ SN_USERNAME }}"
-              password: "{{ SN_PASSWORD }}"
+          block:
+            - name: closing incident 
+              servicenow.itsm.incident:
+                instance:
+                  host: "{{ SN_HOST }}"
+                  username: "{{ SN_USERNAME }}"
+                  password: "{{ SN_PASSWORD }}"
             
-            state: closed
-            number: "{{ ticket_number }}"
-            close_code: "Solved (Permanently)"
-            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
+                state: closed
+                number: "{{ ticket_number }}"
+                close_code: "Solved (Permanently)"
+                close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-      when: srv_stat == "running"
+          when: srv_stat == "running"
