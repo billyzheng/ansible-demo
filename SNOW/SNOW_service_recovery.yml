@@ -11,12 +11,12 @@
         state: new
         caller: billy-biao.zheng
         short_description: "{{ _service_name }}" service stopped
-        description: "{{ _service_name }}" service stopped on "{{ _hostname }}"
+        description: "{{ _service_name }}"  service stopped on  "{{ _hostname }}"
       register: _incident
     
     - name: display incident ticket number 
         ansible.builtin.debug:
-          msg: "The incident number is  {{ _incident }}."
+          msg: "The incident number is  "{{ _incident }}" ."
 
 - hosts: "{{ _hostname }}"
   tasks:
