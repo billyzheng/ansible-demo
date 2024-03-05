@@ -32,6 +32,12 @@
         state: restarted
       register: chksrvc
 
+    - name: save varible
+      set_stats:
+        data:
+          srv_stat: "{{ chksrvc.state }}"
+
+
 - hosts: localhost
   gather_facts: false
   tasks:
@@ -65,4 +71,4 @@
             close_code: "Solved (Permanently)"
             close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-      when: chksrvc.state == "running"
+      when: srv_stat == "running"
