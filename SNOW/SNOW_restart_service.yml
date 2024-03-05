@@ -6,3 +6,7 @@
         name: spooler
         state: restarted
       register: chksrvc
+    
+    - name: display incident ticket number
+      debug: 
+        msg: "chksrvc debug info  {{ chksrvc }} ."
