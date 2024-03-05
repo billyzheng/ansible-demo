@@ -15,5 +15,5 @@
     
     - name: display incident ticket number
       debug: 
-        msg: "The incident number is  {{ _incident.number }} ."
+        msg: "The incident number is  {{ _incident }} ."
 
