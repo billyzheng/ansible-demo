@@ -31,6 +31,6 @@
           password: "{{ SN_PASSWORD }}"
 
       state: closed
-      number: {{ _incident }}
+      number: "{{ _incident }}"
       close_code: "Solved (Permanently)"
       close_notes: "Closed"
