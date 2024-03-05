@@ -22,9 +22,15 @@
       ansible.builtin.set_fact:
         ticket_number: "{{ _incident.record.number }}"
 
-    - name: Simulate some work
-      ansible.builtin.debug:
-        msg: Doing real work here
+
+- hosts: "{{ _hostname }}"
+  gather_facts: false
+  tasks:
+    - name: Try to restart {{ _service_name }}
+      ansible.builtin.service:
+        name: spooler
+        state: restarted
+      register: chksrvc
 
 - hosts: localhost
   gather_facts: false
@@ -41,21 +47,22 @@
           comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
 #      delegate_to: localhost
 
-#    - name: Validate service is up and update/close SNOW ticket
-#      block:
+
 - hosts: localhost
   gather_facts: false
   tasks:
-    - name: Close incident in ServiceNow
-      servicenow.itsm.incident:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-        state: closed
-        number: "{{ ticket_number }}"
-        close_code: "Solved (Permanently)"
-        close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK."
+    - name: Validate service is up and update/close SNOW ticket
+      block:
+        - name: Close incident in ServiceNow
+          servicenow.itsm.incident:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+            
+            state: closed
+            number: "{{ ticket_number }}"
+            close_code: "Solved (Permanently)"
+            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
 #          delegate_to: localhost
-
-#      when: chksrvc.state == "started"
+      when: chksrvc.state == "started"
