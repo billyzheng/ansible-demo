@@ -17,3 +17,23 @@
       debug: 
         msg: "The incident number is  {{ _incident }} ."
 
+- hosts: localhost
+  tasks:
+    - name: Simulate some work
+      ansible.builtin.debug:
+        msg: Doing real work here
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Close incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+    
+      state: closed
+      number: "{{ _incident }}"
+      close_code: "Solved (Permanently)"
+      close_notes: "Closed"
