@@ -33,11 +33,10 @@
       register: chksrvc
 
     - name: save varible
-      ansible.builtin.set_stats:
-        data:
-          srv_stat: "{{ chksrvc.state }}"
-        per_host: no
-        aggregate: no
+      ansible.builtin.set_fact:
+        srv_stat: "{{ chksrvc.state }}"
+
+
 
 
 - hosts: localhost
