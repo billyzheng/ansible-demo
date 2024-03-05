@@ -40,7 +40,7 @@
 
 
 - hosts: localhost
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Update incident in ServiceNow
       servicenow.itsm.incident:
@@ -55,7 +55,7 @@
 #      delegate_to: localhost
     - name: debug 
       debug: 
-        msg: " debug info  {{ srv_stat }} ."
+        msg: " debug info  {{ facts }} ."
 
     - name: save varible
       ansible.builtin.set_stats:
