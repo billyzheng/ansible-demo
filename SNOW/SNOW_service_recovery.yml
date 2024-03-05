@@ -55,7 +55,7 @@
     - name: save varible
       set_stats:
         data:
-          srv_stat: "{{ chksrvc.state }}"
+          srv_stat: "{{ srv_stat }}"
 
 
 - hosts: localhost
