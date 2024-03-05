@@ -1,6 +1,6 @@
 ---
 - name: Restore service create, update and close ServiceNow ticket after Ansible restores services
-  hosts: "{{ _hostname }}"
+  hosts: "{{ ansible_eda.event.payload.NOTIFY_HOSTNAME }}"
   gather_facts: false
   vars:
     incident_description: Nginx Web Server is down
@@ -17,8 +17,8 @@
         caller: billy-biao.zheng
         urgency: "{{ sn_urgency }}"
         impact: "{{ sn_impact }}"
-        short_description: " {{ _service_name }} service stopped "
-        description: " {{ _service_name }} is down on {{ _hostname }} reported by checkMK monitor."
+        short_description: " {{ ansible_eda.event.payload._service_name }} service stopped "
+        description: " {{ ansible_eda.event.payload._service_name }} is down on {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }} reported by checkMK monitor."
       register: _incident  
       delegate_to: localhost
 
@@ -30,7 +30,7 @@
       ansible.builtin.set_fact:
         ticket_number: "{{ _incident.record.number }}"
 
-    - name: Try to restart {{ _service_name }}
+    - name: Try to restart {{ ansible_eda.event.payload._service_name }}
       ansible.windows.win_service:
         name: spooler
         state: restarted
@@ -45,7 +45,7 @@
         state: in_progress
         number: "{{ ticket_number }}"
         other:
-          comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
+          comments: "Ansible automation is working on restart {{ ansible_eda.event.payload._service_name }} on host {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }}"
       delegate_to: localhost
 
     - name: Close incident in ServiceNow
@@ -59,6 +59,6 @@
             state: closed
             number: "{{ ticket_number }}"
             close_code: "Solved (Permanently)"
-            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
+            close_notes: "Go back to bed. Ansible fixed problem on host {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }} reported by checkMK. service status {{ ansible_eda.event.payload._service_name }} = {{chksrvc.state}} "
           delegate_to: localhost
       when: chksrvc.state == "running"
