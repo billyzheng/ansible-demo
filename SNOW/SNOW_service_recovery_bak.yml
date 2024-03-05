@@ -2,7 +2,6 @@
 - name: Restore service create, update and close ServiceNow ticket after Ansible restores services
   hosts: "{{ _hostname }}"
   gather_facts: false
-  become: true
   vars:
     incident_description: Nginx Web Server is down
     sn_impact: medium
