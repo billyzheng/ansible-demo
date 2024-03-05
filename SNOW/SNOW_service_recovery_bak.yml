@@ -1,6 +1,12 @@
 ---
-- hosts: localhost
+- name: Restore service create, update and close ServiceNow ticket after Ansible restores services
+  hosts: "{{ _hostname }}"
   gather_facts: false
+  become: true
+  vars:
+    incident_description: Nginx Web Server is down
+    sn_impact: medium
+    sn_urgency: medium
   tasks:
     - name: Create new incident
       servicenow.itsm.incident:
@@ -10,30 +16,50 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: billy-biao.zheng
-        short_description: service stopped
-      register: _incident
-    
-    - name: display incident ticket number
-      debug: 
-        msg: "The incident number is  {{ _incident }} ."
+        urgency: "{{ sn_urgency }}"
+        impact: "{{ sn_impact }}"
+        short_description: " {{ _service_name }} service stopped "
+        description: " {{ _service_name }} is down on {{ _hostname }} reported by checkMK monitor."
+      register: _incident  
+      delegate_to: localhost
 
-- hosts: localhost
-  tasks:
-    - name: Simulate some work
+    - name: Display incident number
       ansible.builtin.debug:
-        msg: Doing real work here
+        msg: "The incident number is  {{ _incident.record.number }} ."
 
-- hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Close incident
+    - name: Pass incident number
+      ansible.builtin.set_fact:
+        ticket_number: "{{ _incident.record.number }}"
+
+    - name: Try to restart {{ _service_name }}
+      ansible.windows.win_service:
+        name: spooler
+        state: restarted
+      register: chksrvc
+
+    - name: Update incident in ServiceNow
       servicenow.itsm.incident:
         instance:
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
-    
-      state: closed
-      number: "{{ _incident }}"
-      close_code: "Solved (Permanently)"
-      close_notes: "Closed"
+        state: in_progress
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
+      delegate_to: localhost
+
+    - name: Close incident in ServiceNow
+      block:
+        - name: closing incident 
+          servicenow.itsm.incident:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+            state: closed
+            number: "{{ ticket_number }}"
+            close_code: "Solved (Permanently)"
+            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
+          delegate_to: localhost
+      when: chksrvc.state == "running"
