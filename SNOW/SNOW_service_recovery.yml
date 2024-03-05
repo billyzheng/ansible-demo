@@ -55,7 +55,7 @@
 #      delegate_to: localhost
     - name: debug 
       debug: 
-        msg: " debug info  {{ facts }} ."
+        msg: " debug info  {{ anisble_facts }} ."
 
     - name: save varible
       ansible.builtin.set_stats:
