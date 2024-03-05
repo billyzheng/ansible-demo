@@ -1,10 +1,9 @@
 ---
 - name: Deploy baseline into Windows server 2022
   hosts: "{{ _hostname }}"
-  vars_files:
-    - var.yml
   
   tasks:
+  - include_vars: vars.yml
   - name: "win_baseline_1052_state | Ensure 'Devices - Allowed to format and eject removable media' is set to 'Administrators'"
     win_regedit:
       path: "{{ win_baseline_1052_state_Path }}"
