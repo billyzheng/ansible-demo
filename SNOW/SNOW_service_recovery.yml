@@ -52,6 +52,10 @@
         other:
           comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
 #      delegate_to: localhost
+    - name: save varible
+      set_stats:
+        data:
+          srv_stat: "{{ chksrvc.state }}"
 
 
 - hosts: localhost
