@@ -15,9 +15,9 @@
     
     - name: display incident ticket number 
         debug: 
-          msg: "The incident number is  "{{ _incident }}" ."
+          msg: "The incident number is  {{ _incident }} ."
 
-- hosts: "{{ _hostname }}"
+- hosts: localhost
   tasks:
     - name: Simulate some work
       ansible.builtin.debug:
