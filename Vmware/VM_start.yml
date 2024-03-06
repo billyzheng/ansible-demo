@@ -23,22 +23,15 @@
         state: start
         vm: '{{ test_vm1_info.id }}'
 
-
-    - name: Wait until my VM is on
-      vmware.vmware_rest.vcenter_vm_info:
+    - name: Wait until my VM is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
         vm: '{{ test_vm1_info.id }}'
-      register: vm_info
-
-    - name: print VM power_state status
-      ansible.builtin.debug:
-        var: vm_info.value.power_state
-
-#      until:
-#        - vm_info is failed
-#        - vm_info.value.power_state == "POWERED_ON"
-#      retries: 60
-#      delay: 5
-
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
 
 
     - name: Get guest power information
