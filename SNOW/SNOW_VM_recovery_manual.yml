@@ -1,0 +1,84 @@
+---
+- name: Restart virtual machine create, update and close ServiceNow ticket after Ansible restart virtual machine
+  hosts: "{{ NOTIFY_HOSTNAME }}"
+  gather_facts: false
+  vars:
+    sn_impact: medium
+    sn_urgency: medium
+  tasks:
+    - name: Create new incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: new
+        caller: billy-biao.zheng
+        urgency: "{{ sn_urgency }}"
+        impact: "{{ sn_impact }}"
+        short_description: " Virtual machine  {{ NOTIFY_HOSTNAME }} unreachable "
+        description: " {{ NOTIFY_HOSTNAME }} is down. Reported by checkMK monitor."
+      register: _incident  
+      delegate_to: localhost
+
+    - name: Display incident number
+      ansible.builtin.debug:
+        msg: "The incident number is  {{ _incident.record.number }} ."
+
+    - name: Pass incident number
+      ansible.builtin.set_fact:
+        ticket_number: "{{ _incident.record.number }}"
+
+    - name: Update incident in ServiceNow
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: in_progress
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation is working on start host {{ NOTIFY_HOSTNAME }}"
+      delegate_to: localhost
+
+
+    - name: Look up the virtual machine  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ NOTIFY_HOSTNAME }}'
+
+    - name: Collect information about a specific virtual machine
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_info
+
+    - name: Power on virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: start
+        vm: '{{ test_vm1_info.id }}'
+
+    - name: Wait until virtual machine is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ test_vm1_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
+
+    - name: Close incident in ServiceNow
+      block:
+        - name: closing incident 
+          servicenow.itsm.incident:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+            state: closed
+            number: "{{ ticket_number }}"
+            close_code: "Solved (Permanently)"
+            close_notes: "Ansible fixed problem on host {{ NOTIFY_HOSTNAME }} reported by checkMK. Host status = {{vm_tools_info.value.run_state}} "
+          delegate_to: localhost
+      when: vm_tools_info.value.run_state == "RUNNING"
