@@ -1,6 +1,6 @@
 ---
 - name: Restart virtual machine create, update and close ServiceNow ticket after Ansible restart virtual machine
-  hosts: "{{ NOTIFY_HOSTNAME }}"
+  hosts: localhost
   gather_facts: false
   vars:
     sn_impact: medium
