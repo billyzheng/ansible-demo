@@ -2,22 +2,27 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-    vmname: 'VMNAME'
   tasks:
-    - name: Wait for the virtual machine to shutdown
-      vmware_guest_powerstate:
-        name: "{{ vmname }}"
-        validate_certs: False
-        state: shutdown-guest
-        state_change_timeout: 900
-      register: wait
-      ignore_errors: yes
+    - name: Look up the VM  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ _vm }}'
 
-    - name: ForcePoweroff 
-      vmware_guest_powerstate:
-        name: "{{ vmname }}"
-        validate_certs: False
-        state: powered-off
-      register: poweroff
-      when: wait.msg is search('Timeout')
+    - name: Collect information about a specific VM
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: test_vm1_info
+
+    - name: print VM info
+      ansible.builtin.debug:
+        var: test_vm1_info.id
+
+    - name: Get guest power information
+      vmware.vmware_rest.vcenter_vm_power_info:
+        vm: '{{ test_vm1_info.id }}'
+      register: _result
+    
+    - name: print VM power status
+      ansible.builtin.debug:
+        var: _result.value.state
