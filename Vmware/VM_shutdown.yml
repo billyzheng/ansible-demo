@@ -22,6 +22,11 @@
       ansible.builtin.debug:
         var: test_vm1_info
 
+    - name: Power off {{ _vm }} 
+      vmware.vmware_rest.vcenter_vm_power:
+        state: stop
+      vm: '{{ test_vm1_info.id }}'
+
 
     - name: Get guest power information
       vmware.vmware_rest.vcenter_vm_power_info:
