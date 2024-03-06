@@ -17,9 +17,9 @@
 
     - name: Get guest power information
       vmware.vmware_rest.vcenter_vm_power_info:
-        vm: '{{ test_vm1_info.id.state }}'
+        vm: '{{ test_vm1_info.id }}'
       register: _result
     
     - name: print VM power status
       ansible.builtin.debug:
-        var: _result
+        var: _result.value.state
