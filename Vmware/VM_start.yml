@@ -2,11 +2,46 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-        vmname: "VMNAME"
   tasks:
-    - name: ForcePowerOn
-      vmware_guest_powerstate:
-        name: "{{ vmname }}"
-        validate_certs: False
-        state: powered-on
+    - name: Look up the VM  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ _vm }}'
+
+    - name: Collect information about a specific VM
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: test_vm1_info
+
+    - name: print VM id info
+      ansible.builtin.debug:
+        var: test_vm1_info.id
+
+
+    - name: Power on {{ _vm }} 
+      vmware.vmware_rest.vcenter_vm_power:
+        state: start
+      vm: '{{ test_vm1_info.id }}'
+
+
+    - name: Wait until my VM is on
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ test_vm1_info.id }}'
+      register: vm_info
+      until:
+        - vm_info is failed
+        - vm_info.value.power_state == "POWERED_ON"
+      retries: 60
+      delay: 5
+
+
+
+    - name: Get guest power information
+      vmware.vmware_rest.vcenter_vm_power_info:
+        vm: '{{ test_vm1_info.id }}'
+      register: _result
+    
+    - name: print VM power status
+      ansible.builtin.debug:
+        var: _result.value.state
