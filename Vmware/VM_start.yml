@@ -28,11 +28,16 @@
       vmware.vmware_rest.vcenter_vm_info:
         vm: '{{ test_vm1_info.id }}'
       register: vm_info
-      until:
-        - vm_info is failed
-        - vm_info.value.power_state == "POWERED_ON"
-      retries: 60
-      delay: 5
+
+    - name: print VM power_state status
+      ansible.builtin.debug:
+        var: vm_info.value.state
+
+#      until:
+#        - vm_info is failed
+#        - vm_info.value.power_state == "POWERED_ON"
+#      retries: 60
+#      delay: 5
 
 
 
