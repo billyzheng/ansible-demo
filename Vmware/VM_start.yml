@@ -21,7 +21,7 @@
     - name: Power on VM
       vmware.vmware_rest.vcenter_vm_power:
         state: start
-      vm: '{{ test_vm1_info.id }}'
+        vm: '{{ test_vm1_info.id }}'
 
 
     - name: Wait until my VM is on
