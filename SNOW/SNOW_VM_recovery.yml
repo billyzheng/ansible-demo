@@ -1,6 +1,10 @@
 ---
-- hosts: localhost
+- name: Restart virtual machine create, update and close ServiceNow ticket after Ansible restart virtual machine
+  hosts: localhost
   gather_facts: false
+  vars:
+    sn_impact: medium
+    sn_urgency: medium
   tasks:
     - name: Create new incident
       servicenow.itsm.incident:
@@ -10,40 +14,21 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: billy-biao.zheng
-        short_description: " {{ _service_name }} service stopped "
-        description: " {{ _service_name }} is down on {{ _hostname }} reported by checkMK monitor."
-      register: _incident
-    
-    - name: display incident ticket number
-      debug: 
+        urgency: "{{ sn_urgency }}"
+        impact: "{{ sn_impact }}"
+        short_description: " Virtual machine  {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }} unreachable "
+        description: " {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }} is down. Reported by checkMK monitor."
+      register: _incident  
+      
+
+    - name: Display incident number
+      ansible.builtin.debug:
         msg: "The incident number is  {{ _incident.record.number }} ."
 
     - name: Pass incident number
       ansible.builtin.set_fact:
         ticket_number: "{{ _incident.record.number }}"
 
-
-- hosts: "{{ _hostname }}"
-  gather_facts: false
-  tasks:
-    - name: Try to restart {{ _service_name }}
-      ansible.windows.win_service:
-        name: spooler
-        state: restarted
-      register: chksrvc
-
-    - name: save varible
-      ansible.builtin.set_fact:
-        srv_stat: "{{ chksrvc.state }}"
-
-    - name: debug srv_stat
-      debug: 
-        msg: " debug info  {{ srv_stat }} ."
-
-
-- hosts: localhost
-  gather_facts: false
-  tasks:
     - name: Update incident in ServiceNow
       servicenow.itsm.incident:
         instance:
@@ -53,8 +38,34 @@
         state: in_progress
         number: "{{ ticket_number }}"
         other:
-          comments: "Ansible automation is working on restart {{ _service_name }} on host {{ _hostname }}"
-     
+          comments: "Ansible automation is working on start host {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }}"
+      
+    - name: Look up the virtual machine  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ ansible_eda.event.payload.NOTIFY_HOSTNAME }}'
+      
+    - name: Collect information about a specific virtual machine
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_info
+      
+    - name: Power on virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: start
+        vm: '{{ vm_info.id }}'
+      
+    - name: Wait until virtual machine is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ vm_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
+      
     - name: Close incident in ServiceNow
       block:
         - name: closing incident 
@@ -66,7 +77,5 @@
             state: closed
             number: "{{ ticket_number }}"
             close_code: "Solved (Permanently)"
-            close_notes: "Go back to bed. Ansible fixed problem on host {{ _hostname }} reported by checkMK. service status {{ _service_name }} = {{chksrvc.state}} "
-      when: srv_stat == "running"
-
-
+            close_notes: "Ansible fixed problem on host {{ ansible_eda.event.payload.NOTIFY_HOSTNAME }} reported by checkMK. Host status = {{vm_tools_info.value.run_state}} "
+      when: vm_tools_info.value.run_state == "RUNNING"
