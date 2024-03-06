@@ -22,4 +22,4 @@
     
     - name: print VM power status
       ansible.builtin.debug:
-        var: _result
+        var: _result.state
