@@ -19,7 +19,7 @@
         var: test_vm1_info.id
 
 
-    - name: "Power on {{ _vm }} "
+    - name: Power on VM
       vmware.vmware_rest.vcenter_vm_power:
         state: start
       vm: '{{ test_vm1_info.id }}'
