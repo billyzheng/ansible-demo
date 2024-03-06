@@ -19,7 +19,7 @@
         short_description: " Virtual machine  {{ NOTIFY_HOSTNAME }} unreachable "
         description: " {{ NOTIFY_HOSTNAME }} is down. Reported by checkMK monitor."
       register: _incident  
-      delegate_to: localhost
+      
 
     - name: Display incident number
       ansible.builtin.debug:
@@ -39,28 +39,23 @@
         number: "{{ ticket_number }}"
         other:
           comments: "Ansible automation is working on start host {{ NOTIFY_HOSTNAME }}"
-      delegate_to: localhost
-
-
+      
     - name: Look up the virtual machine  in the inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
         - '{{ NOTIFY_HOSTNAME }}'
-      delegate_to: localhost
-
+      
     - name: Collect information about a specific virtual machine
       vmware.vmware_rest.vcenter_vm_info:
         vm: '{{ search_result.value[0].vm }}'
       register: vm_info
-      delegate_to: localhost
-
+      
     - name: Power on virtual machine
       vmware.vmware_rest.vcenter_vm_power:
         state: start
         vm: '{{ vm_info.id }}'
-      delegate_to: localhost
-
+      
     - name: Wait until virtual machine is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
         vm: '{{ vm_info.id }}'
@@ -70,8 +65,7 @@
       - vm_tools_info.value.run_state == "RUNNING"
       retries: 60
       delay: 5
-      delegate_to: localhost
-
+      
     - name: Close incident in ServiceNow
       block:
         - name: closing incident 
@@ -84,5 +78,4 @@
             number: "{{ ticket_number }}"
             close_code: "Solved (Permanently)"
             close_notes: "Ansible fixed problem on host {{ NOTIFY_HOSTNAME }} reported by checkMK. Host status = {{vm_tools_info.value.run_state}} "
-          delegate_to: localhost
       when: vm_tools_info.value.run_state == "RUNNING"
