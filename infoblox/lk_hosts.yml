@@ -1,0 +1,17 @@
+---
+- hosts: xe-s-vnios01p.xe.abb.com
+  vars:
+    nios_provider:
+      host: "{{ INFOBLOX_HOSTNAME }}"
+      username: "{{ INFOBLOX_USERNAME }}"
+      password: "{{ INFOBLOX_PASSWORD }}"
+      wapi_version: 2.6.1
+  connection: local
+  
+  tasks:
+    - name: get host list using partial string
+      set_fact:
+       host_list: "{{ lookup('xe-s-vnios01p.xe.abb.com', 'record:host', filter={'name':'xp-s-netsmtp02z.xp.abb.com'}, provider=nios_provider) }}"
+    - name: display host list using partial string
+      debug:
+       msg: "{{ host_list }}"

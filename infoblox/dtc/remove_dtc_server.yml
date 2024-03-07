@@ -1,0 +1,7 @@
+---
+ - name: 'Remove DTC server'
+   infoblox.nios_modules.nios_dtc_server:
+      name: "{{ item.name }}"
+      host: "{{ item.ip }}"
+      state: absent
+      provider: "{{ nios_provider }}"
