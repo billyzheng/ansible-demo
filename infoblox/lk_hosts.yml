@@ -2,7 +2,7 @@
 - hosts: localhost
   vars:
     nios_provider:
-      host: "{{ INFOBLOX_HOSTNAME }}"
+      host: "{{ INFOBLOX_HOST }}"
       username: "{{ INFOBLOX_USERNAME }}"
       password: "{{ INFOBLOX_PASSWORD }}"
       wapi_version: 2.6.1
