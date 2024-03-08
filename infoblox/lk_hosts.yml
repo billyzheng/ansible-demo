@@ -14,4 +14,4 @@
         host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:host', filter={'name':'xp-s-netsmtp02z.xp.abb.com'}, provider=nios_provider) }}"
     - name: display host list using partial string
       debug:
-       msg: "{{ host_list }}"
+        msg: "{{ host_list }}"
