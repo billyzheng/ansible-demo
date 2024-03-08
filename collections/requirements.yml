@@ -4,3 +4,5 @@ collections:
 
   - name: ansible.windows
   - name: servicenow.itsm
+  - name: infoblox.nios_modules
+  
