@@ -41,7 +41,7 @@
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
 
-        state: authorize
+        state: scheduled
         assignment_group: Wintel
         number: "{{ ticket_number }}"
         other:
