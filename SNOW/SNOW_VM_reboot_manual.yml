@@ -34,7 +34,7 @@
       ansible.builtin.set_fact:
         ticket_number: "{{ _change_ticket.record.number }}"
 
-    - name: Change state of the change request
+    - name: Change state to scheduled
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -47,6 +47,21 @@
         other:
           comments: "Ansible automation rebooting host {{ NOTIFY_HOSTNAME }}"
 
+    - name: Change state to implement
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: implement
+        assignment_group: Wintel
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation rebooting host {{ NOTIFY_HOSTNAME }}"
+
+
+
     - name: Look up the virtual machine  in the inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
@@ -58,9 +73,24 @@
         vm: '{{ search_result.value[0].vm }}'
       register: vm_info
       
-    - name: reboot VM
-      vmware.vmware_rest.vcenter_vm_guest_power:
-        state: reboot
+    - name: Power off virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: stop
+        vm: '{{ vm_info.id }}'
+      
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ vm_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NO_RUNNING"
+      retries: 60
+      delay: 5      
+
+    - name: Power on virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: start
         vm: '{{ vm_info.id }}'
       
     - name: Wait until virtual machine is ready
@@ -71,8 +101,10 @@
       - vm_tools_info is not failed
       - vm_tools_info.value.run_state == "RUNNING"
       retries: 60
-      delay: 5
-      
+      delay: 5      
+
+
+
     - name: Close change in ServiceNow
       block:
         - name: Close change_request
