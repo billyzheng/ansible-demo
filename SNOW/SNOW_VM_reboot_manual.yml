@@ -1,0 +1,90 @@
+---
+- name: Restart virtual machine create, update and close ServiceNow ticket after Ansible restart virtual machine
+  hosts: localhost
+  gather_facts: false
+  vars:
+    sn_impact: medium
+    sn_urgency: medium
+  tasks:
+    - name: Create change request
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        type: standard
+        state: new
+        requested_by: billy-biao.zheng
+        short_description: " Virtual machine  {{ NOTIFY_HOSTNAME }} reboot "
+        description: " {{ NOTIFY_HOSTNAME }} reboot by SR ticket"
+        priority: moderate
+        risk: "{{ sn_urgency }}"
+        impact: "{{ sn_impact }}"
+
+        other:
+          expected_start: "{{ ansible_date_time.date }}"
+      register: _change_ticket  
+
+    - name: Display change ticket number
+      ansible.builtin.debug:
+        msg: "The change ticket number is  {{ _change_ticket.record.number }} ."
+
+    - name: Pass incident number
+      ansible.builtin.set_fact:
+        ticket_number: "{{ _change_ticket.record.number }}"
+
+    - name: Change state of the change request
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: authorize
+        assignment_group: some.group
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation rebooting host {{ NOTIFY_HOSTNAME }}"
+
+    - name: Look up the virtual machine  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ NOTIFY_HOSTNAME }}'
+      
+    - name: Collect information about a specific virtual machine
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_info
+      
+    - name: reboot VM
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        state: reboot
+        vm: '{{ vm_info.id }}'
+      
+    - name: Wait until virtual machine is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ vm_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
+      
+    - name: Close change in ServiceNow
+      block:
+        - name: Close change_request
+          servicenow.itsm.change_request:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+
+            state: closed
+            close_code: "successful"
+            close_notes: "Ansible reboot host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} "
+            assignment_group: some.group
+            number: "{{ ticket_number }}"
+      when: vm_tools_info.value.run_state == "RUNNING"
