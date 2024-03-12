@@ -1,0 +1,106 @@
+---
+- name: Shutdown virtual machine and create, update and close ServiceNow ticket 
+  hosts: localhost
+  gather_facts: false
+  vars:
+    sn_impact: medium
+    sn_risk: moderate
+  tasks:
+    - name: Create change request
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        type: standard
+        state: new
+        requested_by: billy-biao.zheng
+        short_description: " Virtual machine  {{ NOTIFY_HOSTNAME }} shutdown "
+        description: " {{ NOTIFY_HOSTNAME }} Shutdown by SR ticket"
+        priority: moderate
+        risk: "{{ sn_risk }}"
+        impact: "{{ sn_impact }}"
+
+        other:
+          expected_start: "{{ '%Y-%m-%d' | strftime }}"
+      register: _change_ticket  
+
+    - name: Display change ticket number
+      ansible.builtin.debug:
+        msg: "The change ticket number is  {{ _change_ticket.record.number }} ."
+
+    - name: Pass incident number
+      ansible.builtin.set_fact:
+        ticket_number: "{{ _change_ticket.record.number }}"
+
+    - name: Change state to scheduled
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: scheduled
+        assignment_group: Wintel
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation plan to shutdown host {{ NOTIFY_HOSTNAME }}"
+
+    - name: Change state to implement
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: implement
+        assignment_group: Wintel
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation start to shutdown host {{ NOTIFY_HOSTNAME }}"
+
+
+
+    - name: Look up the virtual machine  in the inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - '{{ NOTIFY_HOSTNAME }}'
+      
+    - name: Collect information about a specific virtual machine
+      vmware.vmware_rest.vcenter_vm_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_info
+      
+    - name: Power off virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: stop
+        vm: '{{ vm_info.id }}'
+      
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ vm_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5      
+
+
+    - name: change state to review in ServiceNow
+      block:
+        - name: change state to review 
+          servicenow.itsm.change_request:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+
+            state: review
+            close_code: "successful"
+            close_notes: "Ansible shutdown host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} "
+            assignment_group: Wintel
+            number: "{{ ticket_number }}"
+      when: vm_tools_info.value.run_state == "NOT_RUNNING"
