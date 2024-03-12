@@ -42,7 +42,7 @@
           password: "{{ SN_PASSWORD }}"
 
         state: authorize
-        assignment_group: some.group
+        assignment_group: Wintel
         number: "{{ ticket_number }}"
         other:
           comments: "Ansible automation rebooting host {{ NOTIFY_HOSTNAME }}"
@@ -85,6 +85,6 @@
             state: closed
             close_code: "successful"
             close_notes: "Ansible reboot host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} "
-            assignment_group: some.group
+            assignment_group: Wintel
             number: "{{ ticket_number }}"
       when: vm_tools_info.value.run_state == "RUNNING"
