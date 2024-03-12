@@ -1,10 +1,10 @@
 ---
-- name: Restart virtual machine create, update and close ServiceNow ticket after Ansible restart virtual machine
+- name: Adjust CPU , update and close ServiceNow ticket 
   hosts: localhost
   gather_facts: false
   vars:
     sn_impact: medium
-    sn_urgency: medium
+    sn_risk: moderate
   tasks:
     - name: Create change request
       servicenow.itsm.change_request:
@@ -16,14 +16,12 @@
         type: standard
         state: new
         requested_by: billy-biao.zheng
-        short_description: " Virtual machine  {{ NOTIFY_HOSTNAME }} reboot "
-        description: " {{ NOTIFY_HOSTNAME }} reboot by SR ticket"
+        short_description: " Adjust CPU on Virtual machine  {{ NOTIFY_HOSTNAME }}  "
+        description: " Adjust CPU {{ NOTIFY_HOSTNAME }} "
         priority: moderate
-        risk: "{{ sn_urgency }}"
+        risk: "{{ sn_risk }}"
         impact: "{{ sn_impact }}"
 
-        other:
-          expected_start: "{{ ansible_date_time.date }}"
       register: _change_ticket  
 
     - name: Display change ticket number
@@ -33,19 +31,6 @@
     - name: Pass incident number
       ansible.builtin.set_fact:
         ticket_number: "{{ _change_ticket.record.number }}"
-
-    - name: Change state of the change request
-      servicenow.itsm.change_request:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-
-        state: authorize
-        assignment_group: some.group
-        number: "{{ ticket_number }}"
-        other:
-          comments: "Ansible automation rebooting host {{ NOTIFY_HOSTNAME }}"
 
     - name: Look up the virtual machine  in the inventory
       register: search_result
@@ -57,10 +42,73 @@
       vmware.vmware_rest.vcenter_vm_info:
         vm: '{{ search_result.value[0].vm }}'
       register: vm_info
+
+    - name: Get CPU from VM
+      vmware.vmware_rest.vcenter_vm_hardware_cpu_info:
+        vm: '{{ vm_info.id }}'
+      register: _Current_CPU_result
+
+
+
+    - name: Change state to scheduled
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: scheduled
+        assignment_group: Wintel
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation adjust CPU on host {{ NOTIFY_HOSTNAME }} . Current CPU number is {{ _Current_CPU_result.count }}"
+
+    - name: Change state to implement
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+
+        state: implement
+        assignment_group: Wintel
+        number: "{{ ticket_number }}"
+        other:
+          comments: "Ansible automation adjust CPU on host {{ NOTIFY_HOSTNAME }}"
+
+
       
-    - name: reboot VM
-      vmware.vmware_rest.vcenter_vm_guest_power:
-        state: reboot
+    - name: Power off virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: stop
+        vm: '{{ vm_info.id }}'
+      
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ vm_info.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5      
+
+    - name: Adjust CPU on the VM
+      vmware.vmware_rest.vcenter_vm_hardware_cpu:
+        vm: '{{ vm_info.id }}'
+        count: "{{ CPU_number }}"
+
+
+    - name: Get CPU from VM
+      vmware.vmware_rest.vcenter_vm_hardware_cpu_info:
+        vm: '{{ vm_info.id }}'
+      register: _Post_CPU_result
+
+
+
+    - name: Power on virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: start
         vm: '{{ vm_info.id }}'
       
     - name: Wait until virtual machine is ready
@@ -71,20 +119,22 @@
       - vm_tools_info is not failed
       - vm_tools_info.value.run_state == "RUNNING"
       retries: 60
-      delay: 5
-      
-    - name: Close change in ServiceNow
+      delay: 5      
+
+
+
+    - name: change state to review in ServiceNow
       block:
-        - name: Close change_request
+        - name: change state to review 
           servicenow.itsm.change_request:
             instance:
               host: "{{ SN_HOST }}"
               username: "{{ SN_USERNAME }}"
               password: "{{ SN_PASSWORD }}"
 
-            state: closed
+            state: review
             close_code: "successful"
-            close_notes: "Ansible reboot host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} "
-            assignment_group: some.group
+            close_notes: "Ansible adjust CPU on host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} .Current CPU number is {{ _Post_CPU_result.count }} "
+            assignment_group: Wintel
             number: "{{ ticket_number }}"
       when: vm_tools_info.value.run_state == "RUNNING"
