@@ -105,7 +105,7 @@
 
 
 
-    - name: Close change in ServiceNow
+    - name: change state to review in ServiceNow
       block:
         - name: Close change_request
           servicenow.itsm.change_request:
@@ -114,7 +114,7 @@
               username: "{{ SN_USERNAME }}"
               password: "{{ SN_PASSWORD }}"
 
-            state: closed
+            state: review
             close_code: "successful"
             close_notes: "Ansible reboot host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} "
             assignment_group: Wintel
