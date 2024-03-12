@@ -23,7 +23,7 @@
         impact: "{{ sn_impact }}"
 
         other:
-          expected_start: "{{ '%Y-%m-%d' | strftime }}"
+          expected_start: "{{ ansible_date_time.date }}"
       register: _change_ticket  
 
     - name: Display change ticket number
