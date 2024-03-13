@@ -10,7 +10,7 @@
     datastore: XF_PRIMERA_NONPROD_003
     vcenter_folder: POC-Ansible-automation-platform
     vmtemplate: WIN2019-GOLD
-    name: xf-s-aapwin01t
+    vmname: xf-s-aapwin01t
     notes: Ansible Test
     dumpfacts: False
   tasks:
@@ -19,16 +19,15 @@
         validate_certs: False
         datacenter: XF-COMP
         cluster: XF-PRODCLU1
-#        esxi_hostname: "{{ esxhost }}"
         folder: "{{ vcenter_folder }}"
-        name: "{{ name }}"
+        name: "{{ vmname }}"
         template: "{{ vmtemplate }}"
         disk:
           - size_gb: "{{ disk_size | default(120) }}"
             type: thin
             datastore: "{{ datastore }}"
         networks:
-        - name: VM Network
+        - name: TEST-VLAN-0504
           ip: 10.17.113.100
           netmask: 255.255.255.0
           gateway: 10.17.113.1
