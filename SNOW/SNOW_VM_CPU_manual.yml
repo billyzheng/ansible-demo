@@ -50,7 +50,7 @@
 
     - name: Display current CPU number
       ansible.builtin.debug:
-        msg: "current CPU number is  {{ _Current_CPU_result }} ."
+        msg: "current CPU number is  {{ _Current_CPU_result.value.count }} ."
 
 
 
