@@ -61,7 +61,7 @@
         assignment_group: Wintel
         number: "{{ ticket_number }}"
         other:
-          comments: "Ansible automation adjust MEM on host {{ NOTIFY_HOSTNAME }} . Current MEM number is {{ _Current_MEM_result.size_MiB }} MB"
+          comments: "Ansible automation adjust MEM on host {{ NOTIFY_HOSTNAME }} . Current MEM number is {{ _Current_MEM_result.value.size_MiB }} MB"
       delay: 5
 
     - name: Change state to implement
@@ -135,7 +135,7 @@
 
             state: review
             close_code: "successful"
-            close_notes: "Ansible adjust memory on host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} .Current memory size is {{ _Post_MEM_result.size_MiB }} MB "
+            close_notes: "Ansible adjust memory on host {{ NOTIFY_HOSTNAME }} . Host status = {{vm_tools_info.value.run_state}} .Current memory size is {{ _Post_MEM_result.value.size_MiB }} MB "
             assignment_group: Wintel
             number: "{{ ticket_number }}"
       when: vm_tools_info.value.run_state == "RUNNING"
