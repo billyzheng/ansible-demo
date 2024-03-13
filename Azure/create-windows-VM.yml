@@ -9,7 +9,7 @@
 
   - name: Create resource group
     azure_rm_resourcegroup:
-      name: " {{rg_name}} "
+      name: "{{rg_name}}"
       location: "{{location}}"
 
   - name: Create virtual network
@@ -38,7 +38,7 @@
   
   - name: Create Network Security Group
     azure_rm_securitygroup:
-      resource_group: " {{rg_name}} "
+      resource_group: "{{rg_name}}"
       name: "{{network_security_group_name}}"
       rules:
         - name: 'allow_rdp'
@@ -70,7 +70,7 @@
       resource_group: "{{rg_name}} "
       virtual_network: "{{vnet_name}}"
       subnet_name: "{{ subnet_name }}"
-      security_group: " {{security_group_name}} "
+      security_group: "{{security_group_name}} "
       ip_configurations:
         - name: default
           public_ip_address_name: pip
@@ -78,7 +78,7 @@
 
   - name: Create VM
     azure_rm_virtualmachine:
-      resource_group: "{{rg_name}} "
+      resource_group: "{{rg_name}}"
       name: "{{vm_name}}"
       vm_size: "{{vm_size}}"
       admin_username: azureuser
