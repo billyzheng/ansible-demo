@@ -44,4 +44,4 @@
 
     - name: IP address info
       debug:
-        msg: "{{ newvm.instance.ipv4 }} {{ name }}"
+        msg: "{{ newvm.instance.ipv4 }} {{ vmname }}"
