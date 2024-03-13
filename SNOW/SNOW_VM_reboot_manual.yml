@@ -21,10 +21,10 @@
         priority: moderate
         risk: "{{ sn_risk }}"
         impact: "{{ sn_impact }}"
-      delay: 5
         other:
           expected_start: "{{ '%Y-%m-%d' | strftime }}"
       register: _change_ticket  
+      delay: 5
 
     - name: Display change ticket number
       ansible.builtin.debug:
