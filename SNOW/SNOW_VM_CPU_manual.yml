@@ -21,7 +21,7 @@
         priority: moderate
         risk: "{{ sn_risk }}"
         impact: "{{ sn_impact }}"
-
+      delay: 5 
       register: _change_ticket  
 
     - name: Display change ticket number
