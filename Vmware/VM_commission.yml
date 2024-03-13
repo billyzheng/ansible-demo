@@ -6,28 +6,38 @@
   gather_facts: false
   connection: local
   vars:
-    esxhost: 192.168.1.100
-    datastore: datastore01
-    vmtemplate: VM01
-    name: "newvm"
+    esxhost: xf-s-esxsyn05p.xe.abb.com
+    datastore: XF_PRIMERA_NONPROD_003
+    vcenter_folder: POC-Ansible-automation-platform
+    vmtemplate: WIN2019-GOLD
+    name: xf-s-aapwin01t
     notes: Ansible Test
     dumpfacts: False
   tasks:
     - name: Create VM from template
       vmware_guest:
         validate_certs: False
+        datacenter: XF-COMP
+        cluster: XF-PRODCLU1
         esxi_hostname: "{{ esxhost }}"
-        datacenter: dc
+        folder: "{{ vcenter_folder }}"
         name: "{{ name }}"
         template: "{{ vmtemplate }}"
         disk:
-          - size_gb: "{{ disk_size | default(30) }}"
+          - size_gb: "{{ disk_size | default(120) }}"
             type: thin
             datastore: "{{ datastore }}"
         networks:
         - name: VM Network
-          type: dhcp
+          ip: 10.17.113.100
+          netmask: 255.255.255.0
+          gateway: 10.17.113.1
+          domain: aa.abb.com
+          dns_servers:
+          - 10.16.7.12
+          - 10.16.7.13
         hardware:
+          num_cpus: 2
           memory_mb: "{{ vm_memory | default(1024) }}"
         wait_for_ip_address: True
         state: present
