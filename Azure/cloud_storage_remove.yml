@@ -2,17 +2,11 @@
 - name: Delete Azure Storage Account
   hosts: localhost
   gather_facts: false
-   
-  vars:
-    resource_group: my_resource_group
-    storage_account_name: storageacctaap2024
-    location: eastus
-    account_type: Standard_LRS
-
+  
   tasks:
     - name: Delete acccount
       azure_rm_storageaccount:
-        resource_group: "{{ resource_group }}" 
+        resource_group: "{{ rg_name }}" 
         name: "{{ storage_account_name }}"
         state: absent
       register: output

@@ -1,7 +1,4 @@
 - hosts: localhost
-  vars:
-    resource_group: ResourceGroupAAPtest2024
-    location: eastus 
   tasks:
     - name: Create a resource group
       azure_rm_resourcegroup:
