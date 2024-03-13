@@ -6,10 +6,11 @@
     azure_rm_resourcegroup:
       name: "{{ rg_name }}"
       location: "{{ location }}"
+
   - name: Create Network Security Group
     azure_rm_securitygroup:
-      resource_group: "{{ rg_name }}"
-      name: "{{ network_security_group_name }}"
+      resource_group: ResourceGroupAAPwindowsrg
+      name: mysubnet_int
       rules:
         - name: 'allow_rdp'
           protocol: Tcp
@@ -33,6 +34,7 @@
           access: Allow
           priority: 1003
           direction: Inbound
+
   - name: Create virtual network
     azure_rm_virtualnetwork:
       resource_group: "{{ rg_name }}"
