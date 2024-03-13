@@ -8,7 +8,7 @@
       location: "{{ location }}"
   - name: Create Network Security Group
     azure_rm_securitygroup:
-      resource_group: " {{ rg_name }} "
+      resource_group: "{{ rg_name }}"
       name: "{{ network_security_group_name }}"
       rules:
         - name: 'allow_rdp'
