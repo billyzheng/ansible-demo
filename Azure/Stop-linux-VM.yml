@@ -4,6 +4,6 @@
   tasks:
     - name: Stop virtual machine
       azure_rm_virtualmachine:
-        resource_group: ResourceGroupAAPLinuxrg
-        name: myVM
+        resource_group: "{{ rg_name }}"
+        name: "{{ vm_name }}"
         allocated: no

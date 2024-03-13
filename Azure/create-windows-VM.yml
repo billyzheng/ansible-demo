@@ -9,27 +9,27 @@
 
   - name: Create resource group
     azure_rm_resourcegroup:
-      name: ResourceGroupAAPwindowsrg
-      location: eastus
+      name: " {{rg_name}} "
+      location: "{{ location }}"
 
   - name: Create virtual network
     azure_rm_virtualnetwork:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: vNet
-      address_prefixes: "10.1.0.0/16"
+      resource_group: " {{rg_name}} "
+      name: " {{ vnet_name }}"
+      address_prefixes: "{{ address_prefixes }}"
 
   - name: Add subnet
     azure_rm_subnet:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: subnet
-      address_prefix: "10.1.1.0/24"
-      virtual_network: vNet
+      resource_group: " {{rg_name}} "
+      name: "{{ subnet_name }}"
+      address_prefix: "{{ address_prefix }}"
+      virtual_network: "{{ vnet_name }}"
 
   - name: Create public IP address
     azure_rm_publicipaddress:
-      resource_group: ResourceGroupAAPwindowsrg
+      resource_group: " {{ rg_name }} "
       allocation_method: Static
-      name: pip
+      name: "{{ pip_name }}"
     register: output_ip_address
 
   - name: Output public IP
@@ -38,8 +38,8 @@
   
   - name: Create Network Security Group
     azure_rm_securitygroup:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: networkSecurityGroup
+      resource_group: " {{ rg_name }} "
+      name: "{{ network_security_group_name }}"
       rules:
         - name: 'allow_rdp'
           protocol: Tcp
@@ -66,11 +66,11 @@
 
   - name: Create a network interface
     azure_rm_networkinterface:
-      name: nic
-      resource_group: ResourceGroupAAPwindowsrg
-      virtual_network: vNet
-      subnet_name: subnet
-      security_group: networkSecurityGroup
+      name: "{{ network_interface_name }}"
+      resource_group: "{{ rg_name}} "
+      virtual_network: "{{ vnet_name }}"
+      subnet_name: "{{ subnet_name }}"
+      security_group: "{{ network_security_group_name }}"
       ip_configurations:
         - name: default
           public_ip_address_name: pip
@@ -78,9 +78,9 @@
 
   - name: Create VM
     azure_rm_virtualmachine:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: win-vm
-      vm_size: Standard_DS1_v2
+      resource_group: "{{ rg_name}} "
+      name: "{{ vm_name }}"
+      vm_size: "{{ vm_size }}"
       admin_username: azureuser
       admin_password: P@ssw0rd12345
       network_interfaces: nic
@@ -95,7 +95,7 @@
 #  - name: Create VM script extension to enable HTTPS WinRM listener
 #    azure_rm_virtualmachineextension:
 #      name: winrm-extension
-#      resource_group: ResourceGroupAAPwindowsrg
+#      resource_group: "{{ rg_name}} "
 #      virtual_machine_name: win-vm
 #      publisher: Microsoft.Compute
 #      virtual_machine_extension_type: CustomScriptExtension
@@ -105,7 +105,7 @@
 
 #  - name: Get facts for one Public IP
 #    azure_rm_publicipaddress_info:
-#      resource_group: ResourceGroupAAPwindowsrg
+#      resource_group: "{{ rg_name}} "
 #      name: pip
 #    register: publicipaddresses
 

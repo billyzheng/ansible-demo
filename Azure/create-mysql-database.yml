@@ -1,9 +1,5 @@
 - hosts: localhost
   vars:
-    resource_group: ResourceGroupAAPtest2024
-    location: eastus
-    mysqlserver_name: mysqlserveransible
-    mysqldb_name: mysqldbansibleaap2024
     admin_username: mysqladmin
     admin_password: P@ssw0rd1234
   tasks:

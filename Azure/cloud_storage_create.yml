@@ -3,12 +3,6 @@
   hosts: localhost
   gather_facts: false
   
-  vars:
-    resource_group: my_resource_group
-    storage_account_name: storageacctaap2024
-    location: eastus
-    account_type: Standard_LRS
-  
   tasks:
     - name: Create resource group
       azure_rm_resourcegroup:

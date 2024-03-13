@@ -3,9 +3,11 @@
     tasks:
     - name: Update VM
       azure_rm_virtualmachine:
-        resource_group: ResourceGroupAAPLinuxrg
-        name: myVM
-        vm_size: Standard_DS2_v2
+        resource_group: "{{ rg_name }}"
+        name: "{{ vm_name }}"
+        vm_size: "{{ vm_size }}"
         admin_username: azureuser
         admin_password: P@ssw0rd12345
         started: yes
+
+        
