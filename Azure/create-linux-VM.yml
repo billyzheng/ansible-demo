@@ -9,8 +9,8 @@
 
   - name: Create Network Security Group
     azure_rm_securitygroup:
-      resource_group: ResourceGroupAAPwindowsrg
-      name: mysubnet_int
+      resource_group: "{{ rg_name }}"
+      name: "{{ subnet_name }}"
       rules:
         - name: 'allow_rdp'
           protocol: Tcp
