@@ -6,38 +6,57 @@
   gather_facts: false
   connection: local
   vars:
-    esxhost: xf-s-esxsyn05p.xe.abb.com
+    vdatacenter: XF-COMP
+    vcluster: XF-PRODCLU1
     datastore: XF_PRIMERA_NONPROD_003
     vcenter_folder: POC-Ansible-automation-platform
     vmtemplate: WIN2019-GOLD
     vmname: xf-s-aapwin01t
+    disk_size: 120
+    vnetwork_name: TEST-VLAN-0504
+    vip: 10.17.113.100
+    vnetmask: 255.255.255.0
+    vgateway: 10.17.113.1
+    vdomain: aa.abb.com
+    vdns1: 10.16.7.12
+    vdns2: 10.16.7.13
+    vcpu: 2
+    vmem: 1024
+    template_password: P@ssw0rd123456
     notes: Ansible Test
     dumpfacts: False
   tasks:
     - name: Create VM from template
       vmware_guest:
         validate_certs: False
-        datacenter: XF-COMP
-        cluster: XF-PRODCLU1
+        datacenter: "{{ vdatacenter }}"
+        cluster: "{{ vcluster }}"
         folder: "{{ vcenter_folder }}"
         name: "{{ vmname }}"
         template: "{{ vmtemplate }}"
         disk:
-          - size_gb: "{{ disk_size | default(120) }}"
+          - size_gb: "{{ disk_size }}"
             type: thin
             datastore: "{{ datastore }}"
         networks:
-        - name: TEST-VLAN-0504
-          ip: 10.17.113.100
-          netmask: 255.255.255.0
-          gateway: 10.17.113.1
-          domain: aa.abb.com
+        - name: "{{ vnetwork_name }}"
+          ip: "{{ vip }}"
+          netmask: "{{ vnetmask }}"
+          gateway: "{{ vgateway }}"
+          domain: "{{ vdomain }}"
           dns_servers:
-          - 10.16.7.12
-          - 10.16.7.13
+          - "{{ vdns1 }}"
+          - "{{ vdns2 }}"
         hardware:
-          num_cpus: 2
-          memory_mb: "{{ vm_memory | default(1024) }}"
+          num_cpus: "{{ vcpu }}"
+          memory_mb: "{{ vmem }}"
+        customization:
+          password: "{{ template_password }}"
+      # This powershell script is required for cross vlan WinRM to run the next tasks - Once playbook complete remove the firewall rule if needed
+          runonce:
+           - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+           - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+        wait_for_customization: yes
         wait_for_ip_address: True
         state: present
       register: newvm
