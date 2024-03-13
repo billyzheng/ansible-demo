@@ -19,7 +19,7 @@
         validate_certs: False
         datacenter: XF-COMP
         cluster: XF-PRODCLU1
-        esxi_hostname: "{{ esxhost }}"
+#        esxi_hostname: "{{ esxhost }}"
         folder: "{{ vcenter_folder }}"
         name: "{{ name }}"
         template: "{{ vmtemplate }}"
