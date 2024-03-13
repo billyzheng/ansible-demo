@@ -21,7 +21,7 @@
         priority: moderate
         risk: "{{ sn_risk }}"
         impact: "{{ sn_impact }}"
-
+      delay: 5
       register: _change_ticket  
 
     - name: Display change ticket number
@@ -47,7 +47,7 @@
       vmware.vmware_rest.vcenter_vm_hardware_memory_info:
         vm: '{{ vm_info.id }}'
       register: _Current_MEM_result
-
+      delay: 5
 
 
     - name: Change state to scheduled
@@ -62,6 +62,7 @@
         number: "{{ ticket_number }}"
         other:
           comments: "Ansible automation adjust MEM on host {{ NOTIFY_HOSTNAME }} . Current MEM number is {{ _Current_MEM_result.size_MiB }} MB"
+      delay: 5
 
     - name: Change state to implement
       servicenow.itsm.change_request:
