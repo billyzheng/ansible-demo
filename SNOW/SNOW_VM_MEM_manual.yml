@@ -43,7 +43,7 @@
         vm: '{{ search_result.value[0].vm }}'
       register: vm_info
 
-    - name: Get CPU from VM
+    - name: Get memory from VM
       vmware.vmware_rest.vcenter_vm_hardware_memory_info:
         vm: '{{ vm_info.id }}'
       register: _Current_MEM_result
