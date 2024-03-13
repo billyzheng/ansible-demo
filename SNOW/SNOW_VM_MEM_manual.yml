@@ -97,7 +97,7 @@
     - name: Adjust MEM on the VM
       vmware.vmware_rest.vcenter_vm_hardware_memory:
         vm: '{{ vm_info.id }}'
-        count: "{{ MEM_number }}"
+        size_MiB: "{{ MEM_number }}"
 
 
     - name: Get Memory from VM
