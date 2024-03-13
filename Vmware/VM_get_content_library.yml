@@ -8,9 +8,6 @@
   tasks:
     - name: Gather info about all content_library
       community.vmware.vmware_content_library_info:
-        hostname: '{{ vcenter_hostname }}'
-        username: '{{ vcenter_username }}'
-        password: '{{ vcenter_password }}'
       register: content_library_info
 
     - name: print content_library info
