@@ -15,7 +15,7 @@
   - name: Create virtual network
     azure_rm_virtualnetwork:
       resource_group: " {{rg_name}} "
-      name: " {{ vnet_name }}"
+      name: "{{ vnet_name }}"
       address_prefixes: "{{ address_prefixes }}"
 
   - name: Add subnet
@@ -70,7 +70,7 @@
       resource_group: "{{ rg_name}} "
       virtual_network: "{{ vnet_name }}"
       subnet_name: "{{ subnet_name }}"
-      security_group: "{{ network_security_group_name }}"
+      security_group: " {{ security_group_name }} "
       ip_configurations:
         - name: default
           public_ip_address_name: pip
