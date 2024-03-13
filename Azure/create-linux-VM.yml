@@ -67,6 +67,7 @@
       name: "{{ subnet_name }}"
       address_prefix: "{{ subnet_address_prefix }}"
       virtual_network: "{{ vnet_name }}"
+      security_group: "{{ network_security_group_name }}"
   - name: Create virtual network interface card
     azure_rm_networkinterface:
       resource_group: "{{ rg_name }}"
