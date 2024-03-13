@@ -21,7 +21,7 @@
         priority: moderate
         risk: "{{ sn_risk }}"
         impact: "{{ sn_impact }}"
-
+      delay: 5 
       register: _change_ticket  
 
     - name: Display change ticket number
@@ -48,6 +48,10 @@
         vm: '{{ vm_info.id }}'
       register: _Current_CPU_result
 
+    - name: Display current CPU number
+      ansible.builtin.debug:
+        msg: "current CPU number is  {{ _Current_CPU_result }} ."
+
 
 
     - name: Change state to scheduled
@@ -61,7 +65,7 @@
         assignment_group: Wintel
         number: "{{ ticket_number }}"
         other:
-          comments: "Ansible automation adjust CPU on host {{ NOTIFY_HOSTNAME }} . Current CPU number is {{ _Current_CPU_result.count }}"
+          comments: "Ansible automation adjust CPU on host {{ NOTIFY_HOSTNAME }} . "
 
     - name: Change state to implement
       servicenow.itsm.change_request:
