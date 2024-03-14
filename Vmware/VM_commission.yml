@@ -80,7 +80,13 @@
         tag_name: "{{ delpoymentIDNo }}"
         tag_description: delpoymentID for ServiceNow
         state: present
-      
+
+    - name: Get info about tag
+      community.vmware.vmware_tag_info:
+      register: tag_details
+    - debug:
+        msg: "{{ tag_details }}"
+
 
     - name: Add tags to a virtual machine
       community.vmware.vmware_tag_manager:
