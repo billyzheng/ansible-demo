@@ -91,8 +91,7 @@
     - name: Add tags to a virtual machine
       community.vmware.vmware_tag_manager:
         tag_names:
-          - tag: urn:vmomi:InventoryServiceTag:4aa9d0c9-c2c5-4ed9-b2b2-95d40d9a296d:GLOBAL
-            category: delpoymentID
+          - delpoymentID: 2
         object_name: "{{ vmname }}"
         object_type: VirtualMachine
         state: add
