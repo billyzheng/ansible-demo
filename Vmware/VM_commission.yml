@@ -66,27 +66,5 @@
       debug:
         msg: "{{ newvm.instance.ipv4 }} {{ vmname }}"
 
-    - name: Create a category
-      community.vmware.vmware_category:
-        category_name: delpoymentID
-        category_description: delpoymentID category
-        category_cardinality: 'multiple'
-        state: present
 
-
-    - name: Create a tag
-      community.vmware.vmware_tag:
-        category_name: delpoymentID
-        tag_name: "{{ delpoymentIDNo }}"
-        tag_description: delpoymentID for ServiceNow
-        state: present
-      
-
-    - name: Add tags to a virtual machine
-      community.vmware.vmware_tag_manager:
-        tag_names:
-          - delpoymentID: "{{ delpoymentIDNo }}"
-        object_name: "{{ vmname }}"
-        object_type: VirtualMachine
-        state: add
       
