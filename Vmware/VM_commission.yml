@@ -66,9 +66,17 @@
       debug:
         msg: "{{ newvm.instance.ipv4 }} {{ vmname }}"
 
+    - name: Create a category
+      community.vmware.vmware_category:
+        category_name: delpoymentID_category
+        category_description: delpoymentID category
+        category_cardinality: 'multiple'
+        state: present
+
+
     - name: Create a tag
       community.vmware.vmware_tag:
-        category_id: 'urn:vmomi:InventoryServiceCategory:e785088d-6981-4b1c-9fb8-1100c3e1f742:GLOBAL'
+        category_name: delpoymentID_category
         tag_name: delpoymentID
         tag_description: delpoymentID for ServiceNow
         state: present
