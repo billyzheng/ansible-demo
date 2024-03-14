@@ -1,0 +1,92 @@
+---
+# create a new VM from a template
+
+- name: VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    vdatacenter: XF-COMP
+    vcluster: XF-PRODCLU1
+    datastore: XF_PRIMERA_NONPROD_003
+    vcenter_folder: POC-Ansible-automation-platform
+    vmtemplate: WIN2019-GOLD
+    
+    disk_size: 120
+    vnetwork_name: TEST-VLAN-0504
+    
+    vnetmask: 255.255.255.0
+    vgateway: 10.17.113.1
+    vdomain: aa.abb.com
+    vdns1: 10.16.7.12
+    vdns2: 10.16.7.13
+    vcpu: 2
+    vmem: 1024
+    delpoymentIDNo: 2
+    template_password: P@ssw0rd123456
+    notes: Ansible Test
+    dumpfacts: False
+  tasks:
+    - name: Create VM from template
+      vmware_guest:
+        validate_certs: False
+        datacenter: "{{ vdatacenter }}"
+        cluster: "{{ vcluster }}"
+        folder: "{{ vcenter_folder }}"
+        name: "{{ vmname }}"
+        template: "{{ vmtemplate }}"
+        disk:
+          - size_gb: "{{ disk_size }}"
+            type: thin
+            datastore: "{{ datastore }}"
+        networks:
+        - name: "{{ vnetwork_name }}"
+          ip: "{{ vip }}"
+          netmask: "{{ vnetmask }}"
+          gateway: "{{ vgateway }}"
+          domain: "{{ vdomain }}"
+          dns_servers:
+          - "{{ vdns1 }}"
+          - "{{ vdns2 }}"
+        hardware:
+          num_cpus: "{{ vcpu }}"
+          memory_mb: "{{ vmem }}"
+        customization:
+          password: "{{ template_password }}"
+      # This powershell script is required for cross vlan WinRM to run the next tasks - Once playbook complete remove the firewall rule if needed
+          runonce:
+           - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+           - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+        wait_for_customization: yes
+        wait_for_ip_address: True
+        state: present
+      register: newvm
+
+    - name: IP address info
+      debug:
+        msg: "{{ newvm.instance.ipv4 }} {{ vmname }}"
+
+    - name: Create a category
+      community.vmware.vmware_category:
+        category_name: delpoymentID
+        category_description: delpoymentID category
+        category_cardinality: 'multiple'
+        state: present
+
+
+    - name: Create a tag
+      community.vmware.vmware_tag:
+        category_name: delpoymentID
+        tag_name: "{{ delpoymentIDNo }}"
+        tag_description: delpoymentID for ServiceNow
+        state: present
+
+
+    - name: Add tags to a virtual machine
+      community.vmware.vmware_tag_manager:
+        tag_names:
+          - "delpoymentID:{{ delpoymentIDNo }}"
+        object_name: "{{ vmname }}"
+        object_type: VirtualMachine
+        state: add
+      
