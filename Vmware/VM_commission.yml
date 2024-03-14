@@ -68,7 +68,7 @@
 
     - name: Create a category
       community.vmware.vmware_category:
-        category_name: delpoymentID_category
+        category_name: delpoymentID
         category_description: delpoymentID category
         category_cardinality: 'multiple'
         state: present
@@ -76,7 +76,7 @@
 
     - name: Create a tag
       community.vmware.vmware_tag:
-        category_name: delpoymentID_category
+        category_name: delpoymentID
         tag_name: delpoymentID
         tag_description: delpoymentID for ServiceNow
         state: present
