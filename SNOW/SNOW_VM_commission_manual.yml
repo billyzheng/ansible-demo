@@ -139,3 +139,14 @@
             assignment_group: Wintel
             number: "{{ ticket_number }}"
       when: vm_tools_info.value.run_state == "RUNNING"
+
+    - name: Get VM info
+      debug:
+        msg: "{{ newvm }}
+
+    - name: Register the newly-created VM instance into CMDB
+      servicenow.itsm.configuration_item:
+        name: "{{ vmname }}"
+        sys_class_name: cmdb_ci_vm_instance
+        ip_address: "{{ newvm.instance.ipv4 }}"
+
