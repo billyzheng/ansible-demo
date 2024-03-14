@@ -142,7 +142,7 @@
 
     - name: Get VM info
       debug:
-        msg: "{{ newvm }}
+        msg: "{{ newvm }}"
 
     - name: Register the newly-created VM instance into CMDB
       servicenow.itsm.configuration_item:
