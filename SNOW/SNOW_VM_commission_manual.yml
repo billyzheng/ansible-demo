@@ -151,6 +151,8 @@
         sys_class_name: cmdb_ci_vm_instance
         ip_address: "{{ newvm.instance.ipv4 }}"
       register: cmdb_ci
+      
+    - name: display CI information  
       debug: 
         msg: "{{ cmdb_ci }}"
 
