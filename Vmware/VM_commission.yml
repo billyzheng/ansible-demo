@@ -91,7 +91,7 @@
     - name: Add tags to a virtual machine
       community.vmware.vmware_tag_manager:
         tag_names:
-          - delpoymentID:2
+          - delpoymentID:"{{ delpoymentIDNo }}"
         object_name: "{{ vmname }}"
         object_type: VirtualMachine
         state: add
