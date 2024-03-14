@@ -22,7 +22,7 @@
     vdns2: 10.16.7.13
     vcpu: 2
     vmem: 1024
-    delpoymentIDNo: 2
+    deploymentIDNo: 2
     template_password: P@ssw0rd123456
     notes: Ansible Test
     dumpfacts: False
