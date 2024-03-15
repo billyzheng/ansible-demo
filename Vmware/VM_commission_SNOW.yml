@@ -77,7 +77,7 @@
     - name: Create a tag
       community.vmware.vmware_tag:
         category_name: deploymentID
-        tag_name: "{{ deploymentIDNo }}"
+        tag_name: "{{ deploymentID }}"
         tag_description: deploymentID for ServiceNow
         state: present
 
@@ -85,7 +85,7 @@
     - name: Add tags to a virtual machine
       community.vmware.vmware_tag_manager:
         tag_names:
-          - "deploymentID:{{ deploymentIDNo }}"
+          - "deploymentID:{{ deploymentID }}"
         object_name: "{{ vmname }}"
         object_type: VirtualMachine
         state: add
