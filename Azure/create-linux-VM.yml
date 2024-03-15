@@ -4,32 +4,56 @@
   tasks:
   - name: Create resource group
     azure_rm_resourcegroup:
-      name: myResourceGroup
-      location: eastus
+      name: "{{ rg_name }}"
+      location: "{{ location }}"
+
+  - name: Create Network Security Group
+    azure_rm_securitygroup:
+      resource_group: "{{ rg_name }}"
+      name: "{{ subnet_name }}"
+      rules:
+        - name: 'allow_rdp'
+          protocol: Tcp
+          destination_port_range: 3389
+          access: Allow
+          priority: 1001
+          direction: Inbound
+        - name: 'allow_web_traffic'
+          protocol: Tcp
+          destination_port_range:
+            - 80
+            - 443
+          access: Allow
+          priority: 1002
+          direction: Inbound
+        - name: 'allow_powershell_remoting'
+          protocol: Tcp
+          destination_port_range: 
+            - 5985
+            - 5986
+          access: Allow
+          priority: 1003
+          direction: Inbound
+
   - name: Create virtual network
     azure_rm_virtualnetwork:
-      resource_group: myResourceGroup
-      name: myVnet
-      address_prefixes: "10.0.0.0/16"
-  - name: Add subnet
-    azure_rm_subnet:
-      resource_group: myResourceGroup
-      name: mySubnet
-      address_prefix: "10.0.1.0/24"
-      virtual_network: myVnet
+      resource_group: "{{ rg_name }}"
+      name: "{{ vnet_name }}"
+      address_prefixes: "{{ address_prefixes }}"
+
   - name: Create public IP address
     azure_rm_publicipaddress:
-      resource_group: myResourceGroup
+      resource_group: "{{ rg_name }}"
       allocation_method: Static
-      name: myPublicIP
+      name: "{{ public_ip_name }}"
     register: output_ip_address
   - name: Public IP of VM
     debug:
       msg: "The public IP is {{ output_ip_address.state.ip_address }}."
   - name: Create Network Security Group that allows SSH
     azure_rm_securitygroup:
-      resource_group: myResourceGroup
-      name: myNetworkSecurityGroup
+      resource_group: "{{ rg_name }}"
+      name: "{{ network_security_group_name }}"
       rules:
         - name: SSH
           protocol: Tcp
@@ -37,25 +61,29 @@
           access: Allow
           priority: 1001
           direction: Inbound
+  - name: Add subnet
+    azure_rm_subnet:
+      resource_group: "{{ rg_name }}"
+      name: "{{ subnet_name }}"
+      address_prefix: "{{ subnet_address_prefix }}"
+      virtual_network: "{{ vnet_name }}"
+      security_group: "{{ network_security_group_name }}"
   - name: Create virtual network interface card
     azure_rm_networkinterface:
-      resource_group: myResourceGroup
-      name: myNIC
-      virtual_network: myVnet
-      subnet: mySubnet
-      public_ip_name: myPublicIP
-      security_group: myNetworkSecurityGroup
+      resource_group: "{{ rg_name }}"
+      name: "{{ nic_name }}"
+      virtual_network: "{{ vnet_name }}"
+      subnet: "{{ subnet_name }}"
+      public_ip_name: "{{ public_ip_name }}"
+      security_group: "{{ network_security_group_name }}"
   - name: Create VM
     azure_rm_virtualmachine:
-      resource_group: myResourceGroup
-      name: myVM
-      vm_size: Standard_DS1_v2
+      resource_group: "{{ rg_name }}"
+      name: "{{ vm_name }}"
+      vm_size: "{{ vm_size }}"
       admin_username: azureuser
-      ssh_password_enabled: false
-      ssh_public_keys:
-        - path: /home/azureuser/.ssh/authorized_keys
-          key_data: "<key_data>"
-      network_interfaces: myNIC
+      admin_password: P@ssw0rd12345
+      network_interfaces: "{{ nic_name }}"
       image:
         offer: CentOS
         publisher: OpenLogic
