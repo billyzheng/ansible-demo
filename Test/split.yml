@@ -1,0 +1,6 @@
+---
+- name: Ansible Split Examples
+  hosts: localhost
+  tasks:
+    - name: Split Simple String Example
+      debug: msg={{ 'xp-s-netsmtp02z.xp.abb.com' | split('-') | first }}
