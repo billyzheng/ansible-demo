@@ -4,7 +4,8 @@
   tasks:
     - name: get host list using partial string
       set_fact:
-        host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:host', filter={'name': 'xp-s-netsmtp02z.xp.abb.com'}, provider=nios_provider) }}"
+        host_list: "{{ lookup('nios', 'record:host', filter={'name': 'xp-s-netsmtp02z.xp.abb.com'}, provider=nios_provider) }}"
+
     - name: display host list using partial string
       debug:
-        msg: "{{ host_list }}"
+        var: host_list 
