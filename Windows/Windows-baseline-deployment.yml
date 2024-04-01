@@ -2972,7 +2972,7 @@
 
 ---
 
-- name: "win_baseline_8253_state | Ensure 'Allow unencrypted traffic (WinRM client)' is set to Disabled"
+- name: win_baseline_8253_state | Ensure Allow unencrypted traffic (WinRM client) is set to Disabled
   win_regedit:
     path: "{{ win_baseline_8253_state_Path }}"
     name: "{{ win_baseline_8253_state_Name }}"
