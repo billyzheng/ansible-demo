@@ -1,9 +1,9 @@
-# ---
-# - name: Deploy baseline into Windows server 2022
-#   hosts: "{{ _hostname }}"
+---
+- name: Deploy baseline into Windows server 2022
+  hosts: "{{ _hostname }}"
   
-#   tasks:
-#   - include_vars: vars.yml
+  tasks:
+  - include_vars: vars.yml
   
 #   - name: "win_baseline_1052_state | Ensure 'Devices - Allowed to format and eject removable media' is set to 'Administrators'"
 #     win_regedit:
@@ -2970,7 +2970,6 @@
 #       type: "{{ win_baseline_8253_state_Type }}"
 #     when: win_baseline_8253_state_Manage
 
----
 
 - name: win_baseline_8253_state | Ensure Allow unencrypted traffic (WinRM client) is set to Disabled
   win_regedit:
