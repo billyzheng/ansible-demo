@@ -2987,7 +2987,7 @@
   - name: write a file
     copy:
       content: "{{ my_output }}"
-      dest: "output.txt"
+      dest: "/temp/output.txt"
       follow: true
     register: the_path
     delegate_to: localhost
@@ -2998,12 +2998,12 @@
 
   - name: Add a line to a file if the file does not exist, without passing regexp
     ansible.builtin.lineinfile:
-      path: "output.txt"
+      path: "/temp/output.txt"
       line: 192.168.1.99 foo.lab.net foo
       create: yes
     delegate_to: localhost
 
   - name: Read a file
     ansible.builtin.debug:
-      msg: "the value of foo.txt is {{ lookup('ansible.builtin.file', 'output.txt') }}"
+      msg: "the value of foo.txt is {{ lookup('ansible.builtin.file', '/temp/output.txt') }}"
     delegate_to: localhost
