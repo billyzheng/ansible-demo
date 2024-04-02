@@ -2982,7 +2982,7 @@
 
   - name: Debug hello.stdout as part of a string
     debug: 
-      msg: "{{ my_output.changed }}"
+      msg: "{{ my_output }}"
 
   - name: write a file
     copy:
