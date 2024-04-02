@@ -2984,6 +2984,7 @@
     export_report:
       csv_file: output.csv
       log_file: logfile.log
+    delegate_to: localhost
   # - name: Debug hello.stdout as part of a string
   #   debug: 
   #     msg: "{{ my_output }}"
