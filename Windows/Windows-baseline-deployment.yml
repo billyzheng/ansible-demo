@@ -2996,6 +2996,10 @@
     debug:
       msg: "{{ the_path }}"
 
+  - name: print dic value
+    debug:
+      msg: "{{ the_path.dest }}, {{ the_path.failed }}"
+
   - name: Add a line to a file if the file does not exist, without passing regexp
     ansible.builtin.lineinfile:
       path: "/tmp/output.txt"
