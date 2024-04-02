@@ -2981,9 +2981,9 @@
     when: win_baseline_8253_state_Manage
 
   - name: export report
-      export_report:
-        csv_file: output.csv
-        log_file: logfile.log
+    export_report:
+      csv_file: output.csv
+      log_file: logfile.log
   # - name: Debug hello.stdout as part of a string
   #   debug: 
   #     msg: "{{ my_output }}"
