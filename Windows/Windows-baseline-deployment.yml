@@ -2980,34 +2980,38 @@
     register: my_output
     when: win_baseline_8253_state_Manage
 
-  - name: Debug hello.stdout as part of a string
-    debug: 
-      msg: "{{ my_output }}"
+  - name: export report
+      export_report:
+        csv_file: output.csv
+        log_file: logfile.log
+  # - name: Debug hello.stdout as part of a string
+  #   debug: 
+  #     msg: "{{ my_output }}"
 
-  - name: write a file
-    copy:
-      content: "{{ my_output }}"
-      dest: "/tmp/output.txt"
-      follow: true
-    register: the_path
-    delegate_to: localhost
+  # - name: write a file
+  #   copy:
+  #     content: "{{ my_output }}"
+  #     dest: "/tmp/output.txt"
+  #     follow: true
+  #   register: the_path
+  #   delegate_to: localhost
 
-  - name: print
-    debug:
-      msg: "{{ the_path }}"
+  # - name: print
+  #   debug:
+  #     msg: "{{ the_path }}"
 
-  - name: print dic value
-    debug:
-      msg: "{{ the_path.dest }}, {{ the_path.failed }}"
+  # - name: print dic value
+  #   debug:
+  #     msg: "{{ the_path.dest }}, {{ the_path.failed }}"
 
-  - name: Add a line to a file if the file does not exist, without passing regexp
-    ansible.builtin.lineinfile:
-      path: "/tmp/output.txt"
-      line: 192.168.1.99 foo.lab.net foo
-      create: yes
-    delegate_to: localhost
+  # - name: Add a line to a file if the file does not exist, without passing regexp
+  #   ansible.builtin.lineinfile:
+  #     path: "/tmp/output.txt"
+  #     line: 192.168.1.99 foo.lab.net foo
+  #     create: yes
+  #   delegate_to: localhost
 
-  - name: Read a file
-    ansible.builtin.debug:
-      msg: "the value of foo.txt is {{ lookup('ansible.builtin.file', '/tmp/output.txt') }}"
-    delegate_to: localhost
+  # - name: Read a file
+  #   ansible.builtin.debug:
+  #     msg: "the value of foo.txt is {{ lookup('ansible.builtin.file', '/tmp/output.txt') }}"
+  #   delegate_to: localhost
