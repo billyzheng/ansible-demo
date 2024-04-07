@@ -1,0 +1,29 @@
+---
+- hosts: "{{ VM_hosts }}"
+  gather_facts: True
+  tasks:
+
+  - name: Windows | Create a directory
+    ansible.windows.win_file:
+      path: C:\temp
+      state: directory
+
+
+  - name: Copy File to remote windows server
+    ansible.windows.win_copy:
+      src: "/tmp/repo/windows_splunk/splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi"
+      dest: C:\temp\splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi
+     
+ 
+  - name: Install Splunk agent
+    win_package:
+      path: C:\temp\splunkforwarder-9.1.2-b6b9c8185839-x64-release.msi
+      state: present
+      arguments: >-
+        AGREETOLICENSE=Yes 
+        SERVICESTARTTYPE=auto 
+        SPLUNKPASSWORD=9d428cee3769fe99ea25ea419283f407
+
+  - name: Pass hostname
+    ansible.builtin.set_fact:
+      VM_hosts: "{{ VM_hosts }}"

@@ -1,0 +1,5 @@
+---
+nios_provider:
+  host: "{{ INFOBLOX_HOST }}"
+  username: "{{ INFOBLOX_USERNAME }}"
+  password: "{{ INFOBLOX_PASSWORD }}"
