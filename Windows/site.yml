@@ -1,6 +1,8 @@
 ---
 - name: The main playbooks
-  hosts: all
+  hosts: 
+  - 10.243.132.167
+  - 10.243.132.175
   tasks:
   - name: Run common baseline
     ansible.builtin.import_role:
