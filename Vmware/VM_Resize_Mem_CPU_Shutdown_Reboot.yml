@@ -6,7 +6,7 @@
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ vm_name }}"
-        state: powered_off
+        state: powered-off
 
     - name: Wait for 60 seconds for VM to powered down
       wait_for:
@@ -24,4 +24,4 @@
     - name: Power on the VM
       vmware_guest_powerstate:
         name: "{{ vm_name }}"
-        state: powered_on
+        state: powered-on
