@@ -1,6 +1,6 @@
 ---
 - name: The main playbooks
-  hosts: windows-rone
+  hosts: windows-baseline-machine_33dc
   tasks:
   - name: Run common baseline
     ansible.builtin.import_role:
