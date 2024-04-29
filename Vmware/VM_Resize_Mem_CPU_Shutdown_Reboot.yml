@@ -8,9 +8,9 @@
         name: "{{ vm_name }}"
         state: powered-off
 
-    - name: Wait for 60 seconds for VM to powered down
+    - name: Wait for 30 seconds for VM to powered down
       wait_for:
-        timeout: 60
+        timeout: 30
       delegate_to: localhost
 
     - name: Edit VM Settings
