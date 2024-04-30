@@ -1,0 +1,9 @@
+---
+- name: Ping the windows server
+  hosts: all
+  gather_facts: no
+  collections:
+    - community.windows
+  tasks:
+    - name: Ping the Windows hosts
+      community.windows.win_ping:
