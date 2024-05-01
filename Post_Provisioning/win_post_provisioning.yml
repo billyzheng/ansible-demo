@@ -1,6 +1,9 @@
 ---
 - name: windows post provisioning  
   hosts: all
+  gather_facts: no
+  collections:
+    - ansible.windows
   tasks:
   - name: Check the windows system configuration
     ansible.builtin.import_role:
