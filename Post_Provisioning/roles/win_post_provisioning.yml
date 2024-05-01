@@ -1,1 +1,7 @@
-
+---
+- name: windows post provisioning  
+  hosts: all
+  tasks:
+  - name: Check the windows system configuration
+    ansible.builtin.import_role:
+      name: win_sysconfig
