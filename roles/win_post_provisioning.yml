@@ -1,1 +1,7 @@
+---
+- name: Do post install tasks
+  hosts: all
+  gather_facts: yes
 
+  roles:
+    - win_sysinfo
