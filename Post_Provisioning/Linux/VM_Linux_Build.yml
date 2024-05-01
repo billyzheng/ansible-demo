@@ -1,0 +1,31 @@
+---
+- name: Linux VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Create Linux VM from template
+      vmware_guest:
+        validate_certs: False
+        datacenter: "{{ vdatacenter }}"
+        cluster: "{{ vcluster }}"
+        folder: "{{ vcenter_folder }}"
+        name: "{{ vmname }}"
+        template: "{{ vmtemplate }}"
+        disk:
+          - size_gb: "{{ disk_size }}"
+            type: thin
+            datastore: "{{ datastore }}"
+        networks:
+        - name: "{{ vnetwork_name }}"
+          ip: "{{ vip }}"
+          netmask: "{{ vnetmask }}"
+          gateway: "{{ vgateway }}"
+          domain: "{{ vdomain }}"
+          dns_servers:
+          - "{{ vdns1 }}"
+          - "{{ vdns2 }}"
+        hardware:
+          num_cpus: "{{ vcpu }}"
+          memory_mb: "{{ vmem }}"
+        wait_for_ip_address: True
