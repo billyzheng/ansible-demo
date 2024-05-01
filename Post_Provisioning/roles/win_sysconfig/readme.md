@@ -1,0 +1,1 @@
+# Windows system configuration status
