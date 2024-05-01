@@ -1,5 +1,5 @@
 ---
-- name: Linux VM from template
+- name: Linux VM build from template
   hosts: localhost
   gather_facts: false
   connection: local
