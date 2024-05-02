@@ -13,14 +13,6 @@
         name: "{{ vm_name }}"
         state: powered-off
 
-    - name: Edit VM Settings
-      vmware_guest:
-        name: "{{ vm_name }}"
-        hardware:
-          memory_mb: "{{ memory_mb }}"
-          num_cpus: "{{ num_cpus }}"
-        state: present
-
     - name: Power on the VM
       vmware_guest_powerstate:
         name: "{{ vm_name }}"
