@@ -3,4 +3,4 @@
   win_ping:
   
 - name: Get the windows system info 
-  win_shell: powershell.exe -ExecutionPolicy ByPass -File get_system_info.ps1
+  win_shell: get_system_info.ps1
