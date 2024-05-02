@@ -3,4 +3,4 @@
   win_ping:
   
 - name: Get the windows system info 
-  win_shell: get_system_info.ps1
+  ansible.builtin.script: get_system_info.ps1
