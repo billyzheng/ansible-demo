@@ -5,7 +5,7 @@ param (
 $TZ = Get-TimeZone
 if ($TZ.id -ne $Timezone) {
     Set-TimeZone -Name $Timezone
-    write-log "Timezone set"
+    Write-Output "Timezone set to $Timezone"
 } else {
-    write-log "TimeZone already set"
+    Write-Output "Timezone already set to $Timezone"
 }
