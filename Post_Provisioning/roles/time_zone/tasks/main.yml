@@ -1,5 +1,5 @@
 ---
-- name: Copy file from local to remote
+- name: Copy input variable file from gitlab to remote windows server
   ansible.builtin.copy:
      src: xf-s-aapwin04t.csv
      dest: C:\temp\xf-s-aapwin04t
