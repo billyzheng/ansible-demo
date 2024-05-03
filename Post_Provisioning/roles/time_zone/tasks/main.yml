@@ -1,9 +1,10 @@
 ---
-- name: Debug input_timezone variable
-  debug:
-    msg: "The value of input_timezone is {{ input_timezone }}"
-    
+- name: Copy file from local to remote
+  ansible.builtin.copy:
+     src: xf-s-aapwin04t.csv
+     dest: C:\temp\xf-s-aapwin04t
+      
 - name: Set Timezone using PowerShell script
-  ansible.builtin.script: time_zone.ps1
-  args:
-    Timezone: "{{ input_timezone }}"
+  ansible.builtin.script: time_zone_set.ps1
+#  args:
+#    Timezone: "{{ input_timezone }}"
