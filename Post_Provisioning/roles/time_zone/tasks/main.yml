@@ -1,8 +1,8 @@
 ---
 - name: Copy input variable file from gitlab to remote windows server
   ansible.builtin.copy:
-     src: xf-s-aapwin04t.csv
-     dest: C:\temp\xf-s-aapwin04t
+     src: XF-S-AAPWIN04T.csv  
+     dest: C:\temp\
       
 - name: Set Timezone using PowerShell script
   ansible.builtin.script: time_zone_set.ps1
