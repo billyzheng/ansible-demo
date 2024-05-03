@@ -1,0 +1,8 @@
+---
+- name: Set Timezone using PowerShell script
+  hosts: localhost
+  tasks:
+    - name: Run PowerShell script
+      script: time_zone.ps1
+      args:
+        Timezone: "{{ input_timezone }}"
