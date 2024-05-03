@@ -1,4 +1,8 @@
 ---
+- name: Debug input_timezone variable
+  debug:
+    msg: "The value of input_timezone is {{ input_timezone }}"
+    
 - name: Set Timezone using PowerShell script
   ansible.builtin.script: time_zone.ps1
   args:
