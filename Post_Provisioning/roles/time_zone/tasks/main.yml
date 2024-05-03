@@ -1,5 +1,5 @@
 ---
 - name: Set Timezone using PowerShell script
   ansible.builtin.script: time_zone.ps1
-      args:
-        Timezone: "{{ input_timezone }}"
+  args:
+    Timezone: "{{ input_timezone }}"
