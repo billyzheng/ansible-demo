@@ -4,11 +4,22 @@
   #   src: XF-S-AAPWIN04T.csv  
    #  dest: C:\temp\
 
-- name: Debug input_timezone variable
-  debug:
-    msg: "input_timezone: {{ input_timezone }}"
+- name: Run PowerShell script to set timezone
+  win_shell: |
+    $timezoneValue = "{{ input_timezone }}"
+    $TZ = Get-TimeZone
+    if ($TZ.Id -ne $timezoneValue) {
+        Set-TimeZone -Name $timezoneValue
+        Write-Host "Timezone set to $timezoneValue"
+    } else {
+        Write-Host "Timezone already set to $timezoneValue"
+    }
+  register: powershell_output
+
+- debug:
+    msg: "PowerShell output: {{ powershell_output.stdout }}"
       
-- name: Set Timezone using PowerShell script
-  ansible.builtin.script: time_zone.ps1
+#- name: Set Timezone using PowerShell script
+#  ansible.builtin.script: time_zone.ps1
 #  args:
 #    Timezone: "{{ input_timezone }}"
