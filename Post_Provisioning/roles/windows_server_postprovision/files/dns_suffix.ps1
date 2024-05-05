@@ -14,6 +14,7 @@ Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
 
 Import-Csv "C:\temp\$env:computername.csv" -UseCulture| %{
 $DNSSuffix = ($_.DNSSuffix).split(",")
+}
 
 #DNS suffix validation
 $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
