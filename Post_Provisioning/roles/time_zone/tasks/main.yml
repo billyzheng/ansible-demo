@@ -7,7 +7,7 @@
 #- name: Set Timezone using PowerShell script
 #  ansible.builtin.script: time_zone.ps1
 
-- name: Render PowerShell script
+- name: Get the template
   template:
     src: time_zone.ps1.j2
     dest: C:\temp\time_zone.ps1
