@@ -1,3 +1,8 @@
 ---
+- name: Copy input variable file from gitlab to remote windows server
+  ansible.builtin.copy:
+     src: XF-S-AAPWIN04T.csv  
+     dest: C:\temp\
+     
 - name: Testing the dns_suffix
   ansible.builtin.script: dns_suffix.ps1
