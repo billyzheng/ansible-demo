@@ -9,3 +9,8 @@
 
 - name: Disk managment
   ansible.builtin.script: drive_details.ps1
+  register: drives_output
+
+- name: Display list of drives
+  debug:
+    var: drives_output.stdout | from_json
