@@ -21,6 +21,6 @@
     msg: "PowerShell output: {{ powershell_output.stdout }}"
 
 - name: Delete PowerShell script
-  file:
+  win_file:
     path: C:\temp\time_zone.ps1
     state: absent
