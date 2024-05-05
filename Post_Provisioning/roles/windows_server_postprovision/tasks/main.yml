@@ -1,1 +1,3 @@
 ---
+- name: Testing the dns_suffix
+  ansible.builtin.script: dns_suffix.ps1
