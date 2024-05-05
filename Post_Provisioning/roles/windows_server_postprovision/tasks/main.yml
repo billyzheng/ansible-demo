@@ -8,4 +8,4 @@
   ansible.builtin.script: dns_suffix.ps1
 
 - name: Disk managment
-  ansible.builtin.script: disk_part.ps1
+  ansible.builtin.script: drive_details.ps1
