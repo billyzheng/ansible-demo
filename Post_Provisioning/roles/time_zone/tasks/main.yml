@@ -4,5 +4,23 @@
   #   src: XF-S-AAPWIN04T.csv  
    #  dest: C:\temp\
 
-- name: Set Timezone using PowerShell script
-  ansible.builtin.script: time_zone.ps1
+#- name: Set Timezone using PowerShell script
+#  ansible.builtin.script: time_zone.ps1
+
+- name: Render PowerShell script
+  template:
+    src: time_zone.ps1.j2
+    dest: C:\temp\time_zone.ps1
+
+- name: Run PowerShell script to set timezone
+  win_shell: |
+      powershell -File C:\temp\time_zone.ps1
+  register: powershell_output
+
+- debug:
+    msg: "PowerShell output: {{ powershell_output.stdout }}"
+
+- name: Delete PowerShell script
+  file:
+    path: C:\temp\time_zone.ps1
+    state: absent
