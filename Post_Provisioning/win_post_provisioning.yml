@@ -5,10 +5,16 @@
   collections:
     - ansible.windows
   tasks:
-  - name: Check the windows system configuration
-    ansible.builtin.import_role:
-      name: win_sysconfig
+#  - name: Check the windows system configuration
+#    ansible.builtin.import_role:
+#      name: win_sysconfig
       
+#  - name: Validate and Modify the system timezone
+#    ansible.builtin.import_role:
+#      name: time_zone
+
   - name: Validate and Modify the system timezone
     ansible.builtin.import_role:
-      name: time_zone
+      name: windows_server_postprovision
+
+      
