@@ -1,1 +1,4 @@
 ---
+  name: Disk managment
+  ansible.builtin.script: drive_details.ps1
+ 
