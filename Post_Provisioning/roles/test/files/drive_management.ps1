@@ -13,7 +13,19 @@ Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
 }
 
 #Change the CD drive letter
-$CDDrive = Get-WmiObject win32_volume -Filter 'DriveType = "5"'
-$CDDrive.DriveLetter = "z:"
-$CDDrive.put()
-write-log "CD drive letter changed to Z"
+try {
+    $CDDrive = Get-WmiObject win32_volume -Filter 'DriveType = "5"'
+
+    if ($CDDrive) {
+        $CDDrive.DriveLetter = "Z:"
+        $CDDrive.put()
+        Write-Host "CD drive letter changed to Z"
+        Write-Log "CD drive letter changed to Z"
+    } else {
+        Write-Host "No CD drive found"
+        Write-Log "No CD drive found"
+    }
+} catch {
+    Write-Host "An error occurred: $_"
+    Write-Log "An error occurred: $_"
+}
