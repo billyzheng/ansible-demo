@@ -29,3 +29,13 @@ try {
     Write-Host "An error occurred: $_"
     Write-Log "An error occurred: $_"
 }
+
+#Expand C drive
+try {
+    $CDL = "C"
+    $CSize = (Get-PartitionSupportedSize -DriveLetter $CDL)
+    Resize-Partition -DriveLetter $CDL -Size $CSize.SizeMax
+    Write-Host "C drive expanded successfully"
+} catch {
+    Write-Host "Error: $_"
+}
