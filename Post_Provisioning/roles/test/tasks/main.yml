@@ -1,4 +1,3 @@
 ---
   name: Disk managment
-  ansible.builtin.script: drive_details.ps1
- 
+  ansible.builtin.script: drive_management.ps1
