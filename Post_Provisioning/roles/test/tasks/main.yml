@@ -1,5 +1,7 @@
 ---
 - name: Disk managment
   ansible.builtin.script: drive_management.ps1
+  ignore_errors: yes
+  
 - name: KMS registration - OS
   ansible.builtin.script: kms_registration.ps1
