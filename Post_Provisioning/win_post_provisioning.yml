@@ -9,12 +9,15 @@
 #    ansible.builtin.import_role:
 #      name: win_sysconfig
       
-  - name: Validate and Modify the system timezone
-    ansible.builtin.import_role:
-      name: time_zone
+#  - name: Validate and Modify the system timezone
+#    ansible.builtin.import_role:
+#      name: time_zone
 
 #  - name: Validate and Modify the system timezone
 #    ansible.builtin.import_role:
 #      name: windows_server_postprovision
 
+   - name: Validate and Modify the system timezone
+     ansible.builtin.import_role:
+       name: test
       
