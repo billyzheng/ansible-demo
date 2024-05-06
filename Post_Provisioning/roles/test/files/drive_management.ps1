@@ -39,3 +39,24 @@ try {
 } catch {
     Write-Host "Error: $_"
 }
+
+#Formatting available disks
+Function Partition-disk
+{
+ $newdisks = get-disk |where partitionstyle -eq 'raw'
+ If ($newdisks -ne $null)
+ {
+   foreach($newdisk in $newdisks)
+  {
+    $dl= get-Disk -number $newdisk.Number | Initialize-Disk -PartitionStyle GPT -PassThru |  New-Partition -AssignDriveLetter -UseMaximumSize
+    Format-Volume  -driveletter $dl.driveletter -FileSystem NTFS  -Confirm:$false
+	write-log "Disk $newdisk.number partitioned, formatted and assigned the drive letter as $dl.driveletter"
+  }
+ }
+ else
+ {
+  write-log "No raw disks found"
+ }
+}
+
+Partition-disk
