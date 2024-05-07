@@ -1,3 +1,16 @@
+#Output file variables
+Function write-log{
+Param (
+[string] $msg
+)
+$date = Get-Date -Format "MM-dd-yyyy"
+New-Item -Path "C:\Programdata\Logs" -ItemType Directory -ErrorAction SilentlyContinue
+$Logfile = "C:\Programdata\Logs\Post-Build_Script1.log"
+$TimeStamp = Get-Date -Format "MM/dd/yyyy hh:mm:ss tt"
+write-host "$($TimeStamp): $msg"
+Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
+}
+
 #KMS registration (OS License)
 $ActivationStatus = Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | Where-Object { $_.PartialProductKey } | Select-Object LicenseStatus       
 $LicenseResult = switch($ActivationStatus.LicenseStatus){
