@@ -5,3 +5,6 @@
   
 - name: KMS registration - OS
   ansible.builtin.script: kms_registration.ps1
+
+- name: KMS registration - OS
+  ansible.builtin.script: local_remote_group_management.ps1
