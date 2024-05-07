@@ -4,7 +4,7 @@
     src: time_zone.ps1.j2
     dest: C:\temp\time_zone.ps1
 
-- name: Run PowerShell script to set timezone
+- name: Run script to set timezone
   win_shell: |
       powershell -File C:\temp\time_zone.ps1
   register: timezone_output
@@ -12,7 +12,7 @@
 - debug:
     msg: "Change status: {{ timezone_output.stdout }}"
 
-- name: Delete PowerShell script from server
+- name: Delete timezone script from server
   win_file:
     path: C:\temp\time_zone.ps1
     state: absent
@@ -25,4 +25,23 @@
 - name: Testing the dns_suffix
   ansible.builtin.script: dns_suffix.ps1
 
+- name: Disk managment which checks CD drive, expand C drive and format extension drives
+  ansible.builtin.script: drive_management.ps1
+  ignore_errors: yes
+  
+- name: KMS registration - Validates and register OS
+  ansible.builtin.script: kms_registration.ps1
 
+- name: Get the template for splunk tool
+  template:
+    src: splunk_agent.ps1.j2
+    dest: C:\temp\splunk_agent.ps1
+
+- name: Run script to install splunk agent
+  win_shell: |
+      powershell -File C:\temp\splunk_agent.ps1
+ 
+- name: Delete the splunk script from server
+  win_file:
+    path: C:\temp\splunk_agent.ps1
+    state: absent
