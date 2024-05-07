@@ -17,12 +17,7 @@ Get-LocalGroup | ForEach-Object {
     Get-LocalGroupMember -Group $_.Name 
 }
 
-# List all remote group members
-Get-ADGroup -Filter * | ForEach-Object {
-    Write-Host "Remote Group: $($_.Name)"
-    Get-ADGroupMember -Identity $_.Name
-}
- 
+
 #Local Adminstrator & Remote Desktop Group Management - AME, APC, DC1,DC2,DC3, xa,xe,xp
 Switch ("{{ ansible_domain }}")
 {
@@ -52,8 +47,3 @@ Get-LocalGroup | ForEach-Object {
     Get-LocalGroupMember -Group $_.Name 
 }
 
-# List all remote group members
-Get-ADGroup -Filter * | ForEach-Object {
-    Write-Host "Remote Group: $($_.Name)"
-    Get-ADGroupMember -Identity $_.Name
-}
