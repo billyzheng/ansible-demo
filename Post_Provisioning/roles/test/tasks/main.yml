@@ -6,20 +6,35 @@
 - name: KMS registration - OS
   ansible.builtin.script: kms_registration.ps1
 
-- name: Get the template for local and remote group management
+- name: Get the template for splunk tool
   template:
-    src: local_remote_group_management.ps1.j2
-    dest: C:\temp\local_remote_group_management.ps1
+    src: splunk_agent.ps1.j2
+    dest: C:\temp\splunk_agent.ps1
 
 - name: Run PowerShell script to manage local and remote group
   win_shell: |
-      powershell -File C:\temp\local_remote_group_management.ps1
-  register: localremote_output
-
-- debug:
-    msg: "PowerShell output: {{ localremote_output.stdout }}"
-
+      powershell -File C:\temp\splunk_agent.ps1
+ 
 - name: Delete PowerShell script
   win_file:
-    path: C:\temp\local_remote_group_management.ps1
+    path: C:\temp\splunk_agent.ps1
     state: absent
+
+
+#- name: Get the template for local and remote group management
+ # template:
+ #   src: local_remote_group_management.ps1.j2
+ #   dest: C:\temp\local_remote_group_management.ps1
+
+#- name: Run PowerShell script to manage local and remote group
+#  win_shell: |
+ #     powershell -File C:\temp\local_remote_group_management.ps1
+ # register: localremote_output
+
+#- debug:
+#    msg: "PowerShell output: {{ localremote_output.stdout }}"
+
+#- name: Delete PowerShell script
+#  win_file:
+#    path: C:\temp\local_remote_group_management.ps1
+ #   state: absent
