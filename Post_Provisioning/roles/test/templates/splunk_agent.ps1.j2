@@ -1,0 +1,22 @@
+
+#Output file variables
+Function write-log{
+Param (
+[string] $msg
+)
+$date = Get-Date -Format "MM-dd-yyyy"
+New-Item -Path "C:\Programdata\Logs" -ItemType Directory -ErrorAction SilentlyContinue
+$Logfile = "C:\Programdata\Logs\Post-Build_Script2.log"
+$TimeStamp = Get-Date -Format "MM/dd/yyyy hh:mm:ss tt"
+write-host "$($TimeStamp): $msg"
+Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
+}
+
+# SPLUNK AGENT INSTALLATION
+
+write-log "Splunk agent installation starting"
+$splunk_path = "{{ splunk_path }}"
+$splunk_install = "{{ splunk_install }}"
+$splunk = "/i $splunk_install AGREETOLICENSE=Yes SERVICESTARTTYPE=auto SPLUNKPASSWORD={{ splunk_passwd }} /quiet"
+Start-Process "msiexec.exe" -ArgumentList $splunk -wait -NoNewWindow
+write-log "Splunk agent installation completed"
