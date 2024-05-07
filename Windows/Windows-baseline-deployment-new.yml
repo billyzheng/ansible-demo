@@ -1,6 +1,6 @@
 ---
 - name: The main playbooks
-  hosts: windows_group
+  hosts: "{{ _hostname }}"
   tasks:
   - name: Run common baseline
     ansible.builtin.import_role:
