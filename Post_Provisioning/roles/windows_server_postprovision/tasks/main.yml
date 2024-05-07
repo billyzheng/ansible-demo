@@ -1,5 +1,23 @@
 ---
-- name: Copy input variable file from gitlab to remote windows server
+- name: Get the powershell template for timezone change
+  template:
+    src: time_zone.ps1.j2
+    dest: C:\temp\time_zone.ps1
+
+- name: Run PowerShell script to set timezone
+  win_shell: |
+      powershell -File C:\temp\time_zone.ps1
+  register: timezone_output
+
+- debug:
+    msg: "Change status: {{ timezone_output.stdout }}"
+
+- name: Delete PowerShell script from server
+  win_file:
+    path: C:\temp\time_zone.ps1
+    state: absent
+    
+- name: Copy input variable file from gitlab to windows server
   ansible.builtin.copy:
      src: XF-S-AAPWIN04T.csv  
      dest: C:\temp\
@@ -7,10 +25,4 @@
 - name: Testing the dns_suffix
   ansible.builtin.script: dns_suffix.ps1
 
-- name: Disk managment
-  ansible.builtin.script: drive_details.ps1
-  register: drives_output
 
-- name: Display list of drives
-  debug:
-    var: drives_output.stdout | from_json
