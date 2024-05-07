@@ -11,7 +11,7 @@
     src: splunk_agent.ps1.j2
     dest: C:\temp\splunk_agent.ps1
 
-- name: Run PowerShell script to manage local and remote group
+- name: Run PowerShell script to install splunk agent
   win_shell: |
       powershell -File C:\temp\splunk_agent.ps1
  
