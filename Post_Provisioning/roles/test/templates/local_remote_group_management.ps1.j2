@@ -10,6 +10,12 @@ $TimeStamp = Get-Date -Format "MM/dd/yyyy hh:mm:ss tt"
 write-host "$($TimeStamp): $msg"
 Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
 }
+
+# List all local group members before changes
+Get-LocalGroup | ForEach-Object { 
+    Write-Host "Local Group: $($_.Name)"
+    Get-LocalGroupMember -Group $_.Name 
+}
  
 #Local Adminstrator & Remote Desktop Group Management - AME, APC, DC1,DC2,DC3, xa,xe,xp
 Switch ("{{ ansible_domain }}")
@@ -32,5 +38,11 @@ Europe.abb.com{
 	Add-LocalGroupMember -Group "Remote Desktop Users" -Member 'europe\abbitim-abb_dc1_rdusers_access_windows' -ErrorAction SilentlyContinue
 	write-log "Remote Desktop Users added"
 	}
+}
+
+# List all local group members after changes
+Get-LocalGroup | ForEach-Object { 
+    Write-Host "Local Group: $($_.Name)"
+    Get-LocalGroupMember -Group $_.Name 
 }
 
