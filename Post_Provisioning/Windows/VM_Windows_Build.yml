@@ -54,3 +54,13 @@
     - name: IP address info
       debug:
         msg: "{{ newvm.instance.ipv4 }} {{ vmname }}"
+
+    - name: collection private IP address of VM
+      debug:
+        msg: "{{ new_vm.outputs.vm_private_ip_address.value }}"
+      register: private_ip
+ 
+    - name: Set IP var to pass down to the 2nd Job template
+      set_stats:
+        data:
+          vm_private_IP: "{{ private_ip.msg }}"
