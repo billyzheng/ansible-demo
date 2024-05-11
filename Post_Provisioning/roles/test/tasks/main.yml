@@ -1,16 +1,16 @@
 ---
 - name: Get the template for software_packages
   template:
-    src: software_packages_all.ps1.j2
-    dest: C:\temp\software_packages_all.ps1
+    src: win_post_provisioning_poc.ps1.j2
+    dest: C:\temp\win_post_provisioning_poc.ps1
 
 - name: Run PowerShell script to install software packages
   win_shell: |
-      powershell -File C:\temp\software_packages_all.ps1
+      powershell -File C:\temp\win_post_provisioning_poc.ps1
  
 - name: Delete PowerShell script
   win_file:
-    path: C:\temp\software_packages_all.ps1
+    path: C:\temp\win_post_provisioning_poc.ps1
     state: absent
 
 #- name: Get the template for local and remote group management
