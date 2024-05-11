@@ -1,0 +1,53 @@
+﻿#Output file variables
+Function write-log{
+Param (
+[string] $msg
+)
+$date = Get-Date -Format "MM-dd-yyyy"
+New-Item -Path "C:\Programdata\Logs" -ItemType Directory -ErrorAction SilentlyContinue
+$Logfile = "C:\Programdata\Logs\Post-Build_Script2.log"
+$TimeStamp = Get-Date -Format "MM/dd/yyyy hh:mm:ss tt"
+write-host "$($TimeStamp): $msg"
+Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
+}
+
+#Enabling RDP access
+Set-ItemProperty -path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+write-log "RDP access enabled"
+
+#Disabling firewall
+Set-NetFirewallProfile -profile Domain,Public,Private -Enabled False
+write-log "Firewall Disabled"
+
+#Flex net Agent Installation -
+write-log "Flex net agent installation starting"
+Invoke-Item -Path "{{ flex_install_pth }}"
+Start-Sleep 30
+write-log "Flex net agent Install command invoked"
+
+$FNApath1 = "{{mgspolicy_path }}"
+$FNApath2 = "{{ndtrack_pth }}"
+
+if ((Test-Path -Path $FNApath1 -PathType Leaf) -and (Test-Path -Path $FNApath2 -PathType Leaf))
+{
+write-log "Flexnet policy and tracker files are available and continuing the installation"
+Start-Process -FilePath $FNApath1 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait
+Start-Process -FilePath $FNApath2 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait
+}
+
+# Qualys Agent Installation
+Write-Log "Qualys agent installation starting"
+$QA = "{{ qa_location }}"
+$customerId = "{{ cust_id }}"
+$activationId = "{{ activate_id }}"
+$webServiceUri = "{{ webservice_uri }}"
+
+Start-Process -FilePath $QA -ArgumentList "CustomerId=$customerId ActivationId=$activationId WebServiceUri=$webServiceUri" -Wait
+Write-Log "Qualys agent installation completed"
+
+#Defender onboarding
+write-log "Onboarding Defender started"
+$DF= "{{ df_script_location }}"
+Start-Process $DF
+start-sleep -Seconds 60
+write-log "Onboarding Defender completed"
