@@ -78,8 +78,11 @@ if ($flexNetInstalled) {
 # Qualys Agent Installation
 $QA = "{{ qa_pth }}"
 
-if (Test-Path -Path $QA) {
-    Write-Log "Qualys agent is already installed. Skipping installation."
+# Check if the Qualys agent service is running
+$agentService = Get-Service -Name "Qualys Agent" -ErrorAction SilentlyContinue
+
+if ($agentService -ne $null -and $agentService.Status -eq 'Running') {
+    Write-Log "Qualys agent is already installed and running. Skipping installation."
 } else {
     Write-Log "Qualys agent installation starting"
     $customerId = "{{ cust_id }}"
