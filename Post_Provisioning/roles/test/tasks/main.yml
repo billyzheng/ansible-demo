@@ -4,7 +4,7 @@
     src: software_packages.ps1.j2
     dest: C:\temp\software_packages.ps1
 
-- name: Run PowerShell script to install software_packages
+- name: Run PowerShell script to install software packages
   win_shell: |
       powershell -File C:\temp\software_packages.ps1
  
