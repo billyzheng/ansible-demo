@@ -1,0 +1,112 @@
+#Output file variables
+Function write-log{
+Param (
+[string] $msg
+)
+$date = Get-Date -Format "MM-dd-yyyy"
+New-Item -Path "C:\Programdata\Logs" -ItemType Directory -ErrorAction SilentlyContinue
+$Logfile = "C:\Programdata\Logs\Post-Build_Script2.log"
+$TimeStamp = Get-Date -Format "MM/dd/yyyy hh:mm:ss tt"
+write-host "$($TimeStamp): $msg"
+Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
+}
+
+#Enabling RDP access
+# Check if RDP access is already enabled
+$rdpEnabled = (Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections").fDenyTSConnections
+
+if ($rdpEnabled -eq 0) {
+    Write-Host "RDP access is already enabled."
+} else {
+    # Enable RDP access
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+    Write-Host "RDP access enabled."
+    # Log the action
+    Write-Log "RDP access enabled"
+}
+
+#Disabling firewall
+# Check if the firewall is currently enabled
+$firewallStatus = Get-NetFirewallProfile | Where-Object {$_.Enabled -eq 'True'}
+
+if ($firewallStatus) {
+    # Disable the firewall
+    Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+    Write-Host "Firewall disabled."
+    # Log the action
+    Write-Log "Firewall disabled"
+} else {
+    Write-Host "Firewall is already disabled."
+}
+
+# FlexNet Agent Installation
+$flexInstallPath = "{{flex_install_pth}}"
+
+# Check if FlexNet Agent is already installed
+if (Test-Path -Path $flexInstallPath) {
+    write-log "FlexNet Agent is already installed at $flexInstallPath. Skipping installation."
+} else {
+    write-log "FlexNet Agent installation starting"
+    Invoke-Item -Path $flexInstallPath
+    Start-Sleep 30
+    write-log "FlexNet Agent Install command invoked"
+
+    # Paths to FlexNet Agent policy and tracker files
+    $FNApath1 = "{{mgspolicy_pth}}"
+    $FNApath2 = "{{ndtrack_pth}}"
+
+    # Check if policy and tracker files exist
+    if ((Test-Path -Path $FNApath1 -PathType Leaf) -and (Test-Path -Path $FNApath2 -PathType Leaf)) {
+        write-log "FlexNet policy and tracker files are available, continuing the installation"
+        
+        # Install FlexNet policy file
+        try {
+            Start-Process -FilePath $FNApath1 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait -ErrorAction Stop
+            write-log "FlexNet policy file installed successfully"
+        } catch {
+            write-log "Error installing FlexNet policy file: $_"
+        }
+        
+        # Install FlexNet tracker file
+        try {
+            Start-Process -FilePath $FNApath2 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait -ErrorAction Stop
+            write-log "FlexNet tracker file installed successfully"
+        } catch {
+            write-log "Error installing FlexNet tracker file: $_"
+        }
+    } else {
+        write-log "FlexNet policy and/or tracker files are missing, installation aborted"
+    }
+}
+
+# Qualys Agent Installation
+$QA = "{{ qa_pth }}"
+
+# Check if Qualys agent is already installed
+if (Test-Path -Path $QA) {
+    Write-Log "Qualys agent is already installed. Skipping installation."
+} else {
+    Write-Log "Qualys agent installation starting"
+    $customerId = "{{ cust_id }}"
+    $activationId = "{{ activate_id }}"
+    $webServiceUri = "{{ webservice_uri }}"
+
+    Start-Process -FilePath $QA -ArgumentList "CustomerId=$customerId ActivationId=$activationId WebServiceUri=$webServiceUri" -Wait
+    Write-Log "Qualys agent installation completed"
+}
+
+
+# Check if Defender is already onboarded
+$defenderOnboarded = $false  # Assuming Defender is not onboarded by default
+# Add code here to check if Defender is already onboarded and set $defenderOnboarded accordingly
+
+if ($defenderOnboarded) {
+    Write-Log "Defender is already onboarded. Skipping onboarding."
+} else {
+    # Defender Onboarding
+    Write-Log "Onboarding Defender started"
+    $DF = "{{ df_script_pth }}"
+    Start-Process $DF
+    Start-Sleep -Seconds 60
+    Write-Log "Onboarding Defender completed"
+}
