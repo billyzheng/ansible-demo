@@ -8,4 +8,4 @@
 
   - name: Validate and Modify the system timezone
     ansible.builtin.import_role:
-      name: windows_server_postprovision
+      name: test
