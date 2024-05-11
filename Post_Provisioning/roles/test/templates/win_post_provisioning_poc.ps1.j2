@@ -35,36 +35,43 @@ if ($firewallStatus) {
 
 # FlexNet Agent Installation
 $flexInstallPath = "{{flex_install_pth}}"
+$FNApath1 = "{{mgspolicy_pth}}"
+$FNApath2 = "{{ndtrack_pth}}"
 
-if (Test-Path -Path $flexInstallPath) {
-    write-log "FlexNet Agent is already installed at $flexInstallPath. Skipping installation."
+# Check if FlexNet Agent is already installed
+$flexNetInstalled = $false
+$agentInstalled = Get-Service -Name "FlexNet Agent" -ErrorAction SilentlyContinue
+if ($agentInstalled) {
+    $flexNetInstalled = $true
+}
+
+if ($flexNetInstalled) {
+    Write-Log "FlexNet Agent is already installed. Skipping installation."
 } else {
-    write-log "FlexNet Agent installation starting"
+    Write-Log "FlexNet Agent installation starting"
+    # Install FlexNet Agent
     Invoke-Item -Path $flexInstallPath
     Start-Sleep 30
-    write-log "FlexNet Agent Install command invoked"
-
-    $FNApath1 = "{{mgspolicy_pth}}"
-    $FNApath2 = "{{ndtrack_pth}}"
+    Write-Log "FlexNet Agent Install command invoked"
 
     if ((Test-Path -Path $FNApath1 -PathType Leaf) -and (Test-Path -Path $FNApath2 -PathType Leaf)) {
-        write-log "FlexNet policy and tracker files are available, continuing the installation"
+        Write-Log "FlexNet policy and tracker files are available, continuing the installation"
         
         try {
             Start-Process -FilePath $FNApath1 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait -ErrorAction Stop
-            write-log "FlexNet policy file installed successfully"
+            Write-Log "FlexNet policy file installed successfully"
         } catch {
-            write-log "Error installing FlexNet policy file: $_"
+            Write-Log "Error installing FlexNet policy file: $_"
         }
         
         try {
             Start-Process -FilePath $FNApath2 -ArgumentList "-t Machine -o userinteractionlevel=quiet" -Wait -ErrorAction Stop
-            write-log "FlexNet tracker file installed successfully"
+            Write-Log "FlexNet tracker file installed successfully"
         } catch {
-            write-log "Error installing FlexNet tracker file: $_"
+            Write-Log "Error installing FlexNet tracker file: $_"
         }
     } else {
-        write-log "FlexNet policy and/or tracker files are missing, installation aborted"
+        Write-Log "FlexNet policy and/or tracker files are missing, installation aborted"
     }
 }
 
