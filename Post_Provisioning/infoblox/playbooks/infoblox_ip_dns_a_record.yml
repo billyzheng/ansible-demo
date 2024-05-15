@@ -9,7 +9,7 @@
   tasks:
 
     - name: Create a network on the default network view
-      nios_network:
+      infoblox.nios_modules.nios_network:
         network: 10.17.112.0/24
         comment: sets the IPv4 network options
         state: present
@@ -23,7 +23,7 @@
         provider: "{{nios_provider}}"
 
     - name: Configure an IPv4 host record
-      nios_host_record:
+      infoblox.nios_modules.nios_host_record:
         name: example.com
         ipv4addrs:
           - ipv4addr: 10.17.112.5
