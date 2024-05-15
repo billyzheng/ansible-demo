@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  vars:
+    nios_provider:
+      host: 192.168.214.157
+      username: admin
+      password: networkgalaxy
+  connection: local
+  tasks:
+
+    - name: Create a network on the default network view
+      nios_network:
+        network: 192.168.100.0/24
+        comment: sets the IPv4 network options
+        state: present
+        provider: "{{nios_provider}}"
+
+    - name: Create a new zone
+      infoblox.nios_modules.nios_zone:
+        name: example.com
+        view: default
+        state: present
+        provider: "{{nios_provider}}"
+
+    - name: Configure an IPv4 host record
+      nios_host_record:
+        name: example.com
+        ipv4addrs:
+          - ipv4addr: 192.168.100.100
+        state: present
+        provider: "{{nios_provider}}"
+
+    - name: Configure an A record
+      infoblox.nios_modules.nios_a_record:
+        name: abb.example.com
+        ipv4: 192.168.100.100
+        state: present
+        provider: "{{nios_provider}}"
