@@ -1,12 +1,12 @@
 ---
 - hosts: localhost
   connection: local
- # vars:
-  #  nios_provider:
-  #    host: "{{ infoblox_host }}"
-  #    username: "{{ infoblox_username }}"
-   #   password: "{{ infoblox_password }}"
-  #    validate_certs: no
+  vars:
+     nios_provider:
+        host: "{{ infoblox_host }}"
+        username: "{{ infoblox_username }}"
+        password: "{{ infoblox_password }}"
+        validate_certs: no
    
   tasks:
 
@@ -15,14 +15,14 @@
         network: 10.17.112.0/24
         comment: sets the IPv4 network options
         state: present
-       # provider: "{{nios_provider}}"
+        provider: "{{nios_provider}}"
 
     - name: Create a new zone
       infoblox.nios_modules.nios_zone:
         name: example.com
         view: default
         state: present
-       # provider: "{{nios_provider}}"
+        provider: "{{nios_provider}}"
 
     - name: Configure an IPv4 host record
       infoblox.nios_modules.nios_host_record:
@@ -30,11 +30,11 @@
         ipv4addrs:
           - ipv4addr: 10.17.112.5
         state: present
-      #  provider: "{{nios_provider}}"
+        provider: "{{nios_provider}}"
 
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
         name: abb.example.com
         ipv4: 10.17.112.5
         state: present
-       # provider: "{{nios_provider}}"
+        provider: "{{nios_provider}}"
