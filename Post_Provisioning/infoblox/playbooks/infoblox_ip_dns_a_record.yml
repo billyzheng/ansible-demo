@@ -5,6 +5,7 @@
       host: "{{ infoblox_host }}"
       username: "{{ infoblox_username }}"
       password: "{{ infoblox_password }}"
+      validate_certs: no
   connection: local
   tasks:
 
