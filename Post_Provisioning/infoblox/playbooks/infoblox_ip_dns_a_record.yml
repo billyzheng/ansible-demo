@@ -2,9 +2,9 @@
 - hosts: localhost
   vars:
     nios_provider:
-      host: 192.168.214.157
-      username: admin
-      password: networkgalaxy
+      host: IP
+      username: user
+      password: ********
   connection: local
   tasks:
 
