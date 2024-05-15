@@ -2,9 +2,9 @@
 - hosts: localhost
   vars:
     nios_provider:
-      host: IP
-      username: user
-      password: ********
+      host: "{{ infoblox_host }}"
+      username: "{{ infoblox_username }}"
+      password: "{{ infoblox_password }}"
   connection: local
   tasks:
 
