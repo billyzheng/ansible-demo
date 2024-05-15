@@ -10,7 +10,7 @@
 
     - name: Create a network on the default network view
       nios_network:
-        network: 192.168.100.0/24
+        network: 10.17.112.0/24
         comment: sets the IPv4 network options
         state: present
         provider: "{{nios_provider}}"
@@ -26,13 +26,13 @@
       nios_host_record:
         name: example.com
         ipv4addrs:
-          - ipv4addr: 192.168.100.100
+          - ipv4addr: 10.17.112.5
         state: present
         provider: "{{nios_provider}}"
 
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
         name: abb.example.com
-        ipv4: 192.168.100.100
+        ipv4: 10.17.112.5
         state: present
         provider: "{{nios_provider}}"
