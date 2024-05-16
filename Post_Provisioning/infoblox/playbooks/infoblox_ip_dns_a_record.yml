@@ -3,7 +3,7 @@
   connection: local
   vars:
      nios_provider:
-        host: "{{ INFOBLOX_HOST }}"
+        host: "{{ INFOBLOX_IP }}"
         username: "{{ INFOBLOX_USERNAME }}"
         password: "{{ INFOBLOX_PASSWORD }}"
         validate_certs: no
