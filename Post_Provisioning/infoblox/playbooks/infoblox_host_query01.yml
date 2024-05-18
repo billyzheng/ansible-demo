@@ -8,6 +8,14 @@
         password: "{{ INFOBLOX_USERNAME }}"
           
   tasks:
+
+    - name: Configure an A record
+      infoblox.nios_modules.nios_a_record:
+        name: xf-s-aaptest04t
+        ipv4: 10.17.113.103
+        state: present
+        provider: "{{nios_provider}}"
+        
     - name: Get the a record of a host
       ansible.builtin.set_fact:
         host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
