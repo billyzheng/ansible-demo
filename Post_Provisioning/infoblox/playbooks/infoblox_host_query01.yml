@@ -3,9 +3,9 @@
   connection: local
   vars:
      nios_provider:
-        host: {{ INFOBLOX_HOST }}
-        username: {{ INFOBLOX_HOST }}
-        password: {{ INFOBLOX_USERNAME }}
+        host: "{{ INFOBLOX_HOST }}"
+        username: "{{ INFOBLOX_HOST }}"
+        password: "{{ INFOBLOX_USERNAME }}"
           
   tasks:
     - name: Get the a record of a host
