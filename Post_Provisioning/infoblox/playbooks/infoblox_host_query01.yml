@@ -9,12 +9,12 @@
           
   tasks:
 
-   # - name: Configure an A record
-   #   infoblox.nios_modules.nios_a_record:
-    #    name: xf-s-aaptest04t
-     #   ipv4: 10.17.113.103
-      #  state: present
-       # provider: "{{nios_provider}}"
+    - name: Configure an A record
+      infoblox.nios_modules.nios_a_record:
+        name: xf-s-aaptest04t.abb.lab
+        ipv4: 10.17.113.103
+        state: present
+        provider: "{{nios_provider}}"
         
     - name: Get the a record of a host
       ansible.builtin.set_fact:
