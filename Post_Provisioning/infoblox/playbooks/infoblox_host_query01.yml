@@ -11,8 +11,8 @@
 
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
-        name: xf-s-aaptest04t.abb.lab
-        ipv4: 10.17.113.103
+        name: "{{a_record_name}}"
+        ipv4: "{{a_record_ip}}"
         state: present
         provider: "{{nios_provider}}"
         
