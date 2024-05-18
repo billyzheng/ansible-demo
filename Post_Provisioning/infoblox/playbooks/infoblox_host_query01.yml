@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+     nios_provider:
+        host: {{ INFOBLOX_HOST }}
+        username: {{ INFOBLOX_HOST }}
+        password: {{ INFOBLOX_USERNAME }}
+          
+  tasks:
+    - name: Get the a record of a host
+      ansible.builtin.set_fact:
+        host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
+    - name: Display the host a record
+      ansible.builtin.debug:
+        msg: "{{ host_list }}"
