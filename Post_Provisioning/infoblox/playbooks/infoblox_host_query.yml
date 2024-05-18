@@ -8,9 +8,9 @@
         password: test_321!
           
   tasks:
-    - name: get host list using partial string
+    - name: Get the a record of a host
       ansible.builtin.set_fact:
         host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
-    - name: display host list using partial string
+    - name: Display the host a record
       ansible.builtin.debug:
         msg: "{{ host_list }}"
