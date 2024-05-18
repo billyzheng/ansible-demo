@@ -4,8 +4,8 @@
   vars:
      nios_provider:
         host: "{{ INFOBLOX_HOST }}"
-        username: "{{ INFOBLOX_HOST }}"
-        password: "{{ INFOBLOX_USERNAME }}"
+        username: "{{ INFOBLOX_USERNAME }}"
+        password: "{{ INFOBLOX_PASSWORD }}"
           
   tasks:
 
