@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+     nios_provider:
+        host: test.ipam.abb.com
+        username: awx-automation
+        password: test_321!
+          
+  tasks:
+
+   - name: get host list using partial string
+      set_fact:
+        host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
+    - name: display host list using partial string
+      debug:
+        msg: "{{ host_list }}"
