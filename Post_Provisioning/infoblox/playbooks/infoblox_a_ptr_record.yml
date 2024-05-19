@@ -15,6 +15,14 @@
         ipv4: "{{a_record_ip}}"
         state: present
         provider: "{{nios_provider}}"
+
+    - name: Create a PTR Record
+      infoblox.nios_modules.nios_ptr_record:
+        ipv4: 10.17.113.103
+        ptrdname: 103.113.17.10.in-addr.arpa
+        state: present
+        provider: "{{nios_provider}}"
+     
         
     - name: Get the a & ptr record of a host
       ansible.builtin.set_fact:
