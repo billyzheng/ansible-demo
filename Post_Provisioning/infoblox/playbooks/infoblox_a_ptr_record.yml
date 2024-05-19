@@ -8,7 +8,6 @@
         password: "{{ INFOBLOX_PASSWORD }}"
           
   tasks:
-
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
         name: "{{a_record_name}}"
@@ -16,17 +15,11 @@
         state: present
         provider: "{{nios_provider}}"
 
-    - name: Create a PTR Record
+    - name: Create PTR Record
       infoblox.nios_modules.nios_ptr_record:
         ipv4: "{{record_ip}}"
         ptrdname: "{{ptr_record_name}}"
         state: present
         provider: "{{nios_provider}}"
     
-        
-    - name: Get the a & ptr record of a host
-      ansible.builtin.set_fact:
-        host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
-    - name: Display the host a record
-      ansible.builtin.debug:
-        msg: "{{ host_list }}"
+     
