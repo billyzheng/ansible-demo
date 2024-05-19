@@ -1,0 +1,24 @@
+---
+- name: Check and Join Windows Machine to Domain
+  hosts: xf-s-aapwin04t
+  gather_facts: no
+  tasks:
+    - name: Execute PowerShell script to check domain join status
+      win_shell: |
+        $domaintest = (Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain
+        if ($domaintest -ne $true) {
+          write-log "Executing domain join step"
+          $securePassword = ConvertTo-SecureString "{{ ad_password }}" -AsPlainText -Force
+          $credentials = New-Object System.Management.Automation.PSCredential ("{{ ad_username }}", $securePassword)
+          add-computer –domainname {{ domain }} -Credential $credentials -restart –force
+        } else {
+          write-log "Server already part of domain"
+        }
+      vars:
+        domain: "dvabb.dev"
+        ad_username: "dvabb\GLB-DVABB-ANSI-SRV"
+      register: domain_join_result
+
+    - name: Display domain join result
+      debug:
+        var: domain_join_result.stdout
