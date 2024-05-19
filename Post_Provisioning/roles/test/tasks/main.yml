@@ -4,6 +4,11 @@
     src: software_packages.ps1.j2
     dest: C:\temp\software_packages.ps1
 
+- name: Copy input variable file from gitlab to windows server for dns suffix
+  ansible.builtin.copy:
+     src: XF-S-AAPWIN04T.csv  
+     dest: C:\temp\
+
 - name: Run PowerShell script to install software packages
   win_shell: |
       powershell -File C:\temp\software_packages.ps1
@@ -12,6 +17,12 @@
   win_file:
     path: C:\temp\software_packages.ps1
     state: absent
+
+- name: Delete input variable file from gitlab to windows server for dns suffix
+  win_file:
+    path: C:\temp\XF-S-AAPWIN04T.csv
+    state: absent
+
 
 #- name: Get the template for local and remote group management
  # template:
