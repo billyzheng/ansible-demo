@@ -12,14 +12,14 @@
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
         name: "{{a_record_name}}"
-        ipv4: "{{a_record_ip}}"
+        ipv4: "{{record_ip}}"
         state: present
         provider: "{{nios_provider}}"
 
     - name: Create a PTR Record
       infoblox.nios_modules.nios_ptr_record:
-        ipv4: 10.17.113.103
-        ptrdname: 103.113.17.10.in-addr.arpa
+        ipv4: "{{record_ip}}"
+        ptrdname: "{{ptr_record_name}}"
         state: present
         provider: "{{nios_provider}}"
     
