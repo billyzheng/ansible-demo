@@ -155,3 +155,11 @@ Set-DnsClientGlobalSetting -SuffixSearchList $DNSSuffix
 }
 }
 write-log (Get-DnsClientGlobalSetting).SuffixSearchList
+
+# SPLUNK AGENT INSTALLATION
+write-log "Splunk agent installation starting"
+$splunk_path = "{{ splunk_path }}"
+$splunk_install = "{{ splunk_install }}"
+$splunk = "/i $splunk_install AGREETOLICENSE=Yes SERVICESTARTTYPE=auto SPLUNKPASSWORD={{ splunk_passwd }} /quiet"
+Start-Process "msiexec.exe" -ArgumentList $splunk -wait -NoNewWindow
+write-log "Splunk agent installation completed"
