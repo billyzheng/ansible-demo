@@ -11,6 +11,10 @@ write-host "$($TimeStamp): $msg"
 Write-Output "$($TimeStamp): $msg" |out-file $Logfile -append
 }
 
+Import-Csv "C:\temp\$env:computername.csv" -UseCulture| %{
+$DNSSuffix = ($_.DNSSuffix).split(",")
+}
+
 #Setting up timezone
 $timezoneValue = "{{ input_timezone }}"
 $TZ = Get-TimeZone
@@ -135,3 +139,19 @@ $DF= "{{ df_script_pth }}"
 Start-Process $DF
 start-sleep -Seconds 60
 write-log "Onboarding Defender completed"
+
+#DNS suffix validation
+$suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+for ($i=0; $i -lt $DNSSuffix.count; $i++)
+{
+if ($dnssuffix[$i] -eq $suffixresult[$i])
+{
+$a =$suffixresult[$i]
+write-log "DnS suffix value $a is correct"
+}
+else
+{
+Set-DnsClientGlobalSetting -SuffixSearchList $DNSSuffix
+}
+}
+write-log (Get-DnsClientGlobalSetting).SuffixSearchList
