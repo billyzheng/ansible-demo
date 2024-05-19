@@ -16,7 +16,7 @@
         }
       vars:
         domain: "dvabb.dev"
-        ad_username: "dvabb\GLB-DVABB-ANSI-SRV"
+        ad_username: "GLB-DVABB-ANSI-SRV"
       register: domain_join_result
 
     - name: Display domain join result
