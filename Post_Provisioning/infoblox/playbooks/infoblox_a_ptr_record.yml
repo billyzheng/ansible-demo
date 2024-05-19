@@ -6,7 +6,7 @@
         host: "{{ INFOBLOX_HOST }}"
         username: "{{ INFOBLOX_USERNAME }}"
         password: "{{ INFOBLOX_PASSWORD }}"
-          
+       
   tasks:
     - name: Configure an A record
       infoblox.nios_modules.nios_a_record:
