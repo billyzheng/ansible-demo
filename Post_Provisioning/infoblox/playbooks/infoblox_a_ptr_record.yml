@@ -9,14 +9,14 @@
           
   tasks:
 
-    - name: Configure an A record
+    - name: Configure an A and PTR record
       infoblox.nios_modules.nios_a_record:
         name: "{{a_record_name}}"
         ipv4: "{{a_record_ip}}"
         state: present
         provider: "{{nios_provider}}"
         
-    - name: Get the a record of a host
+    - name: Get the a & ptr record of a host
       ansible.builtin.set_fact:
         host_list: "{{ lookup('infoblox.nios_modules.nios_lookup', 'record:a', filter={'name': 'xf-s-aaptest04t.abb.lab'}, provider=nios_provider) }}"
     - name: Display the host a record
