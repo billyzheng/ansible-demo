@@ -710,6 +710,7 @@
     action: "{{ win_baseline_2184_state_Action }}"
   when:
     win_baseline_2184_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2185_state | Ensure 'Allow logon through terminal services' is set to 'Administrators, Remote Desktop Users"
   win_user_right:
@@ -867,6 +868,7 @@
     action: "{{ win_baseline_2390_state_Action }}"
   when:
     win_baseline_2390_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2391_state | Ensure 'Allow log on locally' is set to 'Administrators, Backup Operators'" # IUSR_{syste} and IWAM_{system} user are not added
   win_user_right:
@@ -2171,6 +2173,7 @@
     key: "{{ win_baseline_8366_state_Key }}"
     value: "{{ win_baseline_8366_state_Value }}"
   when: win_baseline_8366_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_8367_state | Make Changes To Admin Name."
   win_security_policy:
