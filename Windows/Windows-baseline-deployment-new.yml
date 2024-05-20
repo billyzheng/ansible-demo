@@ -21,12 +21,12 @@
   #     name: windows_baseline_2022
   #   when: "'2022' in ansible_facts['os_name']"
 
-  - name: "problem baseline"
-    win_regedit:
-      path: 'HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging'
-      name: "EnableModuleLogging"
-      data: "1"
-      type: "dword"
+  # - name: "problem baseline"
+  #   win_regedit:
+  #     path: 'HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ModuleLogging'
+  #     name: "EnableModuleLogging"
+  #     data: "1"
+  #     type: "dword"
 
   - name: "success baseline"
     win_regedit:
