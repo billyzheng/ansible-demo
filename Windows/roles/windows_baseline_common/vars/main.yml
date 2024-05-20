@@ -1801,7 +1801,7 @@ win_baseline_9015_state_Type: dword
 
 # win_baseline_9024_state | Ensure 'Apply UAC restrictions to local accounts on network logons' is set to 'Enabled'
 win_baseline_9024_state_Manage: True
-win_baseline_9024_state_Path: 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System'
+win_baseline_9024_state_Path: 'H KLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System'
 win_baseline_9024_state_Name: "LocalAccountTokenFilterPolicy"
 win_baseline_9024_state_Data: "0"
 win_baseline_9024_state_Type: dword
