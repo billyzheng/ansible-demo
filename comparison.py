@@ -47,6 +47,10 @@ print(f'All control IDs: {len(all_ids_set)}')
 print(f'Implemented control IDs: {len(all_implemented_ids_set)}')
 print(f'Finish rate: {len(all_implemented_ids_set) / len(all_ids_set) * 100:.4}%')
 
+print(f'To be implemented control IDs: {len(all_ids_set - all_ids_set.intersection(all_implemented_ids_set))}')
+
 print(sorted(all_ids_set - all_ids_set.intersection(all_implemented_ids_set)))
 
-print(f'To be implemented control IDs: {len(all_ids_set - all_ids_set.intersection(all_implemented_ids_set))}')
+print(f'Implemented control IDs but not in Andrews file: {len(all_implemented_ids_set - all_ids_set.intersection(all_implemented_ids_set))}')
+
+print(sorted(all_implemented_ids_set - all_ids_set.intersection(all_implemented_ids_set)))
