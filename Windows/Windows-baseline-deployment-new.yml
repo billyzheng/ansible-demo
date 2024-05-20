@@ -2,35 +2,35 @@
 - name: The main playbooks
   hosts: "{{ _hostname }}"
   tasks:
-  # - name: Run common baseline
-  #   ansible.builtin.import_role:
-  #     name: windows_baseline_common
+  - name: Run common baseline
+    ansible.builtin.import_role:
+      name: windows_baseline_common
   
-  # - name: Windows 2016 baseline
-  #   ansible.builtin.import_role:
-  #     name: windows_baseline_2016
-  #   when: "'2016' in ansible_facts['os_name']"
+  - name: Windows 2016 baseline
+    ansible.builtin.import_role:
+      name: windows_baseline_2016
+    when: "'2016' in ansible_facts['os_name']"
 
-  # - name: Windows 2019 baseline
-  #   ansible.builtin.import_role:
-  #     name: windows_baseline_2019
-  #   when: "'2019' in ansible_facts['os_name']"
+  - name: Windows 2019 baseline
+    ansible.builtin.import_role:
+      name: windows_baseline_2019
+    when: "'2019' in ansible_facts['os_name']"
 
-  # - name: Windows 2022 baseline
-  #   ansible.builtin.import_role:
-  #     name: windows_baseline_2022
-  #   when: "'2022' in ansible_facts['os_name']"
+  - name: Windows 2022 baseline
+    ansible.builtin.import_role:
+      name: windows_baseline_2022
+    when: "'2022' in ansible_facts['os_name']"
 
-  - name: "problem baseline"
-    win_regedit:
-      path: 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System'
-      name: "FilterAdministratorToken"
-      data: "1"
-      type: "dword"
+  # - name: "problem baseline"
+  #   win_regedit:
+  #     path: 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System'
+  #     name: "FilterAdministratorToken"
+  #     data: "1"
+  #     type: "dword"
 
-  - name: "success baseline"
-    win_regedit:
-      path: 'HKLM:\System\CurrentControlSet\Services\DNS'
-      name: "Parameters"
-      data: "0"
-      type: "dword"
+  # - name: "success baseline"
+  #   win_regedit:
+  #     path: 'HKLM:\System\CurrentControlSet\Services\DNS'
+  #     name: "Parameters"
+  #     data: "0"
+  #     type: "dword"
