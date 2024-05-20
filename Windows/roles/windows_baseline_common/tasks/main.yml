@@ -782,6 +782,7 @@
     action: "{{ win_baseline_2196_state_Action }}"
   when:
     win_baseline_2196_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2197_state | Ensure 'Deny logon as a batch job' is set to 'Guests, Guest'"
   win_user_right:
@@ -790,6 +791,7 @@
     action: "{{ win_baseline_2197_state_Action }}"
   when:
     win_baseline_2197_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2198_state | Ensure 'Deny log on as a service' is set to 'Guests, Guest'"
   win_user_right:
@@ -798,6 +800,7 @@
     action: "{{ win_baseline_2198_state_Action }}"
   when:
     win_baseline_2198_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2199_state | Ensure 'Deny log on locally' is set to 'Guests, Guest'"
   win_user_right:
@@ -806,6 +809,7 @@
     action: "{{ win_baseline_2199_state_Action }}"
   when:
     win_baseline_2199_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2200_state | Ensure 'Deny logon through remote desktop' is set to 'Guest"
   win_user_right:
@@ -814,6 +818,7 @@
     action: "{{ win_baseline_2200_state_Action }}"
   when:
     win_baseline_2200_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_2383_state | Ensure 'Enable computer and user accounts to be trusted for delegation' is set to 'No One'"
   win_user_right:
@@ -1045,6 +1050,7 @@
         msg: "{{ item }} does not match the naming rules"
       loop: "{{ guest_members.stdout_lines }}"
       when: item is match('^(?!Guest)')
+  ignore_errors: yes
 
 - name: "win_baseline_2484_state | Ensure 'Store passwords using reversible encryption' is set to 'Disabled'"
   win_security_policy:
@@ -2150,6 +2156,7 @@
     key: "{{ win_baseline_8364_state_Key }}"
     value: "{{ win_baseline_8364_state_Value }}"
   when: win_baseline_8364_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_8365_state | Ensure Accounts Administrator account status is set to 'Enabled"
   win_security_policy:
@@ -2570,6 +2577,7 @@
       action: "{{ win_baseline_10317_state_Action }}"
   when:
       - win_baseline_10317_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_10353_state | Ensure 'Turn off Microsoft consumer experiences' is set to 'Enabled'"
   win_regedit:
@@ -2642,6 +2650,7 @@
     data: "{{ win_baseline_10370_state_Data }}"
     type: "{{ win_baseline_10370_state_Type }}"
   when: win_baseline_10370_state_Manage
+  ignore_errors: yes
 
 - name: "win_baseline_10371_state | Ensure 'Let Windows apps access contacts' is set to 'Force Deny'"
   win_regedit:
