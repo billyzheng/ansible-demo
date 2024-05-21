@@ -1,0 +1,35 @@
+---
+
+- hosts: "{{ _hosts }}"
+
+  tasks:
+
+  - name: Windows | Create a directory
+    ansible.windows.win_file:
+      path: C:\temp\FNMS
+      state: directory
+
+
+  - name: Copy File to remote windows server
+    ansible.windows.win_copy:
+      src: "/tmp/repo/linux_FNMS/i686"
+      dest: /temp/FNMS
+     
+  - name: Install i686 FNMS .rpm from a local file
+    ansible.builtin.yum:
+      name: /temp/FNMS/managesoft-19.0.0-1.i686.rpm
+      state: present
+
+  - name: Install x86_64 FNMS .rpm from a local file
+    ansible.builtin.yum:
+      name: /temp/FNMS/managesoft-19.0.0-1.x86_64.rpm
+      state: present
+
+  - name: Install i686 FNMS .deb package
+    ansible.builtin.apt:
+      deb: /tmp/FNME/managesoft_19.0.0_i686.deb
+
+  - name: Install x86_64 FNMS .deb from a local file
+    ansible.builtin.apt:
+      name: /temp/FNMS/managesoft_19.0.0_amd64.deb
+      state: present
