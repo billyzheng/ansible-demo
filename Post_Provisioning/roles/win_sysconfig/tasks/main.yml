@@ -1,6 +1,0 @@
----
-- name: Ping the server
-  win_ping:
-  
-- name: Get the windows system info 
-  ansible.builtin.script: get_system_info.ps1
