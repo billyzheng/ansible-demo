@@ -23,7 +23,7 @@
 
   - name: "win_baseline_1115_state | Ensure Dynamic Host Configuration Protocol Server is set to 'Disabled'"
     ansible.windows.win_regedit:
-      path: 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services'
-      name: "DHCPServer"
-      data: "4"
+      path: 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
+      name: "PasswordExpiryWarning"
+      data: "14"
       type:  dword
