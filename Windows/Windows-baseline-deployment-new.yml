@@ -23,8 +23,7 @@
 
   - name: "win_baseline_1115_state | Ensure Dynamic Host Configuration Protocol Server is set to 'Disabled'"
     ansible.windows.win_regedit:
-      path: "{{ win_baseline_1115_state_Path }}"
-      name: "{{ win_baseline_1115_state_Name }}"
-      data: "{{ win_baseline_1115_state_Data }}"
-      type: "{{ win_baseline_1115_state_Type }}"
-    when: win_baseline_1115_state_Manage
+      path: 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services'
+      name: "DHCPServer"
+      data: "4"
+      type:  dword
