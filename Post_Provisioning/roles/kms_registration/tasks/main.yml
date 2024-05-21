@@ -20,6 +20,6 @@
   when: os_license_status != "Licensed"
 
 - name: Display message if already licensed
-   debug:
-      msg: "OS License is already activated"
-   when: os_license_status == "Licensed"
+  debug:
+     msg: "OS License is already activated"
+  when: os_license_status == "Licensed"
