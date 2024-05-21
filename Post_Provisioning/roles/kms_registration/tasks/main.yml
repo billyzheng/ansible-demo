@@ -1,0 +1,25 @@
+---
+- name: Gather product facts
+  community.windows.win_product_facts:
+
+- name: Display Windows edition
+  debug:
+     var: os_license_edition
+
+- name: Display Windows license status
+  debug:
+     var: os_license_status
+
+- name: Activate Windows OS License
+  win_shell: |
+     cscript "C:\windows\system32\slmgr.vbs" -skms 'it-s-kms0001.it.abb.com:1688'
+     Start-Sleep 15
+     cscript "C:\windows\system32\slmgr.vbs" -ato
+     Start-Sleep 30
+     Write-Host "OS License activated successfully"
+  when: os_license_status != "Licensed"
+
+- name: Display message if already licensed
+   debug:
+      msg: "OS License is already activated"
+   when: os_license_status == "Licensed"
