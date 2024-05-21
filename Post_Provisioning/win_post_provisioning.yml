@@ -10,10 +10,10 @@
     ansible.builtin.import_role:
       name: timezone
 
-  - name: Validate and Modify the system timezone
+  - name: KMS OS registration
     ansible.builtin.import_role:
       name: kms_registration
 
-  - name: Validate and Modify the system timezone
+  - name: Enable the RDP
     ansible.builtin.import_role:
       name: enable_rdp
