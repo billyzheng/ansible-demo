@@ -1,0 +1,1 @@
+KMS OS registration
