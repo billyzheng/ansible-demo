@@ -2,21 +2,29 @@
 - name: The main playbooks
   hosts: "{{ _hostname }}"
   tasks:
-  - name: Run common baseline
-    ansible.builtin.import_role:
-      name: windows_baseline_common
+  # - name: Run common baseline
+  #   ansible.builtin.import_role:
+  #     name: windows_baseline_common
   
-  - name: Windows 2016 baseline
-    ansible.builtin.import_role:
-      name: windows_baseline_2016
-    when: "'2016' in ansible_facts['os_name']"
+  # - name: Windows 2016 baseline
+  #   ansible.builtin.import_role:
+  #     name: windows_baseline_2016
+  #   when: "'2016' in ansible_facts['os_name']"
 
-  - name: Windows 2019 baseline
-    ansible.builtin.import_role:
-      name: windows_baseline_2019
-    when: "'2019' in ansible_facts['os_name']"
+  # - name: Windows 2019 baseline
+  #   ansible.builtin.import_role:
+  #     name: windows_baseline_2019
+  #   when: "'2019' in ansible_facts['os_name']"
 
-  - name: Windows 2022 baseline
-    ansible.builtin.import_role:
-      name: windows_baseline_2022
-    when: "'2022' in ansible_facts['os_name']"
+  # - name: Windows 2022 baseline
+  #   ansible.builtin.import_role:
+  #     name: windows_baseline_2022
+  #   when: "'2022' in ansible_facts['os_name']"
+
+  - name: "win_baseline_1115_state | Ensure Dynamic Host Configuration Protocol Server is set to 'Disabled'"
+    ansible.windows.win_regedit:
+      path: "{{ win_baseline_1115_state_Path }}"
+      name: "{{ win_baseline_1115_state_Name }}"
+      data: "{{ win_baseline_1115_state_Data }}"
+      type: "{{ win_baseline_1115_state_Type }}"
+    when: win_baseline_1115_state_Manage
