@@ -6,7 +6,7 @@
     - ansible.windows
   tasks:
 
-  - name: Validate and Modify the system timezone
+  - name: Validate and set the system timezone
     ansible.builtin.import_role:
       name: timezone
 
@@ -17,3 +17,10 @@
   - name: Enable the RDP
     ansible.builtin.import_role:
       name: enable_rdp
+    
+  - name: Disable the firewall rules
+    ansible.builtin.import_role:
+      name: disable_firewall
+
+    
+
