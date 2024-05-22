@@ -21,3 +21,6 @@
 
 - debug:
     var: disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', 'C') | list
+
+- debug:
+    var: c_partition
