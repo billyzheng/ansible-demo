@@ -7,16 +7,16 @@
 
 - name: Set timezone if not already set
   win_timezone:
-     timezone: "{{ input_timezone }}"
+     timezone: "{{ timezone_value }}"
   when: current_timezone.stdout != input_timezone
   register: timezone_changed
 
 - name: Print message if timezone changed
   debug:
-     msg: "Timezone set to {{ input_timezone }}"
+     msg: "Timezone set to {{ timezone_value }}"
   when: timezone_changed.changed
 
 - name: Print message if timezone already set
   debug:
-     msg: "Timezone already set to {{ input_timezone }}"
+     msg: "Timezone already set to {{ timezone_value }}"
   when: not timezone_changed.changed
