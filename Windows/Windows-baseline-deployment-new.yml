@@ -32,10 +32,10 @@
     win_shell: |
       # 获取本地计算机上密码永不过期的用户列表
       $users = Get-WmiObject -Class Win32_UserAccount | Where-Object { $_.PasswordExpires -eq $false }
-      
-      # 指定导出文件路径
-      $outputFilePath = "C:\temp\user.txt"
-      
-      # 导出到文件
-      $users | Select-Object Name, LocalAccount | Export-Csv -Path $outputFilePath -NoTypeInformation
+      $users
+    register: user_accounts
+
+  - name: "win_baseline_3377_state | Password expires"
+    debug:
+      msg: "{{ user_accounts.stdout }}"
     
