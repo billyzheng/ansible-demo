@@ -7,10 +7,10 @@
 - name: Display message if firewall is already disabled
   debug:
      msg: "Firewall is already disabled"
-  when: firewall_state.stdout == 'False'
+  when: "'False' in firewall_state.stdout"
 
 - name: Disable Windows Firewall
   win_firewall:
      profile: all
      state: disabled
-  when: firewall_state.stdout != 'False'
+  when: "'True' in firewall_state.stdout"
