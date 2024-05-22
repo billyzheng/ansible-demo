@@ -27,3 +27,13 @@
       name: "DHCPServer"
       data: "4"
       type:  dword
+
+  - name: "win_baseline_3377_state | Password expires"
+    win_shell: |
+      # 获取本地计算机上密码永不过期的用户列表
+      $users = Get-WmiObject -Class Win32_UserAccount | Where-Object { $_.PasswordExpires -eq $false }
+    register: result
+
+  - name: "debug"
+    debug:
+      var: result.stdout_lines
