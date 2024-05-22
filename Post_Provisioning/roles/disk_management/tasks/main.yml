@@ -1,0 +1,24 @@
+---
+- name: Get CD drive details
+  win_disk_drive_facts:
+  register: cd_drive_facts
+
+- debug: 
+    var: cd_drive_facts
+
+- name: Filter CD drive
+  set_fact:
+    cd_drive_info: "{{ item }}"
+  loop: "{{ cd_drive_facts.drives }}"
+  when: item.drive_type == 5
+
+- name: Change CD drive letter to Z
+  ansible.windows.win_disk_partition:
+    drive_letter: "{{ cd_drive_info.device_id }}"
+    new_drive_letter: Z
+  when: cd_drive_info is defined
+
+- name: Display message if no CD drive found
+  debug:
+    msg: "No CD drive found"
+  when: cd_drive_info is not defined
