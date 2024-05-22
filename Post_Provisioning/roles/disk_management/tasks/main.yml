@@ -19,6 +19,9 @@
   community.windows.win_disk_facts:
   register: disk_facts
 
+- debug:
+    var: disk_facts  
+
 - name: Get C partition information
   set_fact:
     c_partition: "{{ disk_facts.disks | selectattr('drive_letter', '==', 'C') | first }}"
