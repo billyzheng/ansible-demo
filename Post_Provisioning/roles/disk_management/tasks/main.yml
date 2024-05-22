@@ -15,23 +15,26 @@
     $cd.put()
   when: cd_drive_info.stdout != ''
 
-- name: Get supported size information for C drive partition
-  win_partition_info:
-    drive_letter: C
-  register: c_drive_info
+- name: Gather disk facts
+  community.windows.win_disk_facts:
+  register: disk_facts
 
-- name: Resize C drive partition to maximum supported size
-  win_partition:
-    drive_letter: C
-    partition_size: "{{ c_drive_info.partitions[0].size_max }}"
-  when: c_drive_info.partitions | length > 0
+- name: Get C: partition information
+  set_fact:
+    c_partition: "{{ disk_facts.disks | selectattr('drive_letter', '==', 'C') | first }}"
 
-- name: Display message if C drive expansion is successful
+- name: Resize C: partition to maximum supported size
+  community.windows.win_partition:
+    drive_letter: C
+    partition_size: "{{ c_partition.volumes.size_max }}"
+  when: c_partition is defined
+
+- name: Display message if C: drive expansion is successful
   debug:
-    msg: "C drive expanded successfully"
-  when: c_drive_info.partitions | length > 0
+    msg: "C: drive expanded successfully"
+  when: c_partition is defined
 
 - name: Display message if no action was taken
   debug:
-    msg: "C drive expansion not required or failed"
-  when: c_drive_info.partitions | length == 0
+    msg: "C: drive expansion not required or failed"
+  when: c_partition is not defined
