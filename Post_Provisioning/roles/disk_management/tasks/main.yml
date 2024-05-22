@@ -1,40 +1,25 @@
----
-- name: Check if CD drive exists
-  win_shell: Get-WmiObject win32_volume -Filter 'DriveType = "5"'
-  register: cd_drive_info
-
-- name: Display message if CD drive does not exist
-  debug:
-    msg: "CD drive does not exist"
-  when: cd_drive_info.stdout == ''
-
-- name: Change CD drive letter to Z
-  win_shell: |
-    $cd = Get-WmiObject win32_volume -Filter 'DriveType = "5"'
-    $cd.DriveLetter = "Z:"
-    $cd.put()
-  when: cd_drive_info.stdout != ''
-
-- name: Gather disk facts
-  community.windows.win_disk_facts:
-  register: disk_facts
-
 - name: Get C partition information
   set_fact:
     c_partition: "{{ disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', 'C') | first }}"
 
-- name: Resize C partition to maximum supported size
+- name: Resize C partition to maximum supported size if needed
   community.windows.win_partition:
     drive_letter: C
     partition_size: -1
-  when: c_partition is defined
+  when:
+    - c_partition is defined
+    - c_partition.size < c_partition.volumes[0].size_remaining  # Check if current size is less than available size
 
 - name: Display message if C drive expansion is successful
   debug:
     msg: "C: drive expanded successfully"
-  when: c_partition is defined
+  when:
+    - c_partition is defined
+    - c_partition.size < c_partition.volumes[0].size_remaining  # Check if resize was performed
 
 - name: Display message if no action was taken
   debug:
     msg: "C: drive expansion not required or failed"
-  when: c_partition is not defined
+  when:
+    - c_partition is not defined
+    - c_partition.size >= c_partition.volumes[0].size_remaining  # Check if no resize was needed
