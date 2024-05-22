@@ -22,5 +22,9 @@
     ansible.builtin.import_role:
       name: disable_firewall
 
+  - name: Disk Management
+    ansible.builtin.import_role:
+      name: disk_management
+
     
 
