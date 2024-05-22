@@ -24,7 +24,7 @@
 
 - name: Get C partition information
   set_fact:
-    c_partition: "{{ disk_facts.disks | selectattr('drive_letter', '==', 'C') | first }}"
+    c_partition: "{{ disk_facts.ansible_facts.ansible_disks | map(attribute='partitions') | flatten | selectattr('drive_letter', '==', 'C') | first }}"
 
 - name: Resize C partition to maximum supported size
   community.windows.win_partition:
