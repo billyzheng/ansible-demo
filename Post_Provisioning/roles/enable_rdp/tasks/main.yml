@@ -3,10 +3,6 @@
   win_shell: Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" | Select-Object -ExpandProperty "fDenyTSConnections"
   register: rdp_enabled
 
-- name: Get the details
-  debug:
-    var: rdp_enabled
-
 - name: Enable RDP access if not already enabled
   ansible.windows.win_dsc:
     resource_name: Registry
