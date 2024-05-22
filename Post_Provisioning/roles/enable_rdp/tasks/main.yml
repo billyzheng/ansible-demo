@@ -1,0 +1,18 @@
+---
+- name: Check if RDP access is already enabled
+  win_shell: Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" | Select-Object -ExpandProperty "fDenyTSConnections"
+  register: rdp_enabled
+
+- name: Enable RDP access if not already enabled
+  ansible.windows.win_dsc:
+    resource_name: Registry
+    Ensure: Present
+    Key: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server
+    ValueName: fDenyTSConnections
+    ValueData: 0
+    ValueType: DWORD
+  when: rdp_enabled.stdout != "0"
+
+- name: Log RDP access status
+  debug:
+    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout != '0' else 'already enabled' }}"

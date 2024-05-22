@@ -6,6 +6,21 @@
     - ansible.windows
   tasks:
 
-  - name: Validate and Modify the system timezone
+  - name: Validate and set the system timezone
     ansible.builtin.import_role:
-      name: test
+      name: timezone
+
+  - name: KMS OS registration
+    ansible.builtin.import_role:
+      name: kms_registration
+
+  - name: Enable the RDP
+    ansible.builtin.import_role:
+      name: enable_rdp
+    
+  - name: Disable the firewall rules
+    ansible.builtin.import_role:
+      name: disable_firewall
+
+    
+
