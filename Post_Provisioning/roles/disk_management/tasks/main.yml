@@ -23,13 +23,13 @@
   set_fact:
     c_partition: "{{ disk_facts.disks | selectattr('drive_letter', '==', 'C') | first }}"
 
-- name: Resize C: partition to maximum supported size
+- name: Resize C partition to maximum supported size
   community.windows.win_partition:
     drive_letter: C
     partition_size: "{{ c_partition.volumes.size_max }}"
   when: c_partition is defined
 
-- name: Display message if C: drive expansion is successful
+- name: Display message if C drive expansion is successful
   debug:
     msg: "C: drive expanded successfully"
   when: c_partition is defined
