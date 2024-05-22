@@ -4,10 +4,6 @@
      Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
   register: firewall_state
 
-- name: Debug firewall state
-  debug:
-    var: firewall_state.stdout
-
 - name: Display message if firewall is already disabled
   debug:
      msg: "Firewall is already disabled"
