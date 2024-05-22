@@ -27,7 +27,6 @@
   community.windows.win_partition:
     drive_letter: C
     partition_size: -1
-#    partition_size: "{{ c_partition.volumes.size_max }}"
   when: c_partition is defined
 
 - name: Display message if C drive expansion is successful
