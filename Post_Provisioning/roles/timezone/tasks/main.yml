@@ -8,7 +8,7 @@
 - name: Set timezone if not already set
   win_timezone:
      timezone: "{{ timezone_value }}"
-  when: current_timezone.stdout != input_timezone
+  when: current_timezone.stdout != timezone_value
   register: timezone_changed
 
 - name: Print message if timezone changed
