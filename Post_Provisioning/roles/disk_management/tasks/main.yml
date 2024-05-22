@@ -14,3 +14,24 @@
     $cd.DriveLetter = "Z:"
     $cd.put()
   when: cd_drive_info.stdout != ''
+
+- name: Get supported size information for C drive partition
+  win_partition_info:
+    drive_letter: C
+  register: c_drive_info
+
+- name: Resize C drive partition to maximum supported size
+  win_partition:
+    drive_letter: C
+    partition_size: "{{ c_drive_info.partitions[0].size_max }}"
+  when: c_drive_info.partitions | length > 0
+
+- name: Display message if C drive expansion is successful
+  debug:
+    msg: "C drive expanded successfully"
+  when: c_drive_info.partitions | length > 0
+
+- name: Display message if no action was taken
+  debug:
+    msg: "C drive expansion not required or failed"
+  when: c_drive_info.partitions | length == 0
