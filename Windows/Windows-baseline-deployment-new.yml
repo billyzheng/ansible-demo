@@ -39,3 +39,26 @@
     debug:
       msg: "{{ user_accounts.stdout }}"
     
+  - name: "win_baseline_5241_state"
+    win_shell: |
+      $installedSoftware = Get-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue
+ 
+      # 常见的安全软件关键字
+      $securitySoftwareKeywords = @("antivirus", "security", "firewall", "malware", "protection")
+      
+      # 过滤出包含安全软件关键字的软件
+      $securitySoftware = $installedSoftware | Where-Object {
+          foreach ($keyword in $securitySoftwareKeywords) {
+              if ($_.DisplayName -match $keyword) {
+                  return $true
+              }
+          }
+          return $false
+      }
+
+      $securitySoftware
+    register: security_software
+  
+  - name: "win_baseline_5241_state debug"
+    debug:
+      msg: "{{ security_software.stdout }}"
