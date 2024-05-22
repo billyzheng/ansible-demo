@@ -12,7 +12,7 @@
 
 - name: Activate Windows OS License
   win_shell: |
-     cscript "C:\windows\system32\slmgr.vbs" -skms 'it-s-kms0001.it.abb.com:1688'
+     cscript "C:\windows\system32\slmgr.vbs" -skms '{{ kms_server_address }}'
      Start-Sleep 15
      cscript "C:\windows\system32\slmgr.vbs" -ato
      Start-Sleep 30
