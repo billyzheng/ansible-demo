@@ -20,4 +20,4 @@
   register: disk_facts
 
 - debug:
-    var: disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', 'undefined', 'none') | list
+    var: disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', none) | list
