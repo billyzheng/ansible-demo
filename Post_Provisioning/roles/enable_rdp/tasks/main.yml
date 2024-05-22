@@ -15,8 +15,8 @@
     ValueName: fDenyTSConnections
     ValueData: 0
     ValueType: DWORD
-  when: rdp_enabled.stdout_lines != '0'
+  when: rdp_enabled.stdout == "1"
 
 - name: Log RDP access status
   debug:
-    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout_lines != '0' else 'already enabled' }}"
+    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout == '0' else 'already enabled' }}"
