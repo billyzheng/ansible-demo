@@ -9,15 +9,15 @@
 - name: Filter CD drive
   set_fact:
     cd_drive_info: "{{ item }}"
-  loop: "{{ cd_drive_facts.drives }}"
-  when: item.drive_type == 5
+  loop: "{{ cd_drive_facts.disks }}"
+  when: item.disk_type == 'cd-rom'
 
 - name: Change CD drive letter to Z
   community.windows.win_partition:
     drive_letter: Z
     partition_size: -1
-    disk_number: "{{ cd_drive_info.disk_number }}"
-    partition_number: "{{ cd_drive_info.partition_number }}"
+    disk_number: "{{ cd_drive_info.number }}"
+    partition_number: 1
   when: cd_drive_info is defined
 
 - name: Display message if no CD drive found
