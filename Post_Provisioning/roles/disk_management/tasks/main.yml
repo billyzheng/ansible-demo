@@ -1,3 +1,8 @@
+---
+- name: Gather disk facts
+  community.windows.win_disk_facts:
+  register: disk_facts
+
 - name: Get C partition information
   set_fact:
     c_partition: "{{ disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', 'C') | first }}"
