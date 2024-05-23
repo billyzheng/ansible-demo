@@ -1,0 +1,7 @@
+---
+- name: Get disk facts
+  win_disk_facts:
+
+- name: Display unallocated space
+  debug:
+      msg: "Unallocated space in Disk 0: {{ ansible_mounts | json_query('[?mount==`C:`].size_available') }}"
