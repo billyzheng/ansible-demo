@@ -13,6 +13,14 @@
   debug:
     var: r_partition
 
+- name: Initialize disk
+  community.windows.win_initialize_disk:
+    disk_number: "{{ item.number }}"
+    style: gpt
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
+
 - name: Partition and format disks
   community.windows.win_partition:
     disk_number: "{{ item.number }}"
