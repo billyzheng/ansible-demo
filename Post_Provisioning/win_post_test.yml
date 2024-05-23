@@ -6,8 +6,8 @@
     - ansible.windows
   tasks:
 
-  - name: Validate and set the system timezone
+  - name: testing
     ansible.builtin.import_role:
-      name: disk_management
+      name: pre_test
 
 
