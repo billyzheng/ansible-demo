@@ -41,8 +41,8 @@
     index_var: index
 
 - name: Write log
-  win_shell: |
-    Write-Log "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
+  debug:
+    msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
   loop: "{{ r_partition }}"
   loop_control:
     index_var: index
