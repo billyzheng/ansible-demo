@@ -12,4 +12,4 @@
 
 - name: get the specific details of RAW
   debug:
-	   var: r_partition
+    var: r_partition
