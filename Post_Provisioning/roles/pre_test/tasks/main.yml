@@ -1,7 +1,15 @@
 ---
+- name: Get disk facts
+  community.windows.win_disk_facts:
+	register: disk_facts
 
-- name: Get raw disks
-  community.windows.win_disk_info:
-  filter: partition_style == 'raw'
+- debug:
+    var: disk_facts
+	
+- name: Get raw info
+  set_fact:
+     r_partition: "{{ ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
 
-    register: raw_disks
+- name: get the specific details of RAW
+  debug:
+	   var: r_partition
