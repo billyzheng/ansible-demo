@@ -38,3 +38,51 @@
   debug:
     msg: "C: drive expansion not required or failed"
   when: c_partition is not defined
+
+- name: Get disk facts
+  win_disk_facts:
+  register: disk_facts
+
+- debug:
+    var: disk_facts
+- name: Get raw info
+  set_fact:
+     r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
+
+- name: get the specific details of RAW
+  debug:
+    var: r_partition
+
+- name: Initialize disk
+  community.windows.win_initialize_disk:
+    disk_number: "{{ item.number }}"
+    style: gpt
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
+
+- name: Partition and format disks
+  community.windows.win_partition:
+    disk_number: "{{ item.number }}"
+    partition_size: -1
+    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    state: present
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
+
+- name: Format partition
+  community.windows.win_format:
+    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    file_system: NTFS
+    new_label: "Data"
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
+
+- name: Disk details
+  debug:
+    msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
