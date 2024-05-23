@@ -5,7 +5,6 @@
 
 - debug:
     var: disk_facts
-	
 - name: Get raw info
   set_fact:
      r_partition: "{{ ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
