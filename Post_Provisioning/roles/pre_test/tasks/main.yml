@@ -14,26 +14,27 @@
     var: r_partition
 
 - name: Partition and format disks
+  community.windows.win_partition:
+    disk_number: "{{ item.number }}"
+    partition_size: -1
+    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    state: present
   loop: "{{ r_partition }}"
   loop_control:
     index_var: index
-  block:
-- name: Partition disk
-  community.windows.win_partition:
-     disk_number: "{{ item.number }}"
-     partition_size: -1
-     drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
-     state: present
 
 - name: Format partition
   community.windows.win_format:
-     drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
-     file_system: NTFS
-     new_label: "Data"
-
-- name: Write log
+    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    file_system: NTFS
+    new_label: "Data"
   loop: "{{ r_partition }}"
   loop_control:
-     index_var: index
+    index_var: index
+
+- name: Write log
   win_shell: |
-     Write-Log "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
+    Write-Log "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
