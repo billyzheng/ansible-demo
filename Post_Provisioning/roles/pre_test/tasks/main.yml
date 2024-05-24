@@ -1,7 +1,7 @@
 ---
 - name: Install FlexNet Agent
   win_package:
-    path: C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.exe
+    path: C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd
     arguments:
       - /quiet
       - /norestart
