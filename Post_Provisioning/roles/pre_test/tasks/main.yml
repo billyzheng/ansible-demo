@@ -1,18 +1,28 @@
 ---
-- name: Check if RDP access is already enabled
-  win_shell: Get-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" | Select-Object -ExpandProperty "fDenyTSConnections"
-  register: rdp_enabled
+- name: Install FlexNet Agent
+  win_shell: cmd /c "{{ flexnet_binary_file_path }}" /quiet /norestart
+  async: 180
+  poll: 10
 
-- name: Enable RDP access if not already enabled
-  ansible.windows.win_dsc:
-    resource_name: Registry
-    Ensure: Present
-    Key: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server
-    ValueName: fDenyTSConnections
-    ValueData: 0
-    ValueType: DWORD
-  when: rdp_enabled.stdout | trim == "1"
+- name: Wait for 10 seconds
+  pause:
+    seconds: 10
 
-- name: Log RDP access status
+- name: Check if FlexNet policy and tracker files exist
+  win_stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ mgspolicy_file_path }}"
+    - "{{ ndtrack_file_path }}"
+  register: flexnet_files
+
+- name: Check and Log - Flexnet policy and tracker files are available
   debug:
-    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout | trim == '1' else 'already enabled' }}"
+    msg: "Flexnet policy and tracker files are available and continuing the installation"
+  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
+
+- name: Start FlexNet Agent Installation
+  win_shell: |
+    "{{ item.item }} -t Machine -o userinteractionlevel=quiet"
+  loop: "{{ flexnet_files.results }}"
+  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
