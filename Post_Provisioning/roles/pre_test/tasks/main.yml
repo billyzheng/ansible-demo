@@ -33,7 +33,6 @@
 
 - name: Start FlexNet Agent Installation
   win_shell: |
-    "{{ item.item }}"
-     -t Machine -o userinteractionlevel=quiet
+    "{{ item.item }} -t Machine -o userinteractionlevel=quiet"
   loop: "{{ flexnet_files.results }}"
   when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
