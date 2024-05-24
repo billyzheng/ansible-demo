@@ -6,7 +6,7 @@
 
 - name: Wait for 30 seconds
   pause:
-    seconds: 30
+    seconds: 180
 
 - name: Verify FlexNet Agent installation
   win_stat:
