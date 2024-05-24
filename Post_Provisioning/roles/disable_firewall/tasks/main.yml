@@ -2,15 +2,24 @@
 - name: Get current firewall state
   win_shell: |
      Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
-  register: firewall_state
+  register: pre_firewall_state
 
-- name: Display message if firewall is already disabled
+- name: Display message if firewall is already enabled
   debug:
-     msg: "Firewall is already disabled"
-  when: "'False' in firewall_state.stdout"
+     msg: "Firewall state is currently enabled"
+  when: "'True' in pre_firewall_state.stdout"
 
 - name: Disable Windows Firewall
   win_firewall:
      profile: all
      state: disabled
-  when: "'True' in firewall_state.stdout"
+  when: "'True' in pre_firewall_state.stdout"
+
+- name: Get current firewall state again
+  win_shell: |
+     Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
+  register: post_firewall_state
+  
+- name: Display message if firewall is successfully disabled
+  debug:
+     msg: "Firewall state is disabled"
