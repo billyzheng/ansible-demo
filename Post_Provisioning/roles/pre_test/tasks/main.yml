@@ -4,10 +4,6 @@
      Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
   register: pre_firewall_state
 
-- name: get the details
-  debug: 
-    var: pre_firewall_state
-
 - name: Display message if firewall is already enabled
   debug:
      msg: "Firewall state is currently enabled"
