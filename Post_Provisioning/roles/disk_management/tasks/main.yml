@@ -60,7 +60,7 @@
   community.windows.win_partition:
     disk_number: "{{ item.number }}"
     partition_size: -1
-    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    drive_letter: "{{ '%c' | format(index + 68) }}"  
     state: present
   loop: "{{ r_partition }}"
   loop_control:
@@ -68,7 +68,7 @@
 
 - name: Format the partition
   community.windows.win_format:
-    drive_letter: "{{ '%c' | format(index + 68) }}"  # 68 is the ASCII value of 'D'
+    drive_letter: "{{ '%c' | format(index + 68) }}"  
     file_system: NTFS
     new_label: "Data"
   loop: "{{ r_partition }}"
