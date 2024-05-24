@@ -13,10 +13,18 @@
     path: C:\Program Files (x86)\ManageSoft\Policy Client\mgspolicy.exe
   register: mgspolicy
 
+- name: Debuging mgspolicy
+  debug:
+    var: mgspolicy
+    
 - name: Verify FlexNet Agent installation
   win_stat:
     path: C:\Program Files (x86)\ManageSoft\Tracker\ndtrack.exe
   register: ndtrack
+
+- name: Debuging ndtrack
+  debug:
+    var: ndtrack
 
 - name: Check if FlexNet policy and tracker files exist
   win_stat:
@@ -26,30 +34,18 @@
     - "C:\\Program Files (x86)\\ManageSoft\\Tracker\\ndtrack.exe"
   register: flexnet_files
 
-- name: Install FlexNet policy and tracker files
-  win_command:
-    cmd: "{{ item.item }}"
-    arguments: "-t Machine -o userinteractionlevel=quiet"
-  when: item.stat.exists
-  loop: "{{ flexnet_files.results }}"
+- name: Debuging flexnet_files
+  debug:
+    var: flexnet_files
 
-- name: Start FlexNet services
-  win_service:
-    name: "{{ item }}"
-    state: started
-  loop:
-    - "FlexNet Policy Client"
-    - "FlexNet Tracker"
-  ignore_errors: yes
+- name: Log - Flexnet policy and tracker files are available
+      debug:
+        msg: "Flexnet policy and tracker files are available and continuing the installation"
+      when: flexnet_files | success
 
-- name: Start FlexNet Agent services
-  win_service:
-    name: mgspolicy
-    state: started
-  when: mgspolicy.stat.exists
-
-- name: Start FlexNet Agent services
-  win_service:
-    name: ndtrack
-    state: started
-  when: ndtrack.stat.exists
+    - name: Start FlexNet Agent Installation
+      win_shell: |
+        "{{ item.item }}"
+        -t Machine -o userinteractionlevel=quiet
+      loop: "{{ flexnet_files.results }}"
+      when: flexnet_files | success
