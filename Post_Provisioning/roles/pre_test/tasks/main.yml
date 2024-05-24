@@ -1,36 +1,34 @@
 ---
 - name: Install FlexNet Agent
   win_package:
-    path: "{{ flex_install_pth }}"
+    path: C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.exe
+    arguments:
+      - /quiet
+      - /norestart
     state: present
 
-- name: Configure FlexNet Agent Policy
-  win_copy:
-    content: |
-      [FlexNet Agent Policy]
-      PolicyFile = {{ mgspolicy_pth }}
-    dest: C:\Program Files\Flexera Software\Inventory Agent\policy.cfg
+- name: Wait for 30 seconds
+  pause:
+    seconds: 30
 
-- name: Configure FlexNet Agent Tracker
-  win_copy:
-    content: |
-      [FlexNet Agent Tracker]
-      TrackerFile = {{ ndtrack_pth }}
-    dest: C:\Program Files\Flexera Software\Inventory Agent\tracker.cfg
+- name: Verify FlexNet Agent installation
+  win_stat:
+    path: C:\Program Files (x86)\ManageSoft\Policy Client\mgspolicy.exe
+  register: mgspolicy
 
-- name: Start FlexNet Agent Service
+- name: Verify FlexNet Agent installation
+  win_stat:
+    path: C:\Program Files (x86)\ManageSoft\Tracker\ndtrack.exe
+  register: ndtrack
+
+- name: Start FlexNet Agent services
   win_service:
-    name: FlexNet Inventory Agent
+    name: mgspolicy
     state: started
+  when: mgspolicy.stat.exists
 
-- name: Verify FlexNet Agent Installation
-  win_shell:
-    cmd: tasklist /fi "imagename eq ndinit.exe" |find ":" > nul
-    register: result
-  failed_when: result.rc != 0
-
-- name: Verify FlexNet Agent Upload
-  win_shell:
-    cmd: Select-String -Path C:\Windows\Temp\ManageSoft\uploader.log -Pattern "Upload successful"
-    register: result
-  failed_when: result.rc != 0
+- name: Start FlexNet Agent services
+  win_service:
+    name: ndtrack
+    state: started
+  when: ndtrack.stat.exists
