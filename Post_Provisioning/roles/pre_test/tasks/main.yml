@@ -18,3 +18,8 @@
      profile: all
      state: disabled
   when: "'True' in firewall_state.stdout"
+
+- name: Display message if firewall is successfully disabled
+  debug:
+     msg: "Firewall is now disabled"
+  when: "'True' in firewall_state.stdout"
