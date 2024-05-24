@@ -1,7 +1,7 @@
 ---
 - name: Check if FlexNet Agent is already installed
   win_stat:
-    path: "C:\\Program Files (x86)\\ManageSoft"  
+    path: "{{ felxnet_installed_path }}"  
   register: flexnet_installed
   
 - name: Install FlexNet Agent
