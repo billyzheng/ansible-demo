@@ -8,10 +8,15 @@
   debug: 
     var: pre_firewall_state
 
-- name: Display message if firewall is already disabled
+- name: Display message if firewall is already enabled
   debug:
      msg: "Firewall state is currently enabled"
   when: "'True' in pre_firewall_state.stdout"
+
+- name: Display message if firewall is already enabled
+  debug:
+     msg: "Firewall state is already disabled"
+  when: "'False' in pre_firewall_state.stdout"
 
 - name: Disable Windows Firewall
   win_firewall:
