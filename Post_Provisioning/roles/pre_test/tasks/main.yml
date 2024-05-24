@@ -1,30 +1,22 @@
 ---
-- name: Install FlexNet Agent
-  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
-  async: 180
-  poll: 10
+#- name: Install FlexNet Agent
+#  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
+#  async: 180
+#  poll: 10
 
-- name: Wait for 30 seconds
-  pause:
-    seconds: 10
+#- name: Wait for 30 seconds
+#  pause:
+#    seconds: 10
 
 - name: Verify FlexNet Agent installation
   win_stat:
     path: C:\Program Files (x86)\ManageSoft\Policy Client\mgspolicy.exe
   register: mgspolicy
-
-- name: Debuging mgspolicy
-  debug:
-    var: mgspolicy
     
 - name: Verify FlexNet Agent installation
   win_stat:
     path: C:\Program Files (x86)\ManageSoft\Tracker\ndtrack.exe
   register: ndtrack
-
-- name: Debuging ndtrack
-  debug:
-    var: ndtrack
 
 - name: Check if FlexNet policy and tracker files exist
   win_stat:
@@ -34,18 +26,14 @@
     - "C:\\Program Files (x86)\\ManageSoft\\Tracker\\ndtrack.exe"
   register: flexnet_files
 
-- name: Debuging flexnet_files
-  debug:
-    var: flexnet_files
-
 - name: Log - Flexnet policy and tracker files are available
   debug:
     msg: "Flexnet policy and tracker files are available and continuing the installation"
-  when: flexnet_files.results | map(attribute='stat.exists') | list | all
+  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
 
 - name: Start FlexNet Agent Installation
   win_shell: |
     "{{ item.item }}"
      -t Machine -o userinteractionlevel=quiet
   loop: "{{ flexnet_files.results }}"
-  when: flexnet_files.results | map(attribute='stat.exists') | list | all
+  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
