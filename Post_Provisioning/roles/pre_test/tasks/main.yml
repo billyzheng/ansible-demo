@@ -1,8 +1,8 @@
 ---
 - name: Install FlexNet Agent
-  win_command: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
-  async: 30
-  poll: 0
+  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
+  async: 180
+  poll: 10
 
 - name: Wait for 30 seconds
   pause:
