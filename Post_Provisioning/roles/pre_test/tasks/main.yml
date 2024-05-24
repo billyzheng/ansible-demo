@@ -1,6 +1,6 @@
 ---
 - name: Install FlexNet Agent
-  win_shell: cmd /c "{{ flexnet_installation_file_path }}" /quiet /norestart
+  win_shell: cmd /c "{{ flexnet_binary_file_path }}" /quiet /norestart
   async: 180
   poll: 10
 
