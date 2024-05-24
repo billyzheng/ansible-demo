@@ -23,11 +23,6 @@
     - "{{ ndtrack_file_path }}"
   register: flexnet_files
 
-# - name: Check and Log - Flexnet policy and tracker files are available
-#  debug:
-#    msg: "Flexnet policy and tracker files are available and continuing the installation"
-#  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
-
 - name: Start FlexNet Agent Installation
   win_shell: |
     "{{ item.item }} -t Machine -o userinteractionlevel=quiet"
