@@ -1,6 +1,6 @@
 ---
 - name: Install FlexNet Agent
-  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
+  win_shell: cmd /c "{{ flexnet_installation_file_path }}" /quiet /norestart
   async: 180
   poll: 10
 
@@ -12,8 +12,8 @@
   win_stat:
     path: "{{ item }}"
   loop:
-    - "C:\\Program Files (x86)\\ManageSoft\\Policy Client\\mgspolicy.exe"
-    - "C:\\Program Files (x86)\\ManageSoft\\Tracker\\ndtrack.exe"
+    - "{{ mgspolicy_file_path }}"
+    - "{{ ndtrack_file_path }}"
   register: flexnet_files
 
 - name: Log - Flexnet policy and tracker files are available
