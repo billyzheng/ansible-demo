@@ -15,4 +15,4 @@
 
 - name: Log RDP access status
   debug:
-    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout | trim == '0' else 'already enabled' }}"
+    msg: "RDP access {{ 'enabled' if rdp_enabled.stdout | trim == '1' else 'already enabled' }}"
