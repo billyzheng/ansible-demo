@@ -8,12 +8,12 @@
   win_shell: cmd /c "{{ flexnet_binary_file_path }}" /quiet /norestart
   async: 180
   poll: 10
-  when: flexnet_installed.stat.exists
+  when: not flexnet_installed.stat.exists
 
 - name: Wait for 10 seconds post installation
   pause:
     seconds: 10
-  when: flexnet_installed.stat.exists
+  when: not flexnet_installed.stat.exists
 
 - name: Check if FlexNet policy and tracker files exist
   win_stat:
