@@ -26,5 +26,7 @@
     ansible.builtin.import_role:
       name: disk_management
 
-    
+  - name: FlexNet Installation
+    ansible.builtin.import_role:
+      name: flexnet_installation   
 
