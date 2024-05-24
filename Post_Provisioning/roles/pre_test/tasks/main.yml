@@ -39,13 +39,13 @@
     var: flexnet_files
 
 - name: Log - Flexnet policy and tracker files are available
-      debug:
-        msg: "Flexnet policy and tracker files are available and continuing the installation"
-      when: flexnet_files | success
+  debug:
+    msg: "Flexnet policy and tracker files are available and continuing the installation"
+  when: flexnet_files | success
 
-    - name: Start FlexNet Agent Installation
-      win_shell: |
-        "{{ item.item }}"
-        -t Machine -o userinteractionlevel=quiet
-      loop: "{{ flexnet_files.results }}"
-      when: flexnet_files | success
+- name: Start FlexNet Agent Installation
+  win_shell: |
+    "{{ item.item }}"
+     -t Machine -o userinteractionlevel=quiet
+  loop: "{{ flexnet_files.results }}"
+  when: flexnet_files | success
