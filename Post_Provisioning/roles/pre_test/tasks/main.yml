@@ -4,12 +4,6 @@
     path: "{{ flex_install_pth }}"
     state: present
 
-- name: Wait for FlexNet Agent Installation to Complete
-  win_wait_for_process:
-    name: msiexec.exe
-    state: absent
-    timeout: 30
-
 - name: Configure FlexNet Agent Policy
   win_copy:
     content: |
