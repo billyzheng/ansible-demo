@@ -1,12 +1,19 @@
 ---
+- name: Check if FlexNet Agent is already installed
+  win_stat:
+    path: "C:\\Program Files (x86)\\ManageSoft"  
+  register: flexnet_installed
+  
 - name: Install FlexNet Agent
   win_shell: cmd /c "{{ flexnet_binary_file_path }}" /quiet /norestart
   async: 180
   poll: 10
+  when: flexnet_installed.stat.exists
 
-- name: Wait for 10 seconds
+- name: Wait for 10 seconds post installation
   pause:
     seconds: 10
+  when: flexnet_installed.stat.exists
 
 - name: Check if FlexNet policy and tracker files exist
   win_stat:
@@ -16,10 +23,10 @@
     - "{{ ndtrack_file_path }}"
   register: flexnet_files
 
-- name: Check and Log - Flexnet policy and tracker files are available
-  debug:
-    msg: "Flexnet policy and tracker files are available and continuing the installation"
-  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
+# - name: Check and Log - Flexnet policy and tracker files are available
+#  debug:
+#    msg: "Flexnet policy and tracker files are available and continuing the installation"
+#  when: flexnet_files.results | map(attribute='stat.exists') | list == [true] * flexnet_files.results | length
 
 - name: Start FlexNet Agent Installation
   win_shell: |
