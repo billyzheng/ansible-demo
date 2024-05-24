@@ -4,7 +4,7 @@
   async: 180
   poll: 10
 
-- name: Wait for 30 seconds
+- name: Wait for 10 seconds
   pause:
     seconds: 10
 
