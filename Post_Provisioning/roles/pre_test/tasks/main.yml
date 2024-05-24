@@ -6,7 +6,7 @@
 
 - name: Wait for 30 seconds
   pause:
-    seconds: 180
+    seconds: 10
 
 - name: Verify FlexNet Agent installation
   win_stat:
@@ -17,6 +17,30 @@
   win_stat:
     path: C:\Program Files (x86)\ManageSoft\Tracker\ndtrack.exe
   register: ndtrack
+
+- name: Check if FlexNet policy and tracker files exist
+  win_stat:
+    path: "{{ item }}"
+  loop:
+    - "C:\\Program Files (x86)\\ManageSoft\\Policy Client\\mgspolicy.exe"
+    - "C:\\Program Files (x86)\\ManageSoft\\Tracker\\ndtrack.exe"
+  register: flexnet_files
+
+- name: Install FlexNet policy and tracker files
+  win_command:
+    cmd: "{{ item.item }}"
+    arguments: "-t Machine -o userinteractionlevel=quiet"
+  when: item.stat.exists
+  loop: "{{ flexnet_files.results }}"
+
+- name: Start FlexNet services
+  win_service:
+    name: "{{ item }}"
+    state: started
+  loop:
+    - "FlexNet Policy Client"
+    - "FlexNet Tracker"
+  ignore_errors: yes
 
 - name: Start FlexNet Agent services
   win_service:
