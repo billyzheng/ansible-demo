@@ -1,22 +1,12 @@
 ---
-#- name: Install FlexNet Agent
-#  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
-#  async: 180
-#  poll: 10
+- name: Install FlexNet Agent
+  win_shell: cmd /c C:\Temp\Softwares\Flexnet-Windows-2021-R1\Windows\Install.cmd /quiet /norestart
+  async: 180
+  poll: 10
 
-#- name: Wait for 30 seconds
-#  pause:
-#    seconds: 10
-
-- name: Verify FlexNet Agent installation
-  win_stat:
-    path: C:\Program Files (x86)\ManageSoft\Policy Client\mgspolicy.exe
-  register: mgspolicy
-    
-- name: Verify FlexNet Agent installation
-  win_stat:
-    path: C:\Program Files (x86)\ManageSoft\Tracker\ndtrack.exe
-  register: ndtrack
+- name: Wait for 30 seconds
+  pause:
+    seconds: 10
 
 - name: Check if FlexNet policy and tracker files exist
   win_stat:
