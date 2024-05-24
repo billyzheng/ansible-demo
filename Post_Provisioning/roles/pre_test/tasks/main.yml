@@ -10,7 +10,7 @@
 
 - name: Display message if firewall is already disabled
   debug:
-     msg: "Firewall state is enabled"
+     msg: "Firewall state is currently enabled"
   when: "'True' in pre_firewall_state.stdout"
 
 - name: Disable Windows Firewall
