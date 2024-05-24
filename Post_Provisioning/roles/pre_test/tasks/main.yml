@@ -8,6 +8,7 @@
   win_wait_for_process:
     name: msiexec.exe
     state: absent
+    timeout: 300
 
 - name: Configure FlexNet Agent Policy
   win_copy:
