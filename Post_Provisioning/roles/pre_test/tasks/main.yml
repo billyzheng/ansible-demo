@@ -1,48 +1,41 @@
 ---
-- name: Get disk facts
-  win_disk_facts:
-  register: disk_facts
-
-- debug:
-    var: disk_facts
-- name: Get raw info
-  set_fact:
-     r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
-
-- name: get the specific details of RAW
-  debug:
-    var: r_partition
-
-- name: Initialize disk
-  community.windows.win_initialize_disk:
-    disk_number: "{{ item.number }}"
-    style: gpt
-  loop: "{{ r_partition }}"
-  loop_control:
-    index_var: index
-
-- name: Partition and format disks
-  community.windows.win_partition:
-    disk_number: "{{ item.number }}"
-    partition_size: -1
-    drive_letter: "{{ '%c' | format(index + 68) }}"  
+- name: Install FlexNet Agent
+  win_package:
+    path: "{{ flex_install_pth }}"
     state: present
-  loop: "{{ r_partition }}"
-  loop_control:
-    index_var: index
 
-- name: Format partition
-  community.windows.win_format:
-    drive_letter: "{{ '%c' | format(index + 68) }}"  
-    file_system: NTFS
-    new_label: "Data"
-  loop: "{{ r_partition }}"
-  loop_control:
-    index_var: index
+- name: Wait for FlexNet Agent Installation to Complete
+  win_wait_for_process:
+    name: msiexec.exe
+    state: stopped
 
-- name: Write log
-  debug:
-    msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }}"
-  loop: "{{ r_partition }}"
-  loop_control:
-    index_var: index
+- name: Configure FlexNet Agent Policy
+  win_copy:
+    content: |
+      [FlexNet Agent Policy]
+      PolicyFile = {{ mgspolicy_pth }}
+    dest: C:\Program Files\Flexera Software\Inventory Agent\policy.cfg
+
+- name: Configure FlexNet Agent Tracker
+  win_copy:
+    content: |
+      [FlexNet Agent Tracker]
+      TrackerFile = {{ ndtrack_pth }}
+    dest: C:\Program Files\Flexera Software\Inventory Agent\tracker.cfg
+
+- name: Start FlexNet Agent Service
+  win_service:
+    name: FlexNet Inventory Agent
+    state: started
+
+- name: Verify FlexNet Agent Installation
+  win_shell:
+    cmd: tasklist /fi "imagename eq ndinit.exe" |find ":" > nul
+    register: result
+  failed_when: result.rc != 0
+
+- name: Verify FlexNet Agent Upload
+  win_shell:
+    cmd: Select-String -Path C:\Windows\Temp\ManageSoft\uploader.log -Pattern "Upload successful"
+    register: result
+  failed_when: result.rc != 0
