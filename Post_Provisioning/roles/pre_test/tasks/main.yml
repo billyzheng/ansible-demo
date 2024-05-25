@@ -13,8 +13,8 @@
       $currentSuffix += "{{ dns_suffix }}"
       Set-DnsClientGlobalSetting -SuffixSearchList $currentSuffix
      }
-   register: validated_suffix
-   when: current_suffix.stdout is not search(dns_suffix)
+  register: validated_suffix
+  when: current_suffix.stdout is not search(dns_suffix)
 
 - name: Log current DNS suffix search list
   win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
