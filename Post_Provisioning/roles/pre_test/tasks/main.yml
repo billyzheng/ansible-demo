@@ -11,7 +11,8 @@
        $DNSSuffix = "{{ dns_suffix }}".Split(",")
        $suffixresult = "{{ current_suffix.stdout }}"
        foreach ($dns_suffix in $DNSSuffix) {
-            if ($suffixresult -notcontains $dns_suffix) {
+       $suffixes = $suffixresult -split "\r?\n"
+            if ($dns_suffix -notin $suffixes) {
                 Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
             }
        }
