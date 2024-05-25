@@ -1,0 +1,24 @@
+---
+- name: Get current DNS suffix search list
+  win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix
+
+- name: Validate DNS suffixes
+  loop: "{{ DNSSuffix }}"
+  vars:
+     dns_suffix: "{{ item }}"
+  win_shell: |
+     $currentSuffix = Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+     if ($currentSuffix -notcontains "{{ dns_suffix }}") {
+      $currentSuffix += "{{ dns_suffix }}"
+      Set-DnsClientGlobalSetting -SuffixSearchList $currentSuffix
+     }
+   register: validated_suffix
+   when: current_suffix.stdout is not search(dns_suffix)
+
+- name: Log current DNS suffix search list
+  win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: new_suffix_list
+
+- debug:
+     msg: "Current DNS suffix search list: {{ new_suffix_list.stdout }}"
