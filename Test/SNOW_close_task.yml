@@ -30,9 +30,11 @@
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
         body_format: json
         body: 
-          state: WORK_IN_PROGRESS
-#          state: CLOSED_COMPLETE
-          work_notes: "close notes from Ansible"
+#          state: WORK_IN_PROGRESS
+          state: CLOSED_COMPLETE
+#          work_notes: "close notes from Ansible"
           closure_notes: "closed by AAP"
           
       register: SR_task_WIP
+
+
