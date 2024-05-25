@@ -1,26 +1,24 @@
 ---
-- name: Get current firewall state
+- name: Get current DNS suffix search list
+  win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix
+
+- name: Validate DNS suffixes
+  loop: "{{ DNSSuffix }}"
+  vars:
+     dns_suffix: "{{ item }}"
   win_shell: |
-     Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
-  register: pre_firewall_state
+     $currentSuffix = Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+     if ($currentSuffix -notcontains "{{ dns_suffix }}") {
+      $currentSuffix += "{{ dns_suffix }}"
+      Set-DnsClientGlobalSetting -SuffixSearchList $currentSuffix
+     }
+   register: validated_suffix
+   when: current_suffix.stdout is not search(dns_suffix)
 
-- name: Display message if firewall is already enabled
-  debug:
-     msg: "Firewall state is currently enabled"
-  when: "'True' in pre_firewall_state.stdout"
+- name: Log current DNS suffix search list
+  win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: new_suffix_list
 
-- name: Disable Windows Firewall
-  win_firewall:
-     profile: all
-     state: disabled
-  when: "'True' in pre_firewall_state.stdout"
-
-- name: Get current firewall state again
-  win_shell: |
-     Get-NetFirewallProfile -Profile Domain,Public,Private | Select-Object -ExpandProperty Enabled
-  register: post_firewall_state
-  
-- name: Display message if firewall is successfully disabled
-  debug:
-     msg: "Firewall state is disabled"
-
+- debug:
+     msg: "Current DNS suffix search list: {{ new_suffix_list.stdout }}"
