@@ -22,3 +22,4 @@
 
 - debug:
      msg: "{{ script_output.stdout }}"
+  ignore_errors: yes
