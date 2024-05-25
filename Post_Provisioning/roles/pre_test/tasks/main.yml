@@ -5,8 +5,8 @@
 
 - name: Run PowerShell script to validate DNS suffix
   ansible.windows.win_shell: |
-       $DNSSuffix = {{ dns_suffix }}
-       $suffixresult = {{ current_suffix.stdout }}
+       $DNSSuffix = "{{ dns_suffix }}"
+       $suffixresult = "{{ current_suffix.stdout }}"
        foreach ($dns_suffix in $DNSSuffix) {
             if ($suffixresult -notcontains $dns_suffix) {
                 Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
