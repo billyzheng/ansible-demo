@@ -22,4 +22,5 @@
 
 - debug:
      msg: "{{ script_output.stdout }}"
+  when: script_output|changed
   ignore_errors: yes
