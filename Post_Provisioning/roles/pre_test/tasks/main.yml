@@ -22,7 +22,7 @@
        }
        Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
   register: script_output
-  when: current_suffix.stdout is not search(dns_suffix)
+  when: current_suffix.stdout is not search(dns_suffixes_list)
 
 - debug:
      msg: "{{ script_output.stdout }}"
