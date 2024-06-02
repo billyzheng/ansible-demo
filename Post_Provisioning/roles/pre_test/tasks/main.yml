@@ -6,7 +6,7 @@
      var: current_suffix
 
 - set_fact:
-    dns_suffix_list: "{{ dns_suffix.split('\\n') | map('trim') | select('string') | list }}"
+    dns_suffix_list: "{{ dns_suffix | splitlines() | map('trim') | select('string') | list }}"
 
 - ansible.windows.win_shell: |
      $DNSSuffix = "{{ dns_suffix_list | join('","') }}"
