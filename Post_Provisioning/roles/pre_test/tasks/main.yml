@@ -5,10 +5,13 @@
   poll: 0
   register: onboarding_output
 
+- debug:
+    var: onboarding_output
+
 - name: Wait for 60 seconds
   win_wait_for:
     timeout: 60
 
 - name: Print onboarding status
   debug:
-    msg: "{{ onboarding_output.stdout_lines }}"
+    msg: "{{ lookup('file', onboarding_output.results_file) }}"
