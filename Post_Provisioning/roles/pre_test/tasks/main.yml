@@ -9,8 +9,8 @@
      var: current_suffix_list.stdout.split(';')
 
 - name: Split DNS suffixes from the survey
-    set_fact:
-      dns_suffixes_list: "{{ survey_dns_suffix.split('\n') }}"
+  set_fact:
+     dns_suffixes_list: "{{ survey_dns_suffix.split('\n') }}"
 
 - name: Add DNS suffixes
   ansible.builtin.win_shell: |
