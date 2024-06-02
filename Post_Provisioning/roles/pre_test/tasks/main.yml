@@ -1,7 +1,7 @@
 ---
 - name: Get current DNS suffix search list
-   ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-   register: current_suffix
+  ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix
 
 - debug:
    var: current_suffix
