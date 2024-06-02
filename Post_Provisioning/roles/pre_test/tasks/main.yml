@@ -6,8 +6,8 @@
   register: onboarding_output
 
 - name: Wait for 60 seconds
-  ansible.builtin.wait_for: 
-  timeout: 60
+  win_wait_for:
+    timeout: 60
 
 - name: Print onboarding status
   debug:
