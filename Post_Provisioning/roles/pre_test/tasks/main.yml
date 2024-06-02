@@ -1,8 +1,26 @@
-  - name: debug stuff
-    debug:
-      var: dns_suffix
- 
-  - name: run it as a list
-    debug:
-      msg: "{{ item }}"
-    loop: "{{ dns_suffix.split('\n') }}"
+---
+- name: Retrieve current DNS suffix list
+  win_command: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix_list
+  changed_when: false
+
+- name: Debug current DNS suffix list
+  debug:
+     var: current_suffix_list.stdout.split(';')
+
+- name: Split DNS suffixes from the survey
+    set_fact:
+      dns_suffixes_list: "{{ survey_dns_suffix.split('\n') }}"
+
+- name: Add DNS suffixes
+  ansible.builtin.win_shell: |
+        $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+        foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
+          if ($suffixresult -notcontains $suffix) {
+            $suffixresult += $suffix
+          }
+        }
+        Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
+  environment:
+     DNS_SUFFIXES_LIST: "{{ item }}"
+  loop: "{{ dns_suffixes_list }}"
