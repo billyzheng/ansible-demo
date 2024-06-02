@@ -12,12 +12,13 @@
 
 - name: Run PowerShell script to validate DNS suffix
   ansible.windows.win_shell: |
+       Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
        $DNSSuffix = "{{ dns_suffixes_list }}"
        $suffixresult = "{{ current_suffix.stdout }}"
        foreach ($dns_suffix in $DNSSuffix) {
            $suffixes = $suffixresult -split "\r?\n"
            if ($dns_suffix -notin $suffixes) {
-               Add-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
+               Microsoft.PowerShell.Management\Add-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
            }
        }
        Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
