@@ -1,20 +1,17 @@
 ---
-- name: Validate DNS suffixes
-  hosts: your_windows_host
-  tasks:
-    - name: Get current DNS suffix search list
-      ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-      register: current_suffix
+- name: Get current DNS suffix search list
+   ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+   register: current_suffix
 
-    - debug:
-        var: current_suffix
+- debug:
+   var: current_suffix
 
-    - name: Split DNS suffixes from survey
-      set_fact:
-        dns_suffix_list: "{{ dns_suffix.split('\\n') | map('trim') | select('string') | list }}"
+- name: Split DNS suffixes from survey
+  set_fact:
+      dns_suffix_list: "{{ dns_suffix.split('\\n') | map('trim') | select('string') | list }}"
 
-    - name: Run PowerShell script to validate DNS suffix
-      ansible.windows.win_shell: |
+- name: Run PowerShell script to validate DNS suffix
+  ansible.windows.win_shell: |
            $DNSSuffix = {{ dns_suffix_list | to_json }}
            $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
            for ($i=0; $i -lt $DNSSuffix.count; $i++) {
@@ -26,9 +23,9 @@
                }
            }
            (Get-DnsClientGlobalSetting).SuffixSearchList
-      register: script_output
-      when: dns_suffix_list | length > 0
+  register: script_output
+  when: dns_suffix_list | length > 0
 
-    - debug:
-         msg: "{{ script_output.stdout }}"
-      ignore_errors: yes
+- debug:
+    msg: "{{ script_output.stdout }}"
+  ignore_errors: yes
