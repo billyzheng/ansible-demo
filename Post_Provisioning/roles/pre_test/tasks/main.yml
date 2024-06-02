@@ -12,7 +12,7 @@
 
 - name: Split DNS suffixes from the survey
   set_fact:
-     dns_suffixes_list: "{{ survey_dns_suffix.split('\n') }}"
+     dns_suffixes_list: "{{ dns_suffix.split('\n') }}"
 
 - name: Add DNS suffixes
   ansible.builtin.win_shell: |
