@@ -3,6 +3,7 @@
   ansible.windows.win_service:
     name: WinDefend
   become: yes
+  become_method: runas
   register: defender_service_status_before
 
 - name: Write log - Onboarding Defender started
@@ -17,6 +18,7 @@
   ansible.windows.win_service:
     name: WinDefend
   become: yes
+  become_method: runas
   register: defender_service_status_after
 
 - name: Write log - Onboarding Defender completed
