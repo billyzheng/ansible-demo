@@ -1,12 +1,16 @@
 ---
-- name: Onboarding the windows defender
+- name: Run Defender Onboarding Script
   win_command: "{{ defender_script_path }}"
   async: 60
   poll: 0
+  register: onboarding_output
 
-- win_shell: "echo 'Waiting for 60 seconds...' && sleep 60"
+- name: Wait for 60 seconds
+  ansible.builtin.wait_for: 
+  timeout: 60
 
-- win_shell: "echo 'Checking onboarding status...' && defender_onboarding_status_command"
-  register: onboarding_status
+- name: Print onboarding status
+  debug:
+     msg: "{{ onboarding_output.stdout }}"
 
-- win_shell: "echo 'Onboarding Defender completed with status: {{ onboarding_status.stdout }}'"
+  
