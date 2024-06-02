@@ -1,28 +1,8 @@
----
-- ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: current_suffix
-
-- debug:
-     var: current_suffix
-
-- set_fact:
-    dns_suffix_list: "{{ dns_suffix.split('\\n') | map('trim') | select('string') | list }}"
-
-- ansible.windows.win_shell: |
-     $DNSSuffix = "{{ dns_suffix_list | join('","') }}"
-     $suffixes = $DNSSuffix -split '","'
-     $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList -split ','
-     foreach ($suffix in $suffixes) {
-         if ($suffixresult -contains $suffix) {
-             Write-Output "DNS suffix value $suffix is correct"
-         } else {
-             Set-DnsClientGlobalSetting -SuffixSearchList $suffix
-         }
-     }
-     (Get-DnsClientGlobalSetting).SuffixSearchList
-  register: script_output
-  when: dns_suffix_list | length > 0
-
-- debug:
-     msg: "{{ script_output.stdout }}"
-  ignore_errors: yes
+  - name: debug stuff
+    debug:
+      var: dns_suffix
+ 
+  - name: run it as a list
+    debug:
+      msg: "{{ item }}"
+    loop: "{{ dns_suffix.split('\n') }}"
