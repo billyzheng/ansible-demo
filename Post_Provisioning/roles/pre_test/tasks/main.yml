@@ -1,29 +1,25 @@
 ---
-- name: Retrieve current DNS suffix list
-  ansible.builtin.win_shell: |
-    Import-Module DnsClient
-    Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: current_suffix_list
-  changed_when: false
-  
-- name: Debug current DNS suffix list
+- name: Check Defender service status before onboarding
+  ansible.windows.win_service:
+    name: WinDefend
+  register: defender_service_status_before
+
+- name: Write log - Onboarding Defender started
+  win_shell: Write-Host "Onboarding Defender started"
+
+- name: Run onboarding script
+  win_shell: |
+    Start-Process {{ defender_script }}
+    Start-Sleep -Seconds 60
+
+- name: Check Defender service status after onboarding
+  ansible.windows.win_service:
+    name: WinDefend
+  register: defender_service_status_after
+
+- name: Write log - Onboarding Defender completed
+  win_shell: Write-Host "Onboarding Defender completed"
+
+- name: Display Defender service status before and after onboarding
   debug:
-     var: current_suffix_list.stdout.split(';')
-
-- name: Split DNS suffixes from the survey
-  set_fact:
-     dns_suffixes_list: "{{ dns_suffix.split('\n') }}"
-
-- name: Add DNS suffixes
-  ansible.builtin.win_shell: |
-    $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
-    foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
-      if ($suffixresult -notcontains $suffix) {
-        $suffixresult += $suffix
-      }
-    }
-    Write-Output "New suffix list: $suffixresult"
-    Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
-  environment:
-    DNS_SUFFIXES_LIST: "{{ item }}"
-  loop: "{{ dns_suffixes_list }}"
+    msg: "Defender service status before onboarding: {{ defender_service_status_before.status }}, after onboarding: {{ defender_service_status_after.status }}"
