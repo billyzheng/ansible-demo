@@ -5,7 +5,6 @@
   poll: 0
   register: onboarding_output
 
-
 - name: Wait for 60 seconds
   win_wait_for:
     timeout: 60
