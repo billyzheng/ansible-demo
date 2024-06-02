@@ -1,20 +1,29 @@
 ---
-- name: Get current DNS suffix search list
-  ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: current_suffix
+- name: Retrieve current DNS suffix list
+  ansible.builtin.win_shell: |
+    Import-Module DnsClient
+    Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix_list
+  changed_when: false
+  
+- name: Debug current DNS suffix list
+  debug:
+     var: current_suffix_list.stdout.split(';')
 
-- name: Run PowerShell script to validate DNS suffix
-  ansible.windows.win_shell: |
-       $DNSSuffix = "{{ dns_suffix }}"
-       $suffixresult = "{{ current_suffix.stdout }}"
-       foreach ($dns_suffix in $DNSSuffix) {
-            if ($suffixresult -notcontains $dns_suffix) {
-                Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
-            }
-       }
-       Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: script_output
-  when: current_suffix.stdout is not search(dns_suffix)
+- name: Split DNS suffixes from the survey
+  set_fact:
+     dns_suffixes_list: "{{ dns_suffix.split('\n') }}"
 
-- debug:
-     msg: "{{ script_output.stdout }}"
+- name: Add DNS suffixes
+  ansible.builtin.win_shell: |
+    $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+    foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
+      if ($suffixresult -notcontains $suffix) {
+        $suffixresult += $suffix
+      }
+    }
+    Write-Output "New suffix list: $suffixresult"
+    Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
+  environment:
+    DNS_SUFFIXES_LIST: "{{ item }}"
+  loop: "{{ dns_suffixes_list }}"
