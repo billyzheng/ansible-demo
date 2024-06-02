@@ -9,7 +9,7 @@
 
 - name: Run onboarding script
   win_shell: |
-    Start-Process {{ defender_script }}
+    Start-Process {{ defender_script_path }}
     Start-Sleep -Seconds 60
 
 - name: Check Defender service status after onboarding
