@@ -1,29 +1,12 @@
 ---
-- name: Check Defender service status before onboarding
-  ansible.windows.win_service:
-    name: WinDefend
-  become: yes
-  become_method: runas
-  register: defender_service_status_before
+- name: Onboarding the windows defender
+  win_command: "{{ defender_script_path }}"
+  async: 60
+  poll: 0
 
-- name: Write log - Onboarding Defender started
-  win_shell: Write-Host "Onboarding Defender started"
+- win_shell: "echo 'Waiting for 60 seconds...' && sleep 60"
 
-- name: Run onboarding script
-  win_shell: |
-    Start-Process {{ defender_script_path }}
-    Start-Sleep -Seconds 60
+- win_shell: "echo 'Checking onboarding status...' && defender_onboarding_status_command"
+  register: onboarding_status
 
-- name: Check Defender service status after onboarding
-  ansible.windows.win_service:
-    name: WinDefend
-  become: yes
-  become_method: runas
-  register: defender_service_status_after
-
-- name: Write log - Onboarding Defender completed
-  win_shell: Write-Host "Onboarding Defender completed"
-
-- name: Display Defender service status before and after onboarding
-  debug:
-    msg: "Defender service status before onboarding: {{ defender_service_status_before.status }}, after onboarding: {{ defender_service_status_after.status }}"
+- win_shell: "echo 'Onboarding Defender completed with status: {{ onboarding_status.stdout }}'"
