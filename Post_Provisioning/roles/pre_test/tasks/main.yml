@@ -13,14 +13,16 @@
 - name: Run PowerShell script to validate DNS suffix
   ansible.windows.win_shell: |
        $DNSSuffix = {{ dns_suffix_list | to_json }}
-       $suffixresult = "{{ current_suffix.stdout }}"
-       foreach ($dns_suffix in $DNSSuffix) {
-           $suffixes = $suffixresult -split "\r?\n"
-           if ($dns_suffix -notin $suffixes) {
-               Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
+       $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+       for ($i=0; $i -lt $DNSSuffix.count; $i++) {
+           if ($DNSSuffix[$i] -eq $suffixresult[$i]) {
+               $a = $suffixresult[$i]
+               Write-Output "DNS suffix value $a is correct"
+           } else {
+               Set-DnsClientGlobalSetting -SuffixSearchList $DNSSuffix
            }
        }
-       Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+       (Get-DnsClientGlobalSetting).SuffixSearchList
   register: script_output
   when: dns_suffix_list | length > 0
 
