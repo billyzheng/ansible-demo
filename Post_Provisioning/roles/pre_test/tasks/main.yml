@@ -1,29 +1,23 @@
 ---
-- name: Get current DNS suffix search list
-  ansible.windows.win_shell: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: current_suffix
+- name: Get current DNS suffixes
+  win_dns_client:
+     adapter_names: '*'
+  register: current_suffixes
 
-- debug:
-    var: current_suffix
+- name: Set DNS suffixes
+  win_dns_client:
+     adapter_names: '*'
+     dns_suffixes:
+        - xf.abb.com
+        - europe.abb.com
+        - abb.com
+  when: current_suffixes.dns_suffixes != ['xf.abb.com', 'europe.abb.com', 'abb.com']
 
-- name: Parse DNS suffixes
-  set_fact:
-    dns_suffixes_list: "{{ dns_suffixes.splitlines() }}"
+- name: Verify DNS suffixes
+  win_dns_client:
+     adapter_names: '*'
+  register: new_suffixes
 
-- name: Run PowerShell script to validate DNS suffix
-  ansible.windows.win_shell: |
-       Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-       $DNSSuffix = "{{ dns_suffixes_list }}"
-       $suffixresult = "{{ current_suffix.stdout }}"
-       foreach ($dns_suffix in $DNSSuffix) {
-           $suffixes = $suffixresult -split "\r?\n"
-           if ($dns_suffix -notin $suffixes) {
-               $cmd = "Add-DnsClientGlobalSetting -SuffixSearchList $dns_suffix"
-               Invoke-Expression $cmd
-           }
-       }
-       Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
-  register: script_output
-
-- debug:
-    msg: "{{ script_output.stdout }}"
+- name: Log DNS suffixes
+  debug:
+     msg: "DNS suffixes set to {{ new_suffixes.dns_suffixes }}"
