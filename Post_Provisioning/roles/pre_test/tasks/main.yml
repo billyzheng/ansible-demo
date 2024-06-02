@@ -19,9 +19,6 @@
       Write-Host "Defender ATP service is not running."
     }
   register: defender_validation
-
-- debug:
-    var:  defender_validation
     
 - name: Print Defender Validation Output
   debug:
