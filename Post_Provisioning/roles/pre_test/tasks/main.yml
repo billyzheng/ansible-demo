@@ -11,6 +11,4 @@
 
 - name: Print onboarding status
   debug:
-     msg: "{{ onboarding_output.stdout }}"
-
-  
+    msg: "{{ onboarding_output.stdout_lines }}"
