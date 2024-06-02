@@ -6,15 +6,19 @@
 - debug:
     var: current_suffix
 
+- name: Split DNS suffixes from survey
+  set_fact:
+    dns_suffix_list: "{{ dns_suffix.split(',') }}"
+
 - name: Run PowerShell script to validate DNS suffix
   ansible.windows.win_shell: |
-       $DNSSuffix = "{{ dns_suffix }}".Split(",")
+       $DNSSuffix = "{{ dns_suffix_list }}"
        $suffixresult = "{{ current_suffix.stdout }}"
        foreach ($dns_suffix in $DNSSuffix) {
-       $suffixes = $suffixresult -split "\r?\n"
-            if ($dns_suffix -notin $suffixes) {
-                Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
-            }
+           $suffixes = $suffixresult -split "\r?\n"
+           if ($dns_suffix -notin $suffixes) {
+               Set-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
+           }
        }
        Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
   register: script_output
