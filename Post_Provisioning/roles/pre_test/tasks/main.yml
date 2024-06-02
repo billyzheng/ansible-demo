@@ -1,9 +1,11 @@
 ---
 - name: Retrieve current DNS suffix list
-  win_command: Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  ansible.builtin.win_shell: |
+    Import-Module DnsClient
+    Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
   register: current_suffix_list
   changed_when: false
-
+  
 - name: Debug current DNS suffix list
   debug:
      var: current_suffix_list.stdout.split(';')
