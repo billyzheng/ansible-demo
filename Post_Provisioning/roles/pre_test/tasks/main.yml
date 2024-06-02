@@ -18,7 +18,8 @@
        foreach ($dns_suffix in $DNSSuffix) {
            $suffixes = $suffixresult -split "\r?\n"
            if ($dns_suffix -notin $suffixes) {
-               Microsoft.PowerShell.Management\Add-DnsClientGlobalSetting -SuffixSearchList $dns_suffix
+               $cmd = "Add-DnsClientGlobalSetting -SuffixSearchList $dns_suffix"
+               Invoke-Expression $cmd
            }
        }
        Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
