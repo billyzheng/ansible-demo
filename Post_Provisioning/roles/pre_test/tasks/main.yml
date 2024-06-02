@@ -16,13 +16,14 @@
 
 - name: Add DNS suffixes
   ansible.builtin.win_shell: |
-        $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
-        foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
-          if ($suffixresult -notcontains $suffix) {
-            $suffixresult += $suffix
-          }
-        }
-        Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
+    $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+    foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
+      if ($suffixresult -notcontains $suffix) {
+        $suffixresult += $suffix
+      }
+    }
+    Write-Output "New suffix list: $suffixresult"
+    Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
   environment:
-     DNS_SUFFIXES_LIST: "{{ item }}"
+    DNS_SUFFIXES_LIST: "{{ item }}"
   loop: "{{ dns_suffixes_list }}"
