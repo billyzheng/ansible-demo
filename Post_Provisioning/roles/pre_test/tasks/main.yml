@@ -8,7 +8,7 @@
   ignore_errors: yes
 
 - name: Check if installation was successful
-  win_shell: Get-Service -Name QualysCloudAgent
+  win_shell: Get-Service -Name QualysAgent
   register: service_status
   ignore_errors: yes
 
