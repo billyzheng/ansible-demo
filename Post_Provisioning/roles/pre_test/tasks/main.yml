@@ -1,3 +1,21 @@
 ---
-- name: Install Qualys Agent
-  win_shell: 'C:\\Temp\\Softwares\\QualysAgent\\QualysCloudAgent.exe /install /passive /norestart /S CustomerId="{{ qualys_customer_id }}" ActivationId="{{ qualys_activation_id }}" WebServiceUri="{{ qualys_webservice_uri }}"'
+- name: Log installation starting
+  win_shell: Write-Host "Qualys agent installation starting"
+
+- name: Install Qualys Cloud Agent
+  win_command: "{{ qualys_agent_installation_path }} CustomerId={{ qualys_customer_id }} ActivationId={{ qualys_activation_id }} WebServiceUri={{ qualys_webservice_uri }}"
+  register: install_result
+  ignore_errors: yes
+
+- name: Check if installation was successful
+  win_shell: Get-Service -Name QualysCloudAgent
+  register: service_status
+  ignore_errors: yes
+
+- name: Log installation status
+  debug:
+     msg: "Qualys agent installation status: {{ 'installed' if install_result.rc == 0 else 'failed' }}"
+
+- name: Log service status
+  debug:
+     msg: "Qualys service status: {{ 'running' if service_status.rc == 0 else 'not running' }}"
