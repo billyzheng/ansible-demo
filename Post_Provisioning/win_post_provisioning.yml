@@ -30,15 +30,15 @@
     ansible.builtin.import_role:
       name: flexnet_installation   
 
-  - name: Validate and set the system timezone
+  - name: Onboarding the Defender
     ansible.builtin.import_role:
-      name: timezone
+      name: defender_onboarding
 
-  - name: Validate and set the system timezone
+  - name: Adding the DNS Suffix
     ansible.builtin.import_role:
-      name: timezone
+      name: dns_suffix_add
 
-  - name: Validate and set the system timezone
+  - name: Qualys Installation
     ansible.builtin.import_role:
-      name: timezone
+      name: qualys_installation
 
