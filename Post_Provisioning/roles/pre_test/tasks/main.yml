@@ -1,12 +1,16 @@
 ---
+---
 - name: Install Qualys Cloud Agent
-  win_shell: |
-        "{{ qualys_agent_installation_path }}" /install /passive /norestart /S CustomerId={{ qualys_customer_id }} ActivationId={{ qualys_activation_id }} WebServiceUri={{ qualys_webservice_uri }}
-  register: qualys_installation
-  ignore_errors: yes
+  hosts: windows_hosts
+  tasks:
+    - name: Install Qualys Cloud Agent
+      win_shell: |
+        & "{{ qualys_agent_installation_path }}" /install /passive /norestart /S "CustomerId={{ qualys_customer_id }}" "ActivationId={{ qualys_activation_id }}" "WebServiceUri={{ qualys_webservice_uri }}"
+      register: qualys_installation
+      ignore_errors: yes
 
-- name: Check Installation Status
-  win_shell: |
+    - name: Check Installation Status
+      win_shell: |
         $agent_installed = Get-ItemProperty -Path "HKLM:\SOFTWARE\Qualys\CloudAgent" -Name "InstallStatus" -ErrorAction SilentlyContinue
         if ($agent_installed -and $agent_installed.InstallStatus -eq "Installed") {
           Write-Host "Qualys Cloud Agent installed successfully."
