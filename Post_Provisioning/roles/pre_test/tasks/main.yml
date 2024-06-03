@@ -1,7 +1,7 @@
 ---
 - name: Install Qualys Cloud Agent
   win_package:
-    path: "{{ qualys_agent_path }}"
+    path: "{{ qualys_agent_installation_path }}"
     arguments:
       - "/install"
       - "/passive"
