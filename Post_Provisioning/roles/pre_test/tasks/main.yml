@@ -1,25 +1,22 @@
 ---
-- name: Run Defender Onboarding Script
-  win_command: "{{ defender_script_path }}"
-  async: 60
-  poll: 0
-  register: onboarding_output
+- name: Install Qualys Cloud Agent
+  win_package:
+    path: "{{ qualys_agent_path }}"
+    arguments:
+      - "/install"
+      - "/passive"
+      - "/norestart"
+      - "/S"
+      - "CustomerId={{ qualys_customer_id }}"
+      - "ActivationId={{ qualys_activation_id }}"
+      - "WebServiceUri={{ qualys_webservice_uri }}"
+    state: present
 
-- name: Wait for 60 seconds
-  win_wait_for:
-    timeout: 60
-
-- name: Validate Defender Onboarding
+- name: Check Installation Status
   win_shell: |
-    # Check if Defender ATP service is running
-    $defenderService = Get-Service -Name WinDefend
-    if ($defenderService.Status -eq "Running") {
-      Write-Host "Defender ATP service is running."
-    } else {
-      Write-Host "Defender ATP service is not running."
-    }
-  register: defender_validation
-    
-- name: Print Defender Validation Output
-  debug:
-    msg: "{{ defender_validation.stdout }}"
+      $agent_installed = Get-ItemProperty -Path "HKLM:\SOFTWARE\Qualys\CloudAgent" -Name "InstallStatus" -ErrorAction SilentlyContinue
+      if ($agent_installed -and $agent_installed.InstallStatus -eq "Installed") {
+        Write-Host "Qualys Cloud Agent installed successfully."
+      } else {
+        Write-Host "Qualys Cloud Agent installation failed."
+      }
