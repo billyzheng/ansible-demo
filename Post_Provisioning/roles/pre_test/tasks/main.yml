@@ -1,13 +1,13 @@
 ---
 - name: Install Qualys Agent
   win_package:
-     path: "{{ qualys_agent_path }}"
+     path: "{{ qualys_agent_installation_path }}"
      arguments:
         - /install
         - /passive
         - /norestart
         - /S
-        - CustomerId="{{ customer_id }}"
-        - ActivationId="{{ activation_id }}"
-        - WebServiceUri="{{ web_service_uri }}"
+        - CustomerId="{{ qualys_customer_id }}"
+        - ActivationId="{{ qualys_activation_id }}"
+        - WebServiceUri="{{ qualys_webservice_uri }}"
   state: present
