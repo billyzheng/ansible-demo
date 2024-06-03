@@ -3,7 +3,7 @@
   win_shell: Write-Host "Qualys agent installation starting"
 
 - name: Install Qualys Cloud Agent
-  win_command: "{{ qualys_agent_installation_path }} CustomerId={{ qualys_customer_id }} ActivationId={{ qualys_activation_id }} WebServiceUri={{ qualys_webservice_uri }}"
+  win_command: "{{ qualys_agent_installation_path }} CustomerId={{{ qualys_customer_id }}} ActivationId={{{ qualys_activation_id }}} WebServiceUri={{ qualys_webservice_uri }}"
   register: install_result
   ignore_errors: yes
 
