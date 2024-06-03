@@ -1,3 +1,3 @@
 ---
 - name: Install Qualys Agent
-  win_shell: 'C:\\Temp\\Softwares\\QualysAgent\\QualysCloudAgent.exe /install /passive /norestart /S CustomerId="{{ customer_id }}" ActivationId="{{ activation_id }}" WebServiceUri="{{ web_service_uri }}"'
+  win_shell: 'C:\\Temp\\Softwares\\QualysAgent\\QualysCloudAgent.exe /install /passive /norestart /S CustomerId="{{ qualys_customer_id }}" ActivationId="{{ qualys_activation_id }}" WebServiceUri="{{ qualys_webservice_uri }}"'
