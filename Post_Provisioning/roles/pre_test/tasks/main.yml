@@ -1,10 +1,13 @@
 ---
-- name: Log installation starting
-  win_shell: Write-Host "Qualys agent installation starting"
-
-- name: Install Qualys Cloud Agent
-  win_shell: |
-      Start-Process -FilePath "{{ qualys_agent_installation_path }}" -ArgumentList "CustomerId={{ qualys_customer_id }} ActivationId={{ qualys_activation_id }} WebServiceUri={{ qualys_webservice_uri }}" -Wait
-
-- name: Log installation completed
-  win_shell: Write-Host "Qualys agent installation completed"
+- name: Install Qualys Agent
+  win_package:
+     path: "{{ qualys_agent_path }}"
+     arguments:
+        - /install
+        - /passive
+        - /norestart
+        - /S
+        - CustomerId="{{ customer_id }}"
+        - ActivationId="{{ activation_id }}"
+        - WebServiceUri="{{ web_service_uri }}"
+  state: present
