@@ -1,5 +1,4 @@
 ---
----
 - name: Install Qualys Cloud Agent
   hosts: windows_hosts
   tasks:
