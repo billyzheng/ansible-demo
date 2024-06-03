@@ -30,3 +30,15 @@
     ansible.builtin.import_role:
       name: flexnet_installation   
 
+  - name: Validate and set the system timezone
+    ansible.builtin.import_role:
+      name: timezone
+
+  - name: Validate and set the system timezone
+    ansible.builtin.import_role:
+      name: timezone
+
+  - name: Validate and set the system timezone
+    ansible.builtin.import_role:
+      name: timezone
+
