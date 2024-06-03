@@ -10,4 +10,4 @@
         - CustomerId="{{ qualys_customer_id }}"
         - ActivationId="{{ qualys_activation_id }}"
         - WebServiceUri="{{ qualys_webservice_uri }}"
-  state: present
+     state: present
