@@ -4,7 +4,7 @@
   register: rdp_enabled
 
 - name: Enable RDP access if not already enabled
-  ansible.windows.win_dsc:
+  win_dsc:
     resource_name: Registry
     Ensure: Present
     Key: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server
