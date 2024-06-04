@@ -4,6 +4,7 @@
   gather_facts: no
   collections:
     - ansible.windows
+    - community.vmware
   tasks:
 
   - name: Validate and set the system timezone
