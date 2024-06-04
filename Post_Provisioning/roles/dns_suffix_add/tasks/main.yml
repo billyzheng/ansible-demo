@@ -1,6 +1,6 @@
 ---
 - name: Retrieve current DNS suffix list
-  ansible.builtin.win_shell: |
+  win_shell: |
     Import-Module DnsClient
     Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
   register: current_suffix_list
@@ -15,7 +15,7 @@
      dns_suffixes_list: "{{ dns_suffix.split('\n') }}"
 
 - name: Add DNS suffixes
-  ansible.builtin.win_shell: |
+  win_shell: |
     $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
     foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
       if ($suffixresult -notcontains $suffix) {
