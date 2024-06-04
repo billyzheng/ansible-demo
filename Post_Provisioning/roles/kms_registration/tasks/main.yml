@@ -1,6 +1,6 @@
 ---
 - name: Gather product facts
-  community.windows.win_product_facts:
+  win_product_facts:
 
 - name: Display Windows edition
   debug:
