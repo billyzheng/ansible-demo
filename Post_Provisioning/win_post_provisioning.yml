@@ -5,6 +5,7 @@
   collections:
     - ansible.windows
     - community.vmware
+    - community.windows
   tasks:
 
   - name: Validate and set the system timezone
