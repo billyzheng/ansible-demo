@@ -16,7 +16,7 @@
   when: cd_drive_info.stdout != ''
 
 - name: Gather disk facts
-  community.windows.win_disk_facts:
+  win_disk_facts:
   register: disk_facts
 
 - name: Get C partition information
@@ -24,7 +24,7 @@
     c_partition: "{{ disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', 'C') | first }}"
 
 - name: Resize C partition to maximum supported size
-  community.windows.win_partition:
+  win_partition:
     drive_letter: C
     partition_size: -1
   when: c_partition is defined
@@ -49,7 +49,7 @@
     var: r_partition
 
 - name: Initialize raw disks
-  community.windows.win_initialize_disk:
+  win_initialize_disk:
     disk_number: "{{ item.number }}"
     style: gpt
   loop: "{{ r_partition }}"
@@ -57,7 +57,7 @@
     index_var: index
 
 - name: Partition the disks
-  community.windows.win_partition:
+  win_partition:
     disk_number: "{{ item.number }}"
     partition_size: -1
     drive_letter: "{{ '%c' | format(index + 68) }}"  
@@ -67,7 +67,7 @@
     index_var: index
 
 - name: Format the partition
-  community.windows.win_format:
+  win_format:
     drive_letter: "{{ '%c' | format(index + 68) }}"  
     file_system: NTFS
     new_label: "Data"
