@@ -1,6 +1,6 @@
 ---
 - name: Get current timezone
-  ansible.windows.win_shell: |
+  win_shell: |
      Get-TimeZone | Select-Object -ExpandProperty Id
   register: current_timezone
   changed_when: false
