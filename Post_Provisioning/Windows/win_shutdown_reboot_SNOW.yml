@@ -36,8 +36,11 @@
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
       register: vm_info_poweredon
-      until: vm_info_poweredon.virtual_machines[0].power_state == 'poweredOn'
-      retries: 10
-      delay: 30
-      when: poweron.changed
+  #    until: vm_info_poweredon.virtual_machines[0].power_state == 'poweredOn'
+   #   retries: 10
+    #  delay: 30
+    #  when: poweron.changed
+
+    - debug: 
+        var: vm_info_poweredon
    
