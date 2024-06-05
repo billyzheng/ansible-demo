@@ -8,9 +8,6 @@
          vm_name: "{{ vm_name }}"
       register: vm_info
 
-    - debug: 
-        var: vm_info
-
     - name: Check if VM is powered on
       debug:
         msg: "VM {{ vm_name }} is {{ vm_info.virtual_machines[0].power_state }}"
@@ -21,15 +18,17 @@
         msg: "VM {{ vm_name }} is already {{ vm_info.virtual_machines[0].power_state }}"
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
 
+    - name: Reboot the virtual machine
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: reboot-guest
+      
     - name: Power ON the VM if it is Powered OFF
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: powered-on
       register: poweron
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
-
-    - debug:
-        var: poweron
 
     - name: Wait for the virtual machine to be powered on
       wait_for:
@@ -43,13 +42,11 @@
       register: shutdown
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
 
+    - debug:
+        var: shutdown
+
     - name: Wait for the virtual machine to be Shutdown
       wait_for:
         timeout: 15
       when: shutdown.changed
 
-    - name: Reboot the virtual machine
-      community.vmware.vmware_guest_powerstate:
-         name: "{{ vm_name }}"
-         state: reboot-guest
-         
