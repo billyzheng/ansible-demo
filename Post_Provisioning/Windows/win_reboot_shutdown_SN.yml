@@ -18,18 +18,18 @@
         msg: "VM {{ vm_name }} is already {{ vm_info.virtual_machines[0].power_state }}"
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
     
-    - name: Reboot the virtual machine
-      community.vmware.vmware_guest_powerstate:
-         name: "{{ vm_name }}"
-         state: reboot-guest
-      notify: wait
-
-     - name: Power ON the VM if it is Powered OFF
+    - name: Power ON the VM if it is Powered OFF
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: powered-on
       register: poweron
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
+      notify: wait
+
+    - name: Reboot the virtual machine
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: reboot-guest
       notify: wait
       
     - name: Shutdown the VM
