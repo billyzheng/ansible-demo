@@ -1,0 +1,6 @@
+ - name: Shutdown the VM
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: shutdown-guest
+      register: shutdown
+      when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
