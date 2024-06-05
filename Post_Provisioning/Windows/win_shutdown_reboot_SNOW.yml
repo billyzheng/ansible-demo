@@ -23,18 +23,18 @@
 
 
     - name: Set the state of the virtual machine to poweron
-    community.vmware.vmware_guest_powerstate:
-      name: "{{ vm_name }}"
-      state: powered-on
-    register: poweron
-    when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: powered-on
+      register: poweron
+      when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
 
-  - name: Wait for the virtual machine to be powered on
-    community.vmware.vmware_guest_powerstate:
-      name: "{{ vm_name }}"
-      state: powered-on
-    until: poweron.guest.power_state == 'poweredOn'
-    retries: 10
-    delay: 30
-    when: poweron is defined and poweron.guest.power_state == 'poweredOn'
+   - name: Wait for the virtual machine to be powered on
+     community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: powered-on
+     until: poweron.guest.power_state == 'poweredOn'
+     retries: 10
+     delay: 30
+     when: poweron is defined and poweron.guest.power_state == 'poweredOn'
    
