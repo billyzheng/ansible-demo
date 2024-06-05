@@ -16,8 +16,8 @@
         msg: "VM {{ vm_name }} is {{ vm_info.virtual_machines[0].power_state }}"
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
 
-    - name: Check if VM is powered on
+    - name: Check if VM is powered off
       debug:
-        msg: "VM {{ vm_name }} is {{ vm_info.virtual_machines[0].power_state }}"
+        msg: "VM {{ vm_name }} is already {{ vm_info.virtual_machines[0].power_state }}"
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
    
