@@ -22,6 +22,10 @@
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: reboot-guest
+         
+    - name: Wait for the virtual machine to be powered on
+      wait_for:
+        timeout: 30
       
     - name: Power ON the VM if it is Powered OFF
       community.vmware.vmware_guest_powerstate:
@@ -32,7 +36,7 @@
 
     - name: Wait for the virtual machine to be powered on
       wait_for:
-        timeout: 15
+        timeout: 30
       when: poweron.changed
 
     - name: Shutdown the VM
@@ -47,6 +51,6 @@
 
     - name: Wait for the virtual machine to be Shutdown
       wait_for:
-        timeout: 15
+        timeout: 30
       when: shutdown.changed
 
