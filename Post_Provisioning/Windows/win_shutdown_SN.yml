@@ -1,6 +1,9 @@
- - name: Shutdown the VM
+---
+- name: Reboot using SNOW variable
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: shutdown-guest
-      register: shutdown
-      when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
