@@ -1,5 +1,5 @@
 ---
-- name: Shutdown and reboot using SNOW variable
+- name: Reboot using SNOW variable
   hosts: localhost
   gather_facts: no
   tasks:
