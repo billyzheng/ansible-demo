@@ -13,11 +13,11 @@
 
     - name: Check if VM is powered on
       debug:
-        msg: "VM {{ vm_name }} is powered on
+        msg: "VM {{ vm_name }} is powered on"
       when: vm_info.virtual_machines.power_state is 'poweredOn'
 
     - name: Check if VM is powered on
       debug:
-        msg: "VM {{ vm_name }} is powered off
+        msg: "VM {{ vm_name }} is powered off"
       when: vm_info.virtual_machines.power_state is 'poweredOff'
    
