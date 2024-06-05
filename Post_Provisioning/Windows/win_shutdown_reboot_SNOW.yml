@@ -29,12 +29,15 @@
       register: poweron
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
 
-    - name: Wait for the virtual machine to be powered on
-      community.vmware.vmware_guest_powerstate:
-         name: "{{ vm_name }}"
-      register: vm_info_poweredon
-      until: vm_info_poweredon.virtual_machines[0].power_state == 'poweredOn'
-      retries: 10
-      delay: 30
-      when: poweron is defined and poweron.guest.power_state == 'poweredOn'
+    - debug:
+        var: poweron
+
+ #   - name: Wait for the virtual machine to be powered on
+  #    community.vmware.vmware_guest_powerstate:
+  #       name: "{{ vm_name }}"
+  #    register: vm_info_poweredon
+  #    until: vm_info_poweredon.virtual_machines[0].power_state == 'poweredOn'
+  #    retries: 10
+   #   delay: 30
+   #   when: poweron is defined and poweron.guest.power_state == 'poweredOn'
    
