@@ -32,9 +32,9 @@
    - name: Wait for the virtual machine to be powered on
      community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
-         state: powered-on
-     until: poweron.guest.power_state == 'poweredOn'
+     register: vm_info_poweredon
      retries: 10
      delay: 30
+     until: vm_info_poweredon.virtual_machines[0].power_state == 'poweredOn'
      when: poweron is defined and poweron.guest.power_state == 'poweredOn'
    
