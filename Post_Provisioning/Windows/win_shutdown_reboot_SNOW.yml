@@ -1,0 +1,17 @@
+---
+- name: Shutdown and reboot using SNOW variable
+  hosts: localhost
+  gather_facts: no
+  tasks:
+ - name: Get VM info
+   community.vmware.vmware_vm_info:
+      vm_name: "{{ vm_name }}"
+   register: vm_info
+
+ - debug: 
+     var: vm_info
+
+#- name: Check if VM is powered on
+ # debug:
+ #     msg: "VM {{ vm_name }} is powered on: {{ vm_info.virtual_machines.power_state == 'poweredOn' }}"
+   
