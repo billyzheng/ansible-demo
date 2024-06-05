@@ -24,13 +24,13 @@
          state: powered-on
       register: poweron
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
-      notify: wait
+      notify: wait for task complete
 
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: reboot-guest
-      notify: wait
+      notify: wait for task complete
       
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
@@ -38,9 +38,9 @@
          state: shutdown-guest
       register: shutdown
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
-      notify: wait
+      notify: wait for task complete
       
   handlers:
-    - name: wait
+    - name: wait for task complete
       wait_for:
         timeout: 60
