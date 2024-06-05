@@ -18,15 +18,6 @@
         msg: "VM {{ vm_name }} is already {{ vm_info.virtual_machines[0].power_state }}"
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOff'
 
-    - name: Reboot the virtual machine
-      community.vmware.vmware_guest_powerstate:
-         name: "{{ vm_name }}"
-         state: reboot-guest
-         
-    - name: Wait for the virtual machine to be powered on
-      wait_for:
-        timeout: 30
-      
     - name: Power ON the VM if it is Powered OFF
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
@@ -39,6 +30,15 @@
         timeout: 30
       when: poweron.changed
 
+    - name: Reboot the virtual machine
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ vm_name }}"
+         state: reboot-guest
+         
+    - name: Wait for the virtual machine to be powered on
+      wait_for:
+        timeout: 30
+      
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
@@ -46,8 +46,4 @@
       register: shutdown
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
       
-    - name: Wait for the virtual machine to be Shutdown
-      wait_for:
-        timeout: 30
-      when: shutdown.changed
 
