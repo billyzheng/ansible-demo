@@ -45,10 +45,7 @@
          state: shutdown-guest
       register: shutdown
       when: vm_info.virtual_machines | length > 0 and vm_info.virtual_machines[0].power_state == 'poweredOn'
-
-    - debug:
-        var: shutdown
-
+      
     - name: Wait for the virtual machine to be Shutdown
       wait_for:
         timeout: 30
