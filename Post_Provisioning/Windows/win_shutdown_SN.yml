@@ -1,5 +1,5 @@
 ---
-- name: Reboot using SNOW variable
+- name: Shutdown the VM using SNOW variable
   hosts: localhost
   gather_facts: no
   tasks:
