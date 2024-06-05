@@ -36,7 +36,7 @@
       community.vmware.vmware_guest_powerstate:
          name: "{{ vm_name }}"
          state: powered-on
-      state_change_timeout: 30
+         state_change_timeout: 30
       when: poweron.changed
 
 
