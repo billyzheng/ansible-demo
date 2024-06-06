@@ -2,14 +2,14 @@
 - name: Get variable list from ServiceNow request
   hosts: localhost
   vars:
-    request_number: "{{ request_number }}"
+    sys_id: "{{ request_number }}"
     username: "{{ servicenow_username }}"
     password: "{{ servicenow_password }}"
     instance: "{{ servicenow_instance }}"
   tasks:
-    - name: Get sys_id of the request
+    - name: Fetch Task Details
       uri:
-        url: "{{ instance }}/api/now/table/sc_task"
+        url: "{{ instance }}/api/now/table/sc_task/{{ sys_id }}"
         method: GET
         user: "{{ username }}"
         password: "{{ password }}"
@@ -19,23 +19,7 @@
         return_content: yes
         headers:
           Accept: "application/json"
-        body:
-          sysparm_query: "number={{ request_number }}"
-      register: response
-
-    - name: Get variable list
-      uri:
-        url: "{{ instance }}/api/now/table/variable_pool?sysparm_query=item_id={{ response.json.result[0].sys_id }}"
-        method: GET
-        user: "{{ username }}"
-        password: "{{ password }}"
-        force_basic_auth: yes
-        status_code: 200
-        body_format: json
-        return_content: yes
-        headers:
-          Accept: "application/json"
-      register: variable_list
+      register: task_details
 
     - debug:
-        msg: "{{ variable_list.json }}"
+        msg: "{{ task_details.json }}"
