@@ -6,7 +6,7 @@
 
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
-         name: "{{ server }}"
+         name: "{{ variables.server }}"
          state: reboot-guest
       
     - name: wait for task complete
