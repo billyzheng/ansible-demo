@@ -5,5 +5,5 @@
   tasks:
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
-         name: "{{ vm_name }}"
+         name: "{{ variables.server }}"
          state: shutdown-guest
