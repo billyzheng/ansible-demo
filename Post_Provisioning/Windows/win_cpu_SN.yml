@@ -15,9 +15,9 @@
 
     - name: Edit VM Settings
       vmware_guest:
-        name: "{{ vm_name }}"
+        name: "{{ variables.server }}"
         hardware:
-          num_cpus: "{{ variables.server }}"
+          num_cpus: "{{ variables.vcpu }}"
         state: present
 
     - name: Power on the VM
