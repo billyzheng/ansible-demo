@@ -17,7 +17,7 @@
       vmware_guest:
         name: "{{ variables.hm_cost_center_1 }}"
         hardware:
-          num_cpus: "{{ variables.cpu_entitled_capacity }}"                     
+          num_cpus: "{{ variables.server }}"                     
         state: present
 
     - name: Power on the VM
