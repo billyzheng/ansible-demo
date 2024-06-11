@@ -1,5 +1,5 @@
 ---
-- name: Resize memory and CPU for VM in vCenter
+- name: Resize memory for VM in vCenter
   hosts: localhost
   gather_facts: no
   tasks:
@@ -17,7 +17,7 @@
       vmware_guest:
         name: "{{ variables.hm_cost_center_1 }}"
         hardware:
-          memory_mb: "{{ memory_mb }}"
+          memory_mb: "{{ variables.ram_in_gb }}"
         state: present
 
     - name: Power on the VM
