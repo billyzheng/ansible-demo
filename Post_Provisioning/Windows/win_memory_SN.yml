@@ -5,7 +5,7 @@
   tasks:
     - name: Power off the VM
       vmware_guest_powerstate:
-        name: "{{ vm_name }}"
+        name: "{{ variables.hm_cost_center_1 }}"
         state: powered-off
 
     - name: Wait for 30 seconds for VM to powered down
@@ -15,12 +15,12 @@
 
     - name: Edit VM Settings
       vmware_guest:
-        name: "{{ vm_name }}"
+        name: "{{ variables.hm_cost_center_1 }}"
         hardware:
           memory_mb: "{{ memory_mb }}"
         state: present
 
     - name: Power on the VM
       vmware_guest_powerstate:
-        name: "{{ vm_name }}"
+        name: "{{ variables.hm_cost_center_1 }}"
         state: powered-on
