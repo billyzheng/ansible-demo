@@ -5,15 +5,14 @@
   tasks:
     - name: Copy Splunk installation package to Remote system
       ansible.builtin.copy:
-        src: /tmp/repo/linux_splunk/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
-        dest: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
+        src: "/AAP_job_run/software/Splunk/Linux/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm"
+        dest: "/AAP_job_run/software/Splunk/Linux/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm"
 
     - name: Install Splunk  package.
       yum:
-        name: /tmp/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm
+        name: "/AAP_job_run/software/Splunk/Linux/splunkforwarder-9.1.2-b6b9c8185839.x86_64.rpm"
         state: present
-        disable_gpg_check: true
-
+      become: true
 
     - name: "Check if Splunk agent is installed"
       package_facts:
