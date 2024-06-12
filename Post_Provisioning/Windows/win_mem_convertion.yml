@@ -1,16 +1,16 @@
-- name: Convert MB to GB
+---
+- name: Convert RAM from GB to MB
   hosts: localhost
   gather_facts: no
 
   vars:
-    volume_size_mb: 1024
+    ram_in_gb: 2
 
   tasks:
-  - name: Convert MB to GB
+  - name: Convert RAM to MB
     set_fact:
-      volume_size_gb: "{{ volume_size_mb | human_readable(unit='G') }}"
-    register: convertedsize
+      ram_size: "{{ ram_in_gb * 1024 }}"
 
-  - name: Print the result
+  - name: Display RAM size in MB
     debug:
-      msg: "Volume size in GB: {{ volume_size_gb }}"
+      var: ram_size
