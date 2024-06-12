@@ -13,11 +13,15 @@
         timeout: 10
       delegate_to: localhost
 
+    - name: Convert RAM to MB
+      set_fact:
+         ram_in_mb: "{{ variables.ram_in_gb * 1024 }}
+
     - name: Edit VM Settings
       vmware_guest:
         name: "{{ variables.server }}"
         hardware:
-          memory_mb: "{{ variables.ram_in_gb }}"
+          memory_mb: "{{ ram_in_mb }}"
           num_cpus: "{{ variables.cpu_entitled_capacity }}" 
         state: present
 
