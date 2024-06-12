@@ -1,17 +1,16 @@
----
 - name: Convert MB to GB
   hosts: localhost
-  gather_facts: yes
+  gather_facts: no
 
   vars:
     volume_size_mb: 1024
 
   tasks:
-    - name: Convert MB to GB
-      set_fact:
-        volume_size_gb: "{{ volume_size_mb | human_readable(unit='G') }}"
-      register: conversion_result
+  - name: Convert MB to GB
+    set_fact:
+      volume_size_gb: "{{ volume_size_mb | human_readable(unit='G') }}"
+    register: convertedsize
 
-    - name: Print the result
-      debug:
-        msg: "Volume size in GB: {{ conversion_result['ansible_facts']['volume_size_gb'] }}"
+  - name: Print the result
+    debug:
+      msg: "Volume size in GB: {{ volume_size_gb }}"
