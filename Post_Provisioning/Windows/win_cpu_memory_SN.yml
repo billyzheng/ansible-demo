@@ -1,5 +1,5 @@
 ---
-- name: Resize memory for VM in vCenter
+- name: Resize memory and CPU for VM in vCenter
   hosts: localhost
   gather_facts: no
   tasks:
@@ -15,7 +15,7 @@
 
     - name: Convert RAM to MB
       set_fact:
-         ram_in_mb: "{{ variables.ram_in_gb * 1024 }}
+         ram_in_mb: "{{ variables.ram_in_gb * 1024 }}"
 
     - name: Edit VM Settings
       vmware_guest:
