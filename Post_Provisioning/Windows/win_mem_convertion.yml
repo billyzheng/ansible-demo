@@ -3,14 +3,18 @@
   hosts: localhost
   gather_facts: no
 
-  vars:
-    ram_in_gb: 2
+#  vars:
+ #   ram_in_gb: 2
 
   tasks:
+#  - name: Convert RAM to MB
+#    set_fact:
+#      ram_size: "{{ ram_in_gb * 1024 }}"
+
   - name: Convert RAM to MB
     set_fact:
-      ram_size: "{{ ram_in_gb * 1024 }}"
+        ram_in_mb: "{{ variables.ram_in_gb * 1024 }}"
 
   - name: Display RAM size in MB
     debug:
-      var: ram_size
+      var: ram_in_mb
