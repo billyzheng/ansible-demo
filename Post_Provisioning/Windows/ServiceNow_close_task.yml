@@ -22,7 +22,7 @@
 
     - name: close SR task
       ansible.builtin.uri:
-        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/TASK8022602"
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/TASK8611047"
         method: PUT
         headers:
           Content-Type : application/json
