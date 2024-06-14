@@ -20,7 +20,7 @@
       debug: 
         msg: " {{ oauth_return_token.json.access_token }} "
 
-    - name: close SR task
+    - name: Ansible take SR task
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/TASK8611047"
         method: PUT
@@ -28,9 +28,11 @@
           Content-Type : application/json
           Accept : application/json
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
-          connection : keep-alive
-          Accept-Encoding : gzip, deflate, br
         body_format: json
-        body: '{"work_notes": "close notes from Ansible"}'
-      register: SR_task_closure
+        body: 
+          state: PENDING
+          substate: AWAITING_DELIVERY
+          work_notes: "Task will be implemented on future date, change state from WIP to pending"
+
+
 
