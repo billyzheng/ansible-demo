@@ -23,7 +23,6 @@
         name: "{{ variables.server }}"
         hardware:
           memory_mb: "{{ ram_in_mb }}"
-          num_cpus: "{{ variables.cpu_entitled_capacity }}" 
         state: present
 
     - name: Power on the VM
