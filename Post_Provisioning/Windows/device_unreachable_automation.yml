@@ -22,14 +22,14 @@
 
      - name: Check if WinRM port is open
        block:
-         win_wait_for:
-            host: "{{ inventory_hostname }}"
-            port: "{{ ansible_port }}"
-            state: started
-            delay: 0
-            timeout: 10
-         ignore_errors: yes
-         register: winrm_port_state
+         - win_wait_for:
+             host: "{{ inventory_hostname }}"
+             port: "{{ ansible_port }}"
+             state: started
+             delay: 0
+             timeout: 10
+           ignore_errors: yes
+           register: winrm_port_state
        when: ping_result.ping is defined and ping_result.ping
  
      - debug:
