@@ -9,6 +9,7 @@
      - name: Perform Windows ping
        win_ping:
        register: ping_result
+       ignore_errors: yes
 
      - name: Display success or failure message
        debug:
