@@ -9,11 +9,11 @@
        win_ping:
        register: ping_result
 
-    - name: Display success or failure message
-      debug:
-        msg: "Ping was successful!"
-      when: ping_result.ping is defined and ping_result.ping
+     - name: Display success or failure message
+       debug:
+         msg: "Ping was successful!"
+       when: ping_result.ping is defined and ping_result.ping
 
-    - debug:
-        msg: "Ping failed!"
-      when: ping_result.ping is not defined or not ping_result.ping
+     - debug:
+         msg: "Ping failed!"
+       when: ping_result.ping is not defined or not ping_result.ping
