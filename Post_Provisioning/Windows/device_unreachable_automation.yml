@@ -19,3 +19,22 @@
      - debug:
          msg: "Ping failed!"
        when: ping_result.ping is not defined or not ping_result.ping
+
+     - name: Check if WinRM port is open
+       wait_for:
+         host: "{{ inventory_hostname }}"
+         port: "{{ ansible_port }}"
+         state: started
+         delay: 0
+         timeout: 10
+       ignore_errors: yes
+	     register: winrm_port_state
+       when: ping_result.ping is defined and ping_result.ping
+   
+     - debug:
+         msg:  WinRM Port is accesable	
+	     when: winrm_port_state is success
+	  
+	   - debug:
+         msg:  WinRM Port is not accesable	
+	     when: winrm_port_state is failed
