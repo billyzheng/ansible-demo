@@ -1,1 +1,9 @@
 ---
+- name: Device Unreachable automation
+  hosts: all
+  gather_facts: no
+  collections:
+    - ansible.windows
+  tasks:
+    - name: Ping the Windows hosts
+      win_ping:
