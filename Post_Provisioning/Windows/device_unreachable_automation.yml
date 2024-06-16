@@ -1,7 +1,8 @@
 ---
 - name: Device Unreachable automation
   hosts: all
-  gather_facts: no
+  gather_facts: yes
+  ignore_errors: yes
   collections:
     - ansible.windows
   tasks:
