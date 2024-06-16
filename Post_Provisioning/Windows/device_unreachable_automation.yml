@@ -21,7 +21,7 @@
        when: ping_result.ping is not defined or not ping_result.ping
 
      - name: Check if WinRM port is open
-       wait_for:
+       win_wait_for:
          host: "{{ inventory_hostname }}"
          port: "{{ ansible_port }}"
          state: started
