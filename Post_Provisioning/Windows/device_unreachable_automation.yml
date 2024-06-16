@@ -1,4 +1,3 @@
----
 - name: Device Unreachable automation
   hosts: all
   gather_facts: no
@@ -6,36 +5,54 @@
   collections:
     - ansible.windows
   tasks:
-     - name: Perform Windows ping
-       win_ping:
-       register: ping_result
-       ignore_unreachable: true
+    - name: Perform Windows ping
+      win_ping:
+      register: ping_result
+      ignore_unreachable: true
 
-     - name: Display success or failure message
-       debug:
-         msg: "Ping was successful!"
-       when: ping_result.ping is defined and ping_result.ping
+    - name: Display success or failure message for ping
+      debug:
+        msg: "Ping was successful!"
+      when: ping_result.ping is defined and ping_result.ping
 
-     - debug:
-         msg: "Ping failed!"
-       when: ping_result.ping is not defined or not ping_result.ping
+    - debug:
+        msg: "Ping failed!"
+      when: ping_result.ping is not defined or not ping_result.ping
 
-     - name: Check if WinRM port is open
-       block:
-         - win_wait_for:
-             host: "{{ inventory_hostname }}"
-             port: "{{ ansible_port }}"
-             state: started
-             delay: 0
-             timeout: 10
-           ignore_errors: yes
-           register: winrm_port_state
-       when: ping_result.ping is defined and ping_result.ping
- 
-     - debug:
-         msg:  WinRM Port is accesable	
-       when: winrm_port_state is success  
-       
-     - debug:
-         msg:  WinRM Port is not accesable	
-       when: winrm_port_state is failed
+    - name: Check if WinRM port is open
+      win_wait_for:
+        host: "{{ inventory_hostname }}"
+        port: "{{ ansible_port }}"
+        state: started
+        delay: 0
+        timeout: 10
+      ignore_errors: yes
+      register: winrm_port_state
+      when: ping_result.ping is defined and ping_result.ping
+
+    - name: Debug message for WinRM port state
+      debug:
+        msg: "WinRM Port is accessible"
+      when: winrm_port_state is succeeded
+
+    - debug:
+        msg: "WinRM Port is not accessible"
+      when: winrm_port_state is failed
+
+    - name: Check server uptime if WinRM port is accessible
+      win_shell: systeminfo | find "System Boot Time"
+      register: server_uptime
+      ignore_errors: yes
+      when: winrm_port_state is succeeded
+
+    - debug:
+        msg: "Server uptime: {{ server_uptime.stdout }}"
+      when: server_uptime is defined
+
+    - debug:
+        msg: "Unable to retrieve server uptime"
+      when: server_uptime is not defined and winrm_port_state is succeeded
+
+    - debug:
+        msg: "Server is down. WinRM port is not accessible."
+      when: winrm_port_state is failed
