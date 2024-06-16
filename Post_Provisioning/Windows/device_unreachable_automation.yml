@@ -28,13 +28,13 @@
          delay: 0
          timeout: 10
        ignore_errors: yes
-	     register: winrm_port_state
+       register: winrm_port_state
        when: ping_result.ping is defined and ping_result.ping
    
      - debug:
          msg:  WinRM Port is accesable	
-	     when: winrm_port_state is success
+       when: winrm_port_state is success
 	  
-	   - debug:
+      - debug:
          msg:  WinRM Port is not accesable	
-	     when: winrm_port_state is failed
+        when: winrm_port_state is failed
