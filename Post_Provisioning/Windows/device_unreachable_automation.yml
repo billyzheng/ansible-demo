@@ -30,11 +30,11 @@
        ignore_errors: yes
        register: winrm_port_state
        when: ping_result.ping is defined and ping_result.ping
-   
+ 
      - debug:
          msg:  WinRM Port is accesable	
-       when: winrm_port_state is success
-	  
-      - debug:
+       when: winrm_port_state is success  
+       
+     - debug:
          msg:  WinRM Port is not accesable	
-        when: winrm_port_state is failed
+       when: winrm_port_state is failed
