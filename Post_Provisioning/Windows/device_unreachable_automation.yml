@@ -6,8 +6,8 @@
     - ansible.windows
   tasks:
      - name: Perform Windows ping
-      win_ping:
-      register: ping_result
+       win_ping:
+       register: ping_result
 
     - name: Display success or failure message
       debug:
