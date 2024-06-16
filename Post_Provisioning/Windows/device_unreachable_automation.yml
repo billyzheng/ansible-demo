@@ -33,17 +33,23 @@
     - name: Debug message for WinRM port state
       debug:
         msg: "WinRM Port is accessible"
-      when: winrm_port_state is succeeded
+      when:
+        - winrm_port_state is succeeded
+        - ping_result.ping is defined and ping_result.ping
 
     - debug:
         msg: "WinRM Port is not accessible"
-      when: winrm_port_state is failed
+      when:
+        - winrm_port_state is failed
+        - ping_result.ping is defined and ping_result.ping
 
     - name: Check server uptime if WinRM port is accessible
       win_shell: systeminfo | find "System Boot Time"
       register: server_uptime
       ignore_errors: yes
-      when: winrm_port_state is succeeded
+      when:
+        - winrm_port_state is succeeded
+        - ping_result.ping is defined and ping_result.ping
 
     - debug:
         msg: "Server uptime: {{ server_uptime.stdout }}"
@@ -51,8 +57,13 @@
 
     - debug:
         msg: "Unable to retrieve server uptime"
-      when: server_uptime is not defined and winrm_port_state is succeeded
+      when:
+        - server_uptime is not defined
+        - winrm_port_state is succeeded
+        - ping_result.ping is defined and ping_result.ping
 
     - debug:
         msg: "Server is down. WinRM port is not accessible."
-      when: winrm_port_state is failed
+      when:
+        - winrm_port_state is failed
+        - ping_result.ping is defined and ping_result.ping
