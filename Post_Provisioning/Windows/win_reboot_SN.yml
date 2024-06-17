@@ -9,6 +9,12 @@
          name: xf-s-aapwin04t
     #     name: "{{ variables.server }}"
          state: reboot-guest
+      register: reboot_result
+
+    - name: Fail if VM reboot is not happen
+      fail:
+        msg: "VM is already in shutdown state"
+      when: not reboot_result.changed
       
     - name: wait for task complete
       wait_for:
