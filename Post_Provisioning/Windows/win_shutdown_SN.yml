@@ -5,7 +5,7 @@
   tasks:
     - name: Check VM power state
       community.vmware.vmware_guest_powerstate:
-         name: server01
+         name: xf-s-aapwin04t
       register: vm_power_state
       ignore_errors: yes
       
