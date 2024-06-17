@@ -6,7 +6,8 @@
 
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
-         name: "{{ variables.server }}"
+         name: xf-s-aapwin04t
+    #     name: "{{ variables.server }}"
          state: reboot-guest
       
     - name: wait for task complete
