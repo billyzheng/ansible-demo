@@ -46,7 +46,7 @@
         body_format: json
         body: 
           state: CLOSED_INCOMPLETE
-          closure_notes: "closed by AAP"
+          closure_notes: "closed incomplete by AAP"
       register: SR_task_close_incomplete  
 
 
