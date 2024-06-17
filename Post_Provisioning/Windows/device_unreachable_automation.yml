@@ -1,9 +1,11 @@
+---
 - name: Device Unreachable automation
   hosts: all
   gather_facts: no
   ignore_errors: yes
   collections:
     - ansible.windows
+
   tasks:
     - name: Perform Windows ping
       win_ping:
@@ -28,16 +30,17 @@
         timeout: 10
       ignore_errors: yes
       register: winrm_port_state
-      when: ping_result.ping is defined and ping_result.ping
+      when: true  # Always attempt to check WinRM port status
 
-    - name: Debug message for WinRM port state
+    - name: Debug message for WinRM port state (accessible)
       debug:
         msg: "WinRM Port is accessible"
       when:
         - winrm_port_state is succeeded
         - ping_result.ping is defined and ping_result.ping
 
-    - debug:
+    - name: Debug message for WinRM port state (not accessible)
+      debug:
         msg: "WinRM Port is not accessible"
       when:
         - winrm_port_state is failed
