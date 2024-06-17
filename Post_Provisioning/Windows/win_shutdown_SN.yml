@@ -5,6 +5,6 @@
   tasks:
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
-          name: xf-s-aapwin04t
+         name: xf-s-aapwin04t
     #     name: "{{ variables.server }}"
          state: shutdown-guest
