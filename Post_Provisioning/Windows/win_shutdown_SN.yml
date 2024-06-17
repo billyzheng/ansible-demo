@@ -8,7 +8,7 @@
          name: xf-s-aapwin04t
     #     name: "{{ variables.server }}"
          state: shutdown-guest
-          register: shutdown_result
+      register: shutdown_result
 
     - name: Fail if server is already shut down
       fail:
