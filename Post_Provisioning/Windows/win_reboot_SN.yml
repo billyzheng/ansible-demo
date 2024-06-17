@@ -18,4 +18,4 @@
       
     - name: wait for task complete
       wait_for:
-        timeout: 45
+        timeout: 30
