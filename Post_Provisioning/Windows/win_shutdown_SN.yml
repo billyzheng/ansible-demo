@@ -3,14 +3,16 @@
   hosts: localhost
   gather_facts: no
   tasks:
+    - name: Check VM power state
+      community.vmware.vmware_guest_powerstate:
+         name: server01
+      register: vm_power_state
+      
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
          name: xf-s-aapwin04t
     #     name: "{{ variables.server }}"
          state: shutdown-guest
+      when: vm_power_state.guest_power_state != 'poweredOff'
       register: shutdown_result
-
-    - name: Fail if server is already shut down
-      fail:
-        msg: "Server is already shut down state"
-      when: shutdown_result.status == "shutdown" or not shutdown_result.changed
+      failed_when: "'shutdown-guest' not in shutdown_result.state_change.msg"
