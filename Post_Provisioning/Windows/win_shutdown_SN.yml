@@ -15,5 +15,3 @@
     #     name: "{{ variables.server }}"
          state: shutdown-guest
       when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOn'
-      register: shutdown_result
-      failed_when: "'shutdown-guest' not in shutdown_result.state_change.msg"
