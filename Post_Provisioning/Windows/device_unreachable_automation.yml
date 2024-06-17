@@ -28,7 +28,7 @@
         state: started
         delay: 0
         timeout: 10
-      ignore_errors: yes
+      ignore_unreachable: true
       register: winrm_port_state
       when: true  # Always attempt to check WinRM port status
 
