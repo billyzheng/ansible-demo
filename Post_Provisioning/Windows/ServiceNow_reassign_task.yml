@@ -46,7 +46,7 @@
         body_format: json
         body: 
           state: CLOSED_IN_COMPLETE
-          work_notes: "Error has been encountered during the automation run",
+          work_notes: "Error has been encountered during the automation run"
           closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete  
 
