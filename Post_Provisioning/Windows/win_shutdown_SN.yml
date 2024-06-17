@@ -7,7 +7,11 @@
       community.vmware.vmware_vm_info:
          vm_name: xf-s-aapwin04t
       register: vm_power_state
-#      ignore_errors: yes
+
+    - name: Fail if server is already shut down or shutdown task did not change state
+      fail:
+         msg: "Server is already shut down or shutdown task did not change state."
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
       
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
