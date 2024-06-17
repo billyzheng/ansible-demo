@@ -45,8 +45,9 @@
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
         body_format: json
         body: 
-          state: CLOSED_INCOMPLETE
-          closure_notes: "closed incomplete by AAP"
+          state: CLOSED_IN_COMPLETE
+          work_notes: "Reassigning the task",
+          closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete  
 
 
