@@ -7,13 +7,13 @@
       community.vmware.vmware_guest_powerstate:
          name: xf-s-aapwin04t
       register: vm_power_state
-      ignore_errors: yes
+#      ignore_errors: yes
       
     - name: Shutdown the VM
       community.vmware.vmware_guest_powerstate:
          name: xf-s-aapwin04t
     #     name: "{{ variables.server }}"
          state: shutdown-guest
-      when: vm_power_state.guest_power_state != 'poweredOff'
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOn'
       register: shutdown_result
       failed_when: "'shutdown-guest' not in shutdown_result.state_change.msg"
