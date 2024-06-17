@@ -6,8 +6,7 @@
 
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
-         name: xf-s-aapwin04t
-    #     name: "{{ variables.server }}"
+         name: "{{ variables.server }}"
          state: reboot-guest
       register: reboot_result
 
