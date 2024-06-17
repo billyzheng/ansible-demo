@@ -30,9 +30,9 @@
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
         body_format: json
         body: 
-          state: PENDING
-          substate: AWAITING_DELIVERY
-          work_notes: "Task will be implemented on future date, change state from WIP to pending"
+          state: CLOSED_COMPLETE
+          closure_notes: "closed by AAP"
+      register: SR_task_close  
 
 
 
