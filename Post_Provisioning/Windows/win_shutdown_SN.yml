@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
     - name: Check VM power state
-      community.vmware.vmware_guest_powerstate:
+      community.vmware.vmware_vm_info:
          name: xf-s-aapwin04t
       register: vm_power_state
 #      ignore_errors: yes
