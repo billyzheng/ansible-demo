@@ -12,6 +12,19 @@
     set_fact:
       next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', '10.17.113.0/24', provider=nios_provider) }}"
 
-  - name: Print the next available IP
+#  - name: Print the next available IP
+ #   debug:
+  #    msg: "Next available IP: {{ next_ip }}"
+
+  - name: Set IP variable
+    set_fact:
+      vm_private_IP: "{{ next_ip }}"
+
+  - name: Print the IP variable
     debug:
-      msg: "Next available IP: {{ next_ip }}"
+      msg: "vm_private_IP: {{ vm_private_IP }}"
+
+  - name: Include the second job template
+    include: second_job_template.yml
+    vars:
+      vm_private_IP: "{{ vm_private_IP }}"
