@@ -1,0 +1,10 @@
+---
+- name: vm_provision_template
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: Print the passed IP variable
+    debug:
+      msg: "vm_private_IP: {{ vm_private_IP }}"
