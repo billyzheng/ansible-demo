@@ -24,7 +24,7 @@
     debug:
       msg: "vm_private_IP: {{ vm_private_IP }}"
 
-  - name: Include the second job template
-    include: second_job_template.yml
+  - name: Include the VM provision template
+    include: vm_provision_template
     vars:
       vm_private_IP: "{{ vm_private_IP }}"
