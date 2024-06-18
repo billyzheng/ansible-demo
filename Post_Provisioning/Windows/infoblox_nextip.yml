@@ -16,14 +16,6 @@
     debug:
       msg: "Next available IP: {{ next_ip }}"
 
-#  - name: Set IP variable
- #   set_fact:
-  #    vm_private_IP: "{{ next_ip }}"
-
- # - name: Print the IP variable
- #   debug:
-  #    msg: "vm_private_IP: {{ vm_private_IP }}"
-
   - set_stats:
       data:
         server_ip: "{{ next_ip }}"  
