@@ -49,8 +49,17 @@ print(f'Implemented control IDs: {len(all_implemented_ids_set)}')
 print(f'Implemented control IDs but not in Andrews file: {len(all_implemented_ids_set - all_ids_set.intersection(all_implemented_ids_set))}')
 print(sorted(all_implemented_ids_set - all_ids_set.intersection(all_implemented_ids_set)))
 
+to_be_implemented_ids = all_ids_set - all_ids_set.intersection(all_implemented_ids_set)
 
-print(f'To be implemented control IDs: {len(all_ids_set - all_ids_set.intersection(all_implemented_ids_set))}')
-print(sorted(all_ids_set - all_ids_set.intersection(all_implemented_ids_set)))
+# remove some control IDs that do not need to be implemented, which is due to the regular expression matching
+to_be_implemented_ids.remove('11023')
+
+# remove some control IDs that are not implemented, which is implemented in the other file
+to_be_implemented_ids.remove('1115')
+to_be_implemented_ids.remove('3377')
+to_be_implemented_ids.remove('5241')
+
+print(f'To be implemented control IDs: {len(to_be_implemented_ids)}')
+print(sorted(to_be_implemented_ids))
 
 print(f'Finish rate: {(len(all_implemented_ids_set) - len(all_implemented_ids_set - all_ids_set.intersection(all_implemented_ids_set))) / len(all_ids_set) * 100:.4}%')

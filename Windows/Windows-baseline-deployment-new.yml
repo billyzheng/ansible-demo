@@ -62,3 +62,4 @@
   - name: "win_baseline_5241_state debug"
     debug:
       msg: "{{ security_software.stdout }}"
+
