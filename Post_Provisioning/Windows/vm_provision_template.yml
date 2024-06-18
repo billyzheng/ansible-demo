@@ -1,10 +1,8 @@
 ---
 - hosts: localhost
   connection: local
-  gather_facts: false
+  
   tasks: 
-  - name: include task
-    include_tasks: infoblox_nextip.yml
-  - name: Display the server ip variable
-    debug:
-       msg: "{{ server_ip }}"    
+   - name: Print the server IP
+     debug:
+       msg: "Next available IP: {{ server_ip }}"
