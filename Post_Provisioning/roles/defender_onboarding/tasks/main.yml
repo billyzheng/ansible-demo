@@ -1,0 +1,25 @@
+---
+- name: Run Defender Onboarding Script
+  win_command: "{{ defender_script_path }}"
+  async: 60
+  poll: 0
+  register: onboarding_output
+
+- name: Wait for 60 seconds
+  win_wait_for:
+    timeout: 60
+
+- name: Validate Defender Onboarding
+  win_shell: |
+    # Check if Defender ATP service is running
+    $defenderService = Get-Service -Name WinDefend
+    if ($defenderService.Status -eq "Running") {
+      Write-Host "Defender ATP service is running."
+    } else {
+      Write-Host "Defender ATP service is not running."
+    }
+  register: defender_validation
+    
+- name: Print Defender Validation Output
+  debug:
+    msg: "{{ defender_validation.stdout }}"

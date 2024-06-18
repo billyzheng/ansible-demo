@@ -1,0 +1,29 @@
+---
+- name: Retrieve current DNS suffix list
+  win_shell: |
+    Import-Module DnsClient
+    Get-DnsClientGlobalSetting | Select-Object -ExpandProperty SuffixSearchList
+  register: current_suffix_list
+  changed_when: false
+  
+- name: Debug current DNS suffix list
+  debug:
+     var: current_suffix_list.stdout.split(';')
+
+- name: Split DNS suffixes from the survey
+  set_fact:
+     dns_suffixes_list: "{{ dns_suffix.split('\n') }}"
+
+- name: Add DNS suffixes
+  win_shell: |
+    $suffixresult = (Get-DnsClientGlobalSetting).SuffixSearchList
+    foreach ($suffix in $env:DNS_SUFFIXES_LIST) {
+      if ($suffixresult -notcontains $suffix) {
+        $suffixresult += $suffix
+      }
+    }
+    Write-Output "New suffix list: $suffixresult"
+    Set-DnsClientGlobalSetting -SuffixSearchList $suffixresult
+  environment:
+    DNS_SUFFIXES_LIST: "{{ item }}"
+  loop: "{{ dns_suffixes_list }}"

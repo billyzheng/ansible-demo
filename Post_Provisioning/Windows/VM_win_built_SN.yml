@@ -1,0 +1,62 @@
+---
+# create a new VM from a template
+
+- name: VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    template_password: P@ssw0rd123456
+    notes: Ansible Test
+    dumpfacts: False
+  tasks:
+    - name: Create VM from template
+      vmware_guest:
+        validate_certs: False
+        datacenter: "{{ v.vdatacenter }}"
+        cluster: "{{ v.vcluster }}"
+        folder: "{{ v.vcenter_folder }}"
+        name: "{{ v.vmname }}"
+        template: "{{ v.vmtemplate }}"
+        disk:
+          - size_gb: "{{ v.disk_size }}"
+            type: thin
+            datastore: "{{ v.datastore }}"
+          - size_gb: "{{ v.disk_size1 }}"
+            type: thin
+            datastore: "{{ v.datastore }}"
+          - size_gb: "{{ v.disk_size2 }}"
+            type: thin
+            datastore: "{{ v.datastore }}"
+        networks:
+        - name: "{{ v.vnetwork_name }}"
+          ip: "{{ v.vip }}"
+          netmask: "{{ v.vnetmask }}"
+          gateway: "{{ v.vgateway }}"
+          domain: "{{ v.vdomain }}"
+          dns_servers:
+          - "{{ v.vdns1 }}"
+          - "{{ v.vdns2 }}"
+        hardware:
+          num_cpus: "{{ v.vcpu }}"
+          memory_mb: "{{ v.vmem }}"
+        customization:
+          password: "{{ template_password }}"
+      # This powershell script is required for cross vlan WinRM to run the next tasks - Once playbook complete remove the firewall rule if needed
+          runonce:
+           - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+           - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+        wait_for_customization: yes
+        wait_for_ip_address: True
+        state: present
+      register: newvm
+
+    - name: IP address info
+      debug:
+        msg: "{{ newvm.instance.ipv4 }}"
+      register: private_ip
+ 
+    - name: Set IP var to pass down to the 2nd Job template
+      set_stats:
+        data:
+          vm_private_IP: "{{ private_ip.msg }}"

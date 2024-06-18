@@ -1,22 +1,22 @@
 ---
 - name: Get current timezone
-  ansible.windows.win_shell: |
+  win_shell: |
      Get-TimeZone | Select-Object -ExpandProperty Id
   register: current_timezone
   changed_when: false
 
 - name: Set timezone if not already set
   win_timezone:
-     timezone: "{{ input_timezone }}"
-  when: current_timezone.stdout != input_timezone
+     timezone: "{{ timezone_value }}"
+  when: current_timezone.stdout != timezone_value
   register: timezone_changed
 
 - name: Print message if timezone changed
   debug:
-     msg: "Timezone set to {{ input_timezone }}"
+     msg: "Timezone set to {{ timezone_value }}"
   when: timezone_changed.changed
 
 - name: Print message if timezone already set
   debug:
-     msg: "Timezone already set to {{ input_timezone }}"
+     msg: "Timezone already set to {{ timezone_value }}"
   when: not timezone_changed.changed

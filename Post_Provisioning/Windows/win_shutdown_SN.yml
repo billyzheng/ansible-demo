@@ -1,0 +1,20 @@
+---
+- name: Shutdown the VM using SNOW variable
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Check VM power state
+      community.vmware.vmware_vm_info:
+         vm_name: "{{ variables.server }}"
+      register: vm_power_state
+
+    - name: Fail if server is already shut down or shutdown task did not change state
+      fail:
+         msg: "Server is already shut down or shutdown task did not change state."
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
+      
+    - name: Shutdown the VM
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ variables.server }}"
+         state: shutdown-guest
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOn'

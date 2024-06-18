@@ -1,0 +1,66 @@
+---
+- name: Device Unreachable automation
+  hosts: all
+  gather_facts: no
+  ignore_errors: yes
+  collections:
+    - ansible.windows
+
+  tasks:
+    - name: Perform Windows ping
+      win_ping:
+      register: ping_result
+      ignore_unreachable: true
+
+    - name: Display success or failure message for ping
+      debug:
+        msg: "Ping was successful!"
+      when: ping_result.ping is defined and ping_result.ping
+
+    - debug:
+        msg: "Ping failed!"
+      when: ping_result.ping is not defined or not ping_result.ping
+
+    - name: Check if WinRM port is open
+      win_wait_for:
+        host: "{{ inventory_hostname }}"
+        port: "{{ ansible_port }}"
+        state: started
+        delay: 0
+        timeout: 10
+      ignore_unreachable: true
+      register: winrm_port_state
+      when: true  
+
+    - name: Debug message for WinRM port state (accessible)
+      debug:
+        msg: "WinRM Port is accessible"
+      when:
+        - winrm_port_state is succeeded
+        - ping_result.ping is defined and ping_result.ping
+
+    - name: Debug message for WinRM port state (not accessible)
+      debug:
+        msg: "WinRM Port is not accessible"
+      when: ping_result.ping is not defined or not ping_result.ping
+
+    - name: Check server uptime if WinRM port is accessible
+      win_shell: systeminfo | find "System Boot Time"
+      register: server_uptime
+      ignore_errors: yes
+      when:
+        - winrm_port_state is succeeded
+        - ping_result.ping is defined and ping_result.ping
+
+    - debug:
+        msg: "Server uptime: {{ server_uptime.stdout }}"
+      when: server_uptime is defined
+
+    - debug:
+        msg: "Unable to retrieve server uptime"
+      when: ping_result.ping is not defined or not ping_result.ping
+
+    - debug:
+        msg: "Server is down. WinRM port is not accessible."
+      when: ping_result.ping is not defined or not ping_result.ping
+

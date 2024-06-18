@@ -1,0 +1,20 @@
+---
+- name: Reboot using SNOW variable
+  hosts: localhost
+  gather_facts: no
+  tasks:
+
+    - name: Reboot the virtual machine
+      community.vmware.vmware_guest_powerstate:
+         name: "{{ variables.server }}"
+         state: reboot-guest
+      register: reboot_result
+
+    - name: Fail if VM reboot is not happen
+      fail:
+        msg: "VM is already in shutdown state"
+      when: not reboot_result.changed
+      
+    - name: wait for task complete
+      wait_for:
+        timeout: 30

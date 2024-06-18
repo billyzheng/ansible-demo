@@ -4,23 +4,43 @@
   gather_facts: no
   collections:
     - ansible.windows
+    - community.vmware
+    - community.windows
   tasks:
 
   - name: Validate and set the system timezone
-    ansible.builtin.import_role:
+    import_role:
       name: timezone
 
   - name: KMS OS registration
-    ansible.builtin.import_role:
+    import_role:
       name: kms_registration
 
   - name: Enable the RDP
-    ansible.builtin.import_role:
+    import_role:
       name: enable_rdp
     
   - name: Disable the firewall rules
-    ansible.builtin.import_role:
+    import_role:
       name: disable_firewall
 
-    
+  - name: Disk Management
+    import_role:
+      name: disk_management
+
+  - name: FlexNet Installation
+    import_role:
+      name: flexnet_installation   
+
+  - name: Onboarding the Defender
+    import_role:
+      name: defender_onboarding
+
+  - name: Adding the DNS Suffix
+    import_role:
+      name: dns_suffix_add
+
+  - name: Qualys Installation
+    import_role:
+      name: qualys_installation
 

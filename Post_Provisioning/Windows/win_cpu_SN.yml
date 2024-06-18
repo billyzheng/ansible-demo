@@ -1,0 +1,33 @@
+---
+- name: Resize memory and CPU for VM in vCenter
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Power off the VM
+      vmware_guest_powerstate:
+        name: "{{ variables.server }}"
+        state: powered-off
+      ignore_errors: yes
+
+    - name: Wait for 30 seconds for VM to powered down
+      wait_for:
+        timeout: 10
+      delegate_to: localhost
+
+    - name: Edit VM Settings
+      vmware_guest:
+        name: "{{ variables.server }}"
+        hardware:
+          num_cpus: "{{ variables.cpu_entitled_capacity }}"                     
+        state: present
+      register: cpu_result
+
+    - name: Power on the VM
+      vmware_guest_powerstate:
+        name: "{{ variables.server }}"
+        state: powered-on
+
+    - name: Fail if CPU resize did not happen
+      fail:
+        msg: "CPU is not resized on the server"
+      when: not cpu_result.changed
