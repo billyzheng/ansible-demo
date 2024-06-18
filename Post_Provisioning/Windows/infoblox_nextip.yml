@@ -26,5 +26,5 @@
 
   - set_stats:
       data:
-        test_stat: "{{ vm_private_IP }}"  
+        server_ip: "{{ vm_private_IP }}"  
  
