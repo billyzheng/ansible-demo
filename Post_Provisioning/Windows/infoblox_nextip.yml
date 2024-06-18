@@ -24,7 +24,7 @@
     debug:
       msg: "vm_private_IP: {{ vm_private_IP }}"
 
-  - name: Include the VM provision template
-    include: vm_provision_template
-    vars:
-      vm_private_IP: "{{ vm_private_IP }}"
+  - set_stats:
+      data:
+        test_stat: "{{ vm_private_IP }}"  
+ 
