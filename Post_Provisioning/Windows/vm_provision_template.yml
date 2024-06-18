@@ -1,10 +1,11 @@
 ---
-- name: vm_provision_template
+- name: PLaybook to check server ip
   hosts: localhost
   connection: local
-  gather_facts: no
-
-  tasks:
-  - name: Print the passed IP variable
-    debug:
-      msg: "vm_private_IP: {{ vm_private_IP }}"
+  gather_facts: false
+  tasks: 
+    - name: include task
+      include_tasks: infoblox_nextip.yml
+    - name: Display the server ip variable
+      debug:
+        msg: "{{ server_ip }}"    
