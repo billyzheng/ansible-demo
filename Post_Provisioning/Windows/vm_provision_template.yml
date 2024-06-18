@@ -5,4 +5,4 @@
   tasks: 
    - name: Print the server IP
      debug:
-       msg: "Next available IP: {{ server_ip }}"
+       msg: "Server ip passed is: {{ server_ip }}"
