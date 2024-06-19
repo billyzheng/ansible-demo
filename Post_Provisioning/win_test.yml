@@ -1,7 +1,8 @@
 ---
-- name: windows post provisioning  
-  hosts: all
-  gather_facts: no
+- name: VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
   collections:
     - ansible.windows
     - community.vmware
