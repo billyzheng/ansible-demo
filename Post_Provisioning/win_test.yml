@@ -13,4 +13,8 @@
     ansible.builtin.import_role:
       name: pre_test
 
+  - name: testing
+    ansible.builtin.import_role:
+      name: pre_test
+
 
