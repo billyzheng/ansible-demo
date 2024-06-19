@@ -1,12 +1,12 @@
 ---
-    - name: Create VM from template
-      vmware_guest:
-        validate_certs: False
-        datacenter: "{{ v.vdatacenter }}"
-        cluster: "{{ v.vcluster }}"
-        folder: "{{ v.vcenter_folder }}"
-        name: "{{ v.vmname }}"
-        template: "{{ v.vmtemplate }}"
+- name: Create VM from template
+  vmware_guest:
+    validate_certs: False
+    datacenter: "{{ v.vdatacenter }}"
+    cluster: "{{ v.vcluster }}"
+    folder: "{{ v.vcenter_folder }}"
+    name: "{{ v.vmname }}"
+    template: "{{ v.vmtemplate }}"
         disk:
           - size_gb: "{{ v.disk_size }}"
             type: thin
