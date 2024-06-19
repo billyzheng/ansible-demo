@@ -1,0 +1,22 @@
+---
+- name: Gather and sort vCenter datastores
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+  - name: Gather vCenter datastores
+    community.vmware.vmware_datastore_info:
+    register: datastores
+
+  - name: List the datastores
+    debug:
+      var: datastores
+
+#  - name: Sort datastores by name
+#    set_fact:
+#      sorted_datastores: "{{ datastores.datastores | sort(attribute='name') }}"
+
+ # - name: Display datastores with free space
+ #   debug:
+ #     msg: "Datastore {{ item.name }} has {{ item.freeSpace }} bytes of free space."
+ #   loop: "{{ sorted_datastores }}"
