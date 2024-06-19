@@ -28,9 +28,9 @@
       delimiter: ','
     register: csv_data
 
-  - name: Install application based on condition
+  - name: Filter the required item
     debug:
-       msg: "{{ item.Vm_name }}"
+       msg: "New server name is to be: {{ item.Vm_name }}"
     when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'stage' 
     loop: "{{ csv_data.list }}"
     loop_control:
