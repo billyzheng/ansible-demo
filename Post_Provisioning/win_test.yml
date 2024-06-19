@@ -8,6 +8,11 @@
     - community.vmware
     - community.windows
     - community.general
+  vars:
+     nios_provider:
+        host: "{{ INFOBLOX_HOST }}"
+        username: "{{ INFOBLOX_USERNAME }}"
+        password: "{{ INFOBLOX_PASSWORD }}"
   tasks:
 
   - name: Read the CSV input
