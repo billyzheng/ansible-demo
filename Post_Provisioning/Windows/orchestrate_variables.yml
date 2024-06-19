@@ -19,3 +19,11 @@
     - name: Print network zone (filtered to first element)
       debug:
         var: zone_network
+
+    - name: Extract Datacenter Code
+      set_fact:
+        location_datacenter: "{{ variables.Datacenter_Location | regex_replace('.* - ([^(]*) .*', '\\1') }}"
+
+    - name: Print Datacenter Code
+      debug:
+        var: location_datacenter
