@@ -6,3 +6,8 @@
    - name: Print the server IP
      debug:
        msg: "Server ip passed is: {{ server_ip }}"
+
+   - name: Print the server name
+     debug:
+       msg: "Server name is: {{ vm_name }}"
+
