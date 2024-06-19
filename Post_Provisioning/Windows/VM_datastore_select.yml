@@ -16,9 +16,9 @@
     set_fact:
       filtered_datastores: "{{ datastores.datastores | selectattr('name', 'contains', 'DMZ') }}"
 
- - name: Sort datastores by free space and choose the one with more free space
-   set_fact:
-     vm_datastore: "{{ (filtered_datastores | sort(key='freeSpace', reverse=True) | first)['name'] }}"
+  - name: Sort datastores by free space and choose the one with more free space
+    set_fact:
+      vm_datastore: "{{ (filtered_datastores | sort(key='freeSpace', reverse=True) | first)['name'] }}"
 
 #  - name: Sort datastores by free space
  #   set_fact:
