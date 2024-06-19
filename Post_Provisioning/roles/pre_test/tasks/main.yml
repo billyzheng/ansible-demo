@@ -1,8 +1,4 @@
 ---
-  vars:
-    template_password: P@ssw0rd123456
-
-  tasks:
     - name: Create VM from template
       vmware_guest:
         validate_certs: False
