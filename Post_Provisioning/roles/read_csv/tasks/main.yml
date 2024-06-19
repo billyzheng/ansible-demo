@@ -13,7 +13,7 @@
         
 - name: Read CSV file
   community.general.read_csv:
-    path: files/DC1B-VMware-mapping.csv
+    path: 'Post_Provisioning/roles/read_csv/files/DC1B-VMware-mapping.csv'
     delimiter: ','
   register: csv_data
 
