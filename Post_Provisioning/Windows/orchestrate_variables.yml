@@ -34,6 +34,14 @@
 
   - name: Print Environment
     debug:
-        var: location_datacenter
+        var: location_environment
+
+  - name: Extract Application Type Abbreviation
+      set_fact:
+        type_of_app: "{{ variables.application_type.split(' ')[0] }}"
+
+    - name: Print Application Type Abbreviation
+      debug:
+        var: type_of_app
 
     
