@@ -8,11 +8,11 @@
       set_fact:
         zone_network: "{{ variables.network_zone.split(' – ') }}"
 
-    - name: Print network zone (original split)
+    - name: Print network zone 
       debug:
         var: zone_network
 
-    - name: Set zone_network to first element only
+    - name: Set network zone 
       set_fact:
         zone_network: "{{ zone_network[0] }}"
 
@@ -27,3 +27,13 @@
     - name: Print Datacenter Code
       debug:
         var: location_datacenter
+
+   - name: Set zone_network to first element only
+      set_fact:
+        location_environment: "{{ variables.Environment }}"
+
+  - name: Print Environment
+    debug:
+        var: location_datacenter
+
+    
