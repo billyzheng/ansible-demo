@@ -6,7 +6,7 @@
   tasks:
     - name: Split string
       set_fact:
-        zone_network: "{{ network_zone.split(' – ') }}"
+        zone_network: "{{ variables.network_zone.split(' – ') }}"
 
     - name: Print network zone (original split)
       debug:
