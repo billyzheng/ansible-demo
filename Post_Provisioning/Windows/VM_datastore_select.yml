@@ -19,3 +19,7 @@
   - name: Sort datastores by free space
     set_fact:
       sorted_datastores: "{{ filtered_datastores | sort(attribute='freeSpace', reverse=True) }}"
+
+  - name: Choose the datastore which have more freespace
+    set_fact:
+      vm_datastore: "{{ sorted_datastores | first }}"
