@@ -3,16 +3,19 @@
   connection: local
   collections:
     - community.general
-
-  vars:
-    network_zone: "IDZ – Internal DMZ"
-
   tasks:
-  - name: Split string
-    set_fact:
-      zone_network: "{{ variables.network_zone | split(' – ') }}"
+    - name: Split string
+      set_fact:
+        zone_network: "{{ network_zone.split(' – ') }}"
 
-  - name: Print network zone
-    debug:
-      var: zone_network
-  
+    - name: Print network zone (original split)
+      debug:
+        var: zone_network
+
+    - name: Set zone_network to first element only
+      set_fact:
+        zone_network: "{{ zone_network[0] }}"
+
+    - name: Print network zone (filtered to first element)
+      debug:
+        var: zone_network
