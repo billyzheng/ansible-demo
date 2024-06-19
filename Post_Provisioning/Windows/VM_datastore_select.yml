@@ -16,7 +16,6 @@
     set_fact:
       filtered_datastores: "{{ datastores.datastores | selectattr('name', 'contains', 'DMZ') }}"
 
- # - name: Display datastores with free space
- #   debug:
- #     msg: "Datastore {{ item.name }} has {{ item.freeSpace }} bytes of free space."
- #   loop: "{{ sorted_datastores }}"
+  - name: Sort datastores by free space
+    set_fact:
+      sorted_datastores: "{{ filtered_datastores | sort(attribute='freeSpace', reverse=True) }}"
