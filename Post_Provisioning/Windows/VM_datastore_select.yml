@@ -26,4 +26,4 @@
 
   - name: Choose the datastore which have more freespace
     set_fact:
-      vm_datastore: "{{ vm_datastore.name }}"
+      vm_datastore: "{{ free_datastore.name }}"
