@@ -10,12 +10,12 @@
     - community.general
   tasks:
 
-  - name: testing
+  - name: Read the CSV input
     ansible.builtin.import_role:
       name: read_csv
 
-  - name: testing
-    ansible.builtin.import_role:
-      name: pre_test
+#  - name: Build the VM server
+ #   ansible.builtin.import_role:
+ #     name: pre_test
 
 
