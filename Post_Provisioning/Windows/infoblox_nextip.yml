@@ -14,9 +14,14 @@
     set_fact:
       next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', '10.17.113.0/24', provider=nios_provider) }}"
 
+  - name: Extract IP address from the list
+      set_fact:
+        next_ip: "{{ next_ip[0] }}" 
+
   - name: Print the next available IP
     debug:
       msg: "Next available IP: {{ next_ip }}"
+      
 
   - set_stats:
       data:
