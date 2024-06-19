@@ -19,4 +19,10 @@
   - set_stats:
       data:
         server_ip: "{{ next_ip }}"  
+
+  - name: Read CSV file
+    community.general.read_csv:
+      path: 'Post_Provisioning/roles/read_csv/files/DC1B-VMware-mapping.csv'
+      delimiter: ','
+    register: csv_data
  
