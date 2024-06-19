@@ -4,6 +4,8 @@
   gather_facts: no
   collections:
     - ansible.windows
+    - community.vmware
+    - community.windows
   tasks:
 
   - name: testing
