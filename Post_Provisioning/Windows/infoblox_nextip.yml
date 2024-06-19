@@ -27,4 +27,13 @@
       path: DC1B-VMware-mapping.csv
       delimiter: ','
     register: csv_data
+
+  - name: Install application based on condition
+    debug:
+       msg: "{{ item.Vm_name }}"
+    when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'Stage' 
+    loop: "{{ csv_data.list }}"
+    loop_control:
+      loop_var: item
+
  
