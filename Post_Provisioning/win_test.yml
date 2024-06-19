@@ -7,12 +7,12 @@
     - ansible.windows
     - community.vmware
     - community.windows
-    -  community.general
+    - community.general
   tasks:
 
   - name: testing
     ansible.builtin.import_role:
-      name: pre_test
+      name: read_csv
 
   - name: testing
     ansible.builtin.import_role:
