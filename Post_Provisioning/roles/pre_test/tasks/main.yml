@@ -1,14 +1,7 @@
 ---
-# create a new VM from a template
-
-- name: VM from template
-  hosts: localhost
-  gather_facts: false
-  connection: local
   vars:
     template_password: P@ssw0rd123456
-    notes: Ansible Test
-    dumpfacts: False
+
   tasks:
     - name: Create VM from template
       vmware_guest:
