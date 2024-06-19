@@ -28,20 +28,18 @@
       debug:
         var: location_datacenter
 
-   - name: Set zone_network to first element only
+    - name: Set zone_network to first element only
       set_fact:
         location_environment: "{{ variables.Environment }}"
 
-  - name: Print Environment
-    debug:
+    - name: Print Environment
+      debug:
         var: location_environment
 
-  - name: Extract Application Type Abbreviation
+    - name: Extract Application Type Abbreviation
       set_fact:
         type_of_app: "{{ variables.application_type.split(' ')[0] }}"
 
     - name: Print Application Type Abbreviation
       debug:
         var: type_of_app
-
-    
