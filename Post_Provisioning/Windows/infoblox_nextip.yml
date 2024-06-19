@@ -1,6 +1,8 @@
 ---
 - hosts: localhost
   connection: local
+  collections:
+    - community.general
   vars:
      nios_provider:
         host: "{{ INFOBLOX_HOST }}"
