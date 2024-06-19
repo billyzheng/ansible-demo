@@ -24,6 +24,6 @@
     set_fact:
       free_datastore: "{{ sorted_datastores | first }}"
 
-   - name: Choose the datastore which have more freespace
-     set_fact:
-       vm_datastore: "{{ vm_datastore.name }}"
+  - name: Choose the datastore which have more freespace
+    set_fact:
+      vm_datastore: "{{ vm_datastore.name }}"
