@@ -12,7 +12,7 @@
   tasks:
   - name: Get next available IP
     set_fact:
-      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', '10.17.113.0/24', provider=nios_provider) }}"
+      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
 
   - name: Extract IP address from the list
     set_fact:
