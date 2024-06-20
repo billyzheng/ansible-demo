@@ -21,41 +21,9 @@
   - name: Print the next available IP
     debug:
       msg: "Next available IP: {{ next_ip }}"
-      
-
+    
   - set_stats:
       data:
         server_ip: "{{ next_ip }}"  
 
-  - name: Read CSV file
-    community.general.read_csv:
-      path: DC1B-VMware-mapping.csv
-      delimiter: ','
-    register: csv_data
-
-  - name: Filter the required item
-    debug:
-       msg: "New server name is to be: {{ item.Vm_name }}"
-    when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'stage' 
-    loop: "{{ csv_data.list }}"
-    loop_control:
-      loop_var: item
-
-  - set_stats:
-      data:
-        vm_name: "{{ item.Vm_name }}" 
-        vmware_datacenter: "{{ item.Vmware_datacenter }}"  
-        vmware_cluster: "{{ item.Vmware_cluster }}"
-        vmware_datastore_name: "{{ item.Vmware_datastore_name }}"
-        dns1: "{{ item.DNS1 }}"
-        dns2: "{{ item.DNS2 }}" 
-        dns_siffix: "{{ item.DNS_Suffix }}"
-        vm_template: "{{ item.Vm_template }}"
-        vcenter_folder: "{{ item.Vcenter_folder }}"
-        vm_cpu: "{{ item.Vm_cpu }}"
-        vm_mem: "{{ item.Vm_mem }}"
-        vm_disk_size: "{{ item.disk_size }}"        
-    when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'stage' 
-    loop: "{{ csv_data.list }}"
-    loop_control:
-      loop_var: item
+  
