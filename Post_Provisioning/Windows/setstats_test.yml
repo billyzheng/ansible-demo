@@ -1,0 +1,8 @@
+--
+- hosts: localhost
+  connection: local
+  
+  tasks: 
+   - name: Testing the set_stat
+     debug:
+       msg: "Yes the IP is: {{ VMware_VM_IP_address }}"
