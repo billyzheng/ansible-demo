@@ -5,7 +5,7 @@
   tasks: 
    - name: Print the server IP
      debug:
-       msg: "Server ip passed is: {{ server_ip }}"
+       msg: "Server ip passed is: {{ VMware_VM_IP_address }}"
 
    - name: Print the server name
      debug:
