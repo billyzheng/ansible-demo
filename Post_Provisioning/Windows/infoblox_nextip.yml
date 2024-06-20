@@ -24,6 +24,6 @@
     
   - set_stats:
       data:
-        server_ip: "{{ next_ip }}"  
+        VMware_VM_IP_address: "{{ next_ip }}"  
 
   
