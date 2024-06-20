@@ -10,7 +10,7 @@
         password: "{{ INFOBLOX_PASSWORD }}"
 
   tasks:
-  - name: Get next available IP
+  - name: Get next available IP from the given subnet
     set_fact:
       next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
 
