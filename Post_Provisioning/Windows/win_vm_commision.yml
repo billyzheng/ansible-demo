@@ -24,7 +24,7 @@
             datastore: "{{ Vmware_datastore }}"
         networks:
         - name: "{{ Vmware_networks }}"
-          ip: "{{ vip }}"
+          ip: "{{ VMware_VM_IP_address }}"
           netmask: "{{ Vmware_Subnet_netmask }}"
           gateway: "{{ Vmware_Subnet_gateway }}"
           domain: "{{ Vmware_test_DNS_suffix }}"
