@@ -24,8 +24,14 @@
         hardware:
           memory_mb: "{{ ram_in_mb }}"
         state: present
+      register: mem_result
 
     - name: Power on the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
-        state: powered-on
+        state: powered-on4
+        
+    - name: Fail when there is mem not resized
+      fail:
+        msg: "RAM is not resized on the server"
+      when: not mem_result.changed

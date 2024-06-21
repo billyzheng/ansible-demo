@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  
+  tasks: 
+   - name: Print the server IP
+     debug:
+       msg: "Server ip passed is: {{ VMware_VM_IP_address }}"
+
+   - name: Print the server name
+     debug:
+       msg: "Server name is: {{ VMware_VM_name }}"
+

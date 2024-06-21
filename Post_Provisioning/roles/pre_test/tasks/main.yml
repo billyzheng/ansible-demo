@@ -1,21 +1,34 @@
 ---
-- name: Log installation starting
-  win_shell: Write-Host "Qualys agent installation starting"
-
-- name: Install Qualys Cloud Agent
-  win_command: "{{ qualys_agent_installation_path }} CustomerId={{ '{' }}{{ qualys_customer_id }}{{ '}' }} ActivationId={{ '{' }}{{ qualys_activation_id }}{{ '}' }} WebServiceUri={{ qualys_webservice_uri }}"
-  register: install_result
-  ignore_errors: yes
-
-- name: Check if installation was successful
-  win_shell: Get-Service -Name QualysAgent
-  register: service_status
-  ignore_errors: yes
-
-- name: Log installation status
-  debug:
-     msg: "Qualys agent installation status: {{ 'installed' if install_result.rc == 0 else 'failed' }}"
-
-- name: Log service status
-  debug:
-     msg: "Qualys service status: {{ 'running' if service_status.rc == 0 else 'not running' }}"
+- name: Create VM from template
+  vmware_guest:
+    validate_certs: False
+    datacenter: "{{ v.vdatacenter }}"
+    cluster: "{{ v.vcluster }}"
+    folder: "{{ v.vcenter_folder }}"
+    name: "{{ v.vmname }}"
+    template: "{{ v.vmtemplate }}"
+    disk:
+      - size_gb: "{{ v.disk_size }}"
+        type: thin
+        datastore: "{{ v.datastore }}"
+    networks:
+    - name: "{{ v.vnetwork_name }}"
+      ip: "{{ v.vip }}"
+      netmask: "{{ v.vnetmask }}"
+      gateway: "{{ v.vgateway }}"
+      domain: "{{ v.vdomain }}"
+      dns_servers:
+      - "{{ v.vdns1 }}"
+      - "{{ v.vdns2 }}"
+    hardware:
+      num_cpus: "{{ v.vcpu }}"
+      memory_mb: "{{ v.vmem }}"
+    customization:
+      password: "{{ template_password }}"
+      runonce:
+       - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+       - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+    wait_for_customization: yes
+    wait_for_ip_address: True
+    state: present
+  register: newvm

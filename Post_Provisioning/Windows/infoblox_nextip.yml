@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  connection: local
+  collections:
+    - community.general
+  vars:
+     nios_provider:
+        host: "{{ INFOBLOX_HOST }}"
+        username: "{{ INFOBLOX_USERNAME }}"
+        password: "{{ INFOBLOX_PASSWORD }}"
+
+  tasks:
+  - name: Get next available IP from the given subnet
+    set_fact:
+      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
+
+  - name: Extract IP address from the list
+    set_fact:
+      next_ip: "{{ next_ip[0] }}" 
+
+  - set_stats:
+      data:
+        VMware_VM_IP_address: "{{ next_ip }}"  
+

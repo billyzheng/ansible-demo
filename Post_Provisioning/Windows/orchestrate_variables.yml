@@ -1,0 +1,79 @@
+---
+- hosts: localhost
+  connection: local
+  collections:
+    - community.general
+  tasks:
+    - name: Split string
+      set_fact:
+        zone_network: "{{ variables.network_zone.split(' – ') }}"
+
+    - name: Print network zone 
+      debug:
+        var: zone_network
+
+    - name: Set network zone 
+      set_fact:
+        zone_network: "{{ zone_network[0] }}"
+
+    - name: Print network zone (filtered to first element)
+      debug:
+        var: zone_network
+
+    - name: Extract Datacenter Code
+      set_fact:
+        location_datacenter: "{{ variables.Datacenter_Location | regex_replace('.* - ([^(]*) .*', '\\1') }}"
+
+    - name: Print Datacenter Code
+      debug:
+        var: location_datacenter
+
+    - name: Set zone_network to first element only
+      set_fact:
+        location_environment: "{{ variables.Environment }}"
+
+    - name: Print Environment
+      debug:
+        var: location_environment
+
+    - name: Extract Application Type Abbreviation
+      set_fact:
+        type_of_app: "{{ variables.application_type.split(' ')[0] }}"
+
+    - name: Print Application Type Abbreviation
+      debug:
+        var: type_of_app
+
+    - name: Read CSV file
+      community.general.read_csv:
+      path: DC1B-VMware-mapping.csv
+      delimiter: ','
+    register: csv_data
+
+  - name: Filter the required item
+    debug:
+       msg: "New server name is to be: {{ item.Vm_name }}"
+    when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'stage' 
+    loop: "{{ csv_data.list }}"
+    loop_control:
+      loop_var: item
+
+  - set_stats:
+      data:
+        vm_name: "{{ item.Vm_name }}" 
+        vmware_datacenter: "{{ item.Vmware_datacenter }}"  
+        vmware_cluster: "{{ item.Vmware_cluster }}"
+        vmware_datastore_name: "{{ item.Vmware_datastore_name }}"
+        dns1: "{{ item.DNS1 }}"
+        dns2: "{{ item.DNS2 }}" 
+        dns_siffix: "{{ item.DNS_Suffix }}"
+        vm_template: "{{ item.Vm_template }}"
+        vcenter_folder: "{{ item.Vcenter_folder }}"
+        vm_cpu: "{{ item.Vm_cpu }}"
+        vm_mem: "{{ item.Vm_mem }}"
+        vm_disk_size: "{{ item.disk_size }}"        
+    when: item.Datacenter_location_input == 'DC1B' and item.Network_zone_Input == 'IDZ' and item.Environment_input == 'stage' 
+    loop: "{{ csv_data.list }}"
+    loop_control:
+      loop_var: item
+

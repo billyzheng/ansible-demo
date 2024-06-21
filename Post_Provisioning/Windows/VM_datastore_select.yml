@@ -1,0 +1,34 @@
+---
+- name: Gather and sort vCenter datastores
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+  - name: Gather vCenter datastores
+    community.vmware.vmware_datastore_info:
+    register: datastores
+
+  - name: List the datastores
+    debug:
+      var: datastores
+
+  - name: Filter datastores by name
+    set_fact:
+      filtered_datastores: "{{ datastores.datastores | selectattr('name', 'contains', 'DMZ') }}"
+
+  - name: Sort datastores by free space and choose the one with more free space
+    set_fact:
+      vm_datastore: "{{ filtered_datastores | sort(attribute='freeSpace', reverse=true) | map(attribute='name') | first }}"
+
+
+#  - name: Sort datastores by free space
+ #   set_fact:
+  #    sorted_datastores: "{{ filtered_datastores | sort(attribute='freeSpace', reverse=True) }}"
+
+#  - name: Choose the datastore which have more freespace
+#    set_fact:
+#      free_datastore: "{{ sorted_datastores | first }}"
+
+#  - name: Choose the datastore which have more freespace
+#    set_fact:
+#      vm_datastore: "{{ free_datastore.name }}"

@@ -1,0 +1,26 @@
+---
+- name: VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  collections:
+    - ansible.windows
+    - community.vmware
+    - community.windows
+    - community.general
+  vars:
+     nios_provider:
+        host: "{{ INFOBLOX_HOST }}"
+        username: "{{ INFOBLOX_USERNAME }}"
+        password: "{{ INFOBLOX_PASSWORD }}"
+  tasks:
+
+  - name: Read the CSV input
+    ansible.builtin.import_role:
+      name: read_csv
+
+#  - name: Build the VM server
+ #   ansible.builtin.import_role:
+ #     name: pre_test
+
+
