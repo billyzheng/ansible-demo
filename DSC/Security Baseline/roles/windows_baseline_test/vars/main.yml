@@ -1,0 +1,21 @@
+---
+
+win_baseline_19336_Path: ' HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging'
+win_baseline_19336_Name: "EnableModuleLogging"
+win_baseline_19336_Data: "0"
+win_baseline_19336_Type: dword
+win_baseline_19336_Manage: True
+
+# "win_baseline_1149_state | Ensure 'Microsoft network client - Digitally sign communications (always)' is set to 'Enabled'.
+win_baseline_1149_state_Manage: True
+win_baseline_1149_state_Path: 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters'
+win_baseline_1149_state_Name: "RequireSecuritySignature"
+win_baseline_1149_state_Data: "1"
+win_baseline_1149_state_Type: dword
+
+# win_baseline_1153_state | Ensure 'Network access: Do not allow anonymous enumeration of SAM accounts' is set to 'Enabled'.
+win_baseline_1153_state_Manage: True
+win_baseline_1153_state_Path: 'HKLM:\System\Currentcontrolset\control\lsa'
+win_baseline_1153_state_Name: "RestrictAnonymous"
+win_baseline_1153_state_Data: "1"
+win_baseline_1153_state_Type: dword

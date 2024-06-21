@@ -1,0 +1,7 @@
+---
+- name: The main playbooks
+  hosts: "{{ _host }}"
+  tasks:
+    - name: Run baseline test
+      ansible.builtin.import_role:
+        name: Linux_FNMS_installer

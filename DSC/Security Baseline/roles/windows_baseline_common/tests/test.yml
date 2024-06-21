@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: Rone
+  roles:
+    - win_baseline

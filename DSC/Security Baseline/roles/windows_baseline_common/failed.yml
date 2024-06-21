@@ -1,0 +1,8 @@
+- name: "win_baseline_8367_state | Make Changes To Admin Name."
+  win_security_policy:
+    section: "{{ win_baseline_8367_state_Section }}"
+    key: "{{ win_baseline_8367_state_Key }}"
+    value: "{{ win_baseline_8367_state_Value }}"
+  when: win_baseline_8367_state_Manage
+
+    
