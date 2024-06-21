@@ -32,7 +32,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          work_notes: "Ansible Automation is completed. Successfuly updated and created the resources"
-          closure_notes: "Ansible Automation job is completed. Successfuly updated and created the resources"
+          close_notes: "Automation is completed. Successfuly updated/created the resource(s)."
+          work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
           sys_id: "{{ change_task_sys_id }}"
       register: SR_close_ctask  
