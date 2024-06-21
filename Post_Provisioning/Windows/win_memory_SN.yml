@@ -24,6 +24,7 @@
         hardware:
           memory_mb: "{{ ram_in_mb }}"
         state: present
+      register: mem_result
 
     - name: Power on the VM
       vmware_guest_powerstate:
