@@ -10,10 +10,19 @@
         password: "{{ INFOBLOX_PASSWORD }}"
 
   tasks:
+  - name: set fact for the exclude ip class
+    set_fact:
+      ip_class: "{{Vmware_Subnet_address[:-4]}}"
+
+  - name: setfact the exclude as variable
+    set_fact:
+      ex_var: "['{{ip_class}}1', '{{ip_class}}2', '{{ip_class}}3', '{{ip_class}}4', '{{ip_class}}5', '{{ip_class}}6', '{{ip_class}}7', '{{ip_class}}8', '{{ip_class}}9', '{{ip_class}}10','{{ip_class}}11', '{{ip_class}}12', '{{ip_class}}13', '{{ip_class}}14', '{{ip_class}}15', '{{ip_class}}16', '{{ip_class}}17', '{{ip_class}}18', '{{ip_class}}19', '{{ip_class}}20','{{ip_class}}21', '{{ip_class}}22', '{{ip_class}}23', '{{ip_class}}24', '{{ip_class}}25', '{{ip_class}}26', '{{ip_class}}27', '{{ip_class}}28', '{{ip_class}}29', '{{ip_class}}30']"
+  
   - name: Get next available IP from the given subnet
     set_fact:
 #      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
-      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=['10.17.122.1']) }}"
+#      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=['10.17.122.1']) }}"
+      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, exclude=ex_var ) }}"
 
   - name: Extract IP address from the list
     set_fact:
