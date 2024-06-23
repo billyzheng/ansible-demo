@@ -1,6 +1,6 @@
 ---
 - name: windows post provisioning  
-  hosts: all
+  hosts: "{{ VMware_VM_IP_address }}"
   gather_facts: no
   collections:
     - ansible.windows
