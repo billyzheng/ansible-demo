@@ -6,8 +6,8 @@
   
 - name: Install FlexNet Agent
   win_shell: cmd /c "{{ flexnet_binary_file_path }}" /quiet /norestart
-  async: 180
-  poll: 10
+  async: 360
+  poll: 15
   when: not flexnet_installed.stat.exists
 
 - name: Wait for 10 seconds post installation
