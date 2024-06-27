@@ -29,7 +29,7 @@
     - name: Power on the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
-        state: powered-on4
+        state: powered-on
         
     - name: Fail when there is mem not resized
       fail:
