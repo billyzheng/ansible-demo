@@ -19,3 +19,12 @@
 
     - debug:
         var: api_response
+
+    - name: Find URI for server "{{ server_name }}"
+      set_fact:
+        server_uri: "{{ item.URI }}"
+      loop: "{{ api_response.json.result_set }}"
+      when: item.description == server_name
+
+    - debug:
+        msg: "URI for {{ server_name }} is {{ server_uri }}"
