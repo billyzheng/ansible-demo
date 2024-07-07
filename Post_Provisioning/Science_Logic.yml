@@ -4,7 +4,7 @@
   gather_facts: false
 
   tasks:
-    - name: Fetch XML data from API
+    - name: Fetch XML data from API with Basic Authentication
       uri:
         url: "{{ device_url }}"
         method: GET
@@ -12,8 +12,10 @@
         status_code: 200
         headers:
           Content-Type: "application/xml"
+        body_format: form-urlencoded
+        user: "{{ username }}"
+        password: "{{ password }}"
       register: api_response
-   
-    - name: Debug the details
-      debug:
+
+    - debug:
         var: api_response
