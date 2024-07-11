@@ -17,7 +17,7 @@
             }
           ]
           organization: "/api/organization/0"
-          collector_group: "/api/collector_group/3"
+          aligned_collector: "/api/collector_group/3"
           description: "xf-s-aapwin04t addition using Ansible Automation"
         body_format: json
         headers:
