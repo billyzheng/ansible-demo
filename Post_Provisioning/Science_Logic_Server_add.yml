@@ -32,6 +32,7 @@
         user: "{{ username }}"
         password: "{{ password }}"
       register: add_server_response
+      ignore_errors: yes
 
     - debug:
         var: add_server_response
@@ -47,6 +48,8 @@
         user: "{{ username }}"
         password: "{{ password }}"
       register: server_details
+      ignore_errors: yes
 
     - debug:
         var: server_details
+        
