@@ -1,0 +1,45 @@
+--
+- name: Add new server to Science Logic and fetch server details
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Add new server to Science Logic
+      uri:
+        url: "{{ device_url }}"
+        method: POST
+        body:
+          name: "{{ server_name }}"
+          ip_lists: [
+            {
+              start_ip: "{{ start_ip }}",
+              end_ip: "{{ end_ip }}"
+            }
+          ]
+          organization: "/api/organization/0"
+          collector_group: "/api/collector_group/3"
+          description: "xf-s-aapwin04t addition using Ansible Automation"
+        body_format: json
+        headers:
+          Content-Type: "application/json"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      register: add_server_response
+
+    - debug:
+        var: add_server_response
+
+    - name: Fetch server details
+      uri:
+        url: "{{ device_url }}{{ add_server_response.json.id }}/"
+        method: GET
+        return_content: yes
+        status_code: 200
+        headers:
+          Content-Type: "application/json"
+        user: "{{ username }}"
+        password: "{{ password }}"
+      register: server_details
+
+    - debug:
+        var: server_details
