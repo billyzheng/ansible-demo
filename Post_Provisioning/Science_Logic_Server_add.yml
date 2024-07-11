@@ -16,8 +16,9 @@
               end_ip: "{{ end_ip }}"
             }
           ]
-          organization: "/api/organization/0"
-          aligned_collector: "/api/appliance/1"
+          organization: "/api/organization/2"
+          aligned_collector: "/api/appliance/25"
+          aligned_device_template: "/api/device_template/20"
           description: "xf-s-aapwin04t addition using Ansible Automation"
         body_format: json
         headers:
