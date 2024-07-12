@@ -20,7 +20,6 @@
           aligned_collector: "/api/appliance/25"
           aligned_device_template: "/api/device_template/20"
           description: "xf-s-aapwin04t addition using Ansible Automation"
-          device_groups: "/api/device_group/6BF1B08D5B463133895092CFE7F9E16D"
           device_groups: [
             "/api/device_group/6BF1B08D5B463133895092CFE7F9E16D"
           ]
