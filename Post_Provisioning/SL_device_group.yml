@@ -1,0 +1,21 @@
+---
+- name: Fetch and parse server list from XML API
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Fetch XML data from API with Basic Authentication
+      uri:
+        url: "{{ device_url }}"
+        method: GET
+        return_content: yes
+        status_code: 200
+        headers:
+          Content-Type: "application/xml"
+        body_format: form-urlencoded
+        user: "{{ username }}"
+        password: "{{ password }}"
+      register: api_response
+
+    - debug:
+        var: api_response
