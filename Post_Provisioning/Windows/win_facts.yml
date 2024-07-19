@@ -1,0 +1,12 @@
+- name: VM from template
+  hosts: all
+  gather_facts: yes
+
+    tasks:
+    - name: Gather facts
+      setup:
+      register: server_facts
+
+    - name: Display facts 
+      debug:
+        var: server_facts
