@@ -2,6 +2,8 @@
 - name: Gather VM facts
   hosts: localhost
   gather_facts: yes
+  collections:
+    - vmware.vmware
 
   tasks:
   - name: Gather VM facts
