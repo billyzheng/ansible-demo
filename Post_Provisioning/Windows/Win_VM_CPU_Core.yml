@@ -7,10 +7,10 @@
 
   tasks:
   - name: Gather VM facts
-    vmware_guest_facts:
+    community.vmware.vmware_guest_info:
       name: "{{ vm_name }}"
     register: vm_facts
 
-  - name: Display CPU core count
-    debug:
-      var: vm_facts.guest.numCPU
+ # - name: Display CPU core count
+  #  debug:
+   #   var: vm_facts.guest.numCPU
