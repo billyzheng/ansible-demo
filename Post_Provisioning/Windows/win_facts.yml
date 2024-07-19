@@ -1,8 +1,7 @@
 - name: VM from template
   hosts: all
   gather_facts: yes
-
-    tasks:
+  tasks:
     - name: Gather facts
       setup:
       register: server_facts
