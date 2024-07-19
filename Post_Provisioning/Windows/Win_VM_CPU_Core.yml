@@ -1,0 +1,14 @@
+---
+- name: Gather VM facts
+  hosts: localhost
+  gather_facts: yes
+
+  tasks:
+  - name: Gather VM facts
+    vmware_guest_facts:
+      name: "{{ vm_name }}"
+    register: vm_facts
+
+  - name: Display CPU core count
+    debug:
+      var: vm_facts.guest.numCPU
