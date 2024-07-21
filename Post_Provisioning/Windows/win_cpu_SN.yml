@@ -10,7 +10,7 @@
 
     - name: Power off the VM
       vmware_guest_powerstate:
-        name: "{{ vm_name }}"
+        name: "{{ variables.server }}"
         state: powered-off
       ignore_errors: yes
 
