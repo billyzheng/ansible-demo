@@ -3,10 +3,15 @@
   hosts: localhost
   gather_facts: no
   tasks:
-
     - name: Set cpu_cores variable
       set_fact:
-         cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+        cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+    
+    - name: Look up the VM inventory
+      register: search_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - "{{ variables.server }}"
 
     - name: Power off the VM
       vmware_guest_powerstate:
@@ -19,13 +24,34 @@
         timeout: 5
       delegate_to: localhost
 
-    - name: Edit VM Settings
+    - name: Set cpu_cores_increase variable when Action_Required is Increase
+      set_fact:
+        cpu_cores_increase: "{{ search_result.value[0].cpu_count + cpu_cores }}"
+      when: variables.Action_Required == "Increase"
+
+    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
+      set_fact:
+        cpu_cores_decrease: "{{ search_result.value[0].cpu_count - cpu_cores }}"
+      when: variables.Action_Required == "Decrease"
+
+    - name: Edit VM Settings (increase)
       vmware_guest:
         name: "{{ variables.server }}"
         hardware:
-          num_cpus: "{{ cpu_cores }}"
-          num_cpu_cores_per_socket: "{{ cpu_cores }}"               
+          num_cpus: "{{ cpu_cores_increase }}"
+          num_cpu_cores_per_socket: "{{ cpu_cores_increase }}"
         state: present
+      when: variables.Action_Required == 'Increase'
+      register: cpu_result
+
+    - name: Edit VM Settings (decrease)
+      vmware_guest:
+        name: "{{ variables.server }}"
+        hardware:
+          num_cpus: "{{ cpu_cores_decrease }}"
+          num_cpu_cores_per_socket: "{{ cpu_cores_decrease }}"
+        state: present
+      when: variables.Action_Required == 'Decrease'
       register: cpu_result
 
     - name: Power on the VM
@@ -33,12 +59,6 @@
         name: "{{ variables.server }}"
         state: powered-on
     
-    - name: Look up the VM inventory
-      register: search_result
-      vmware.vmware_rest.vcenter_vm_info:
-        filter_names:
-        - "{{ variables.server }}"
-
     - name: Collect information about a specific VM
       vmware.vmware_rest.vcenter_vm_info:
          vm: '{{ search_result.value[0].vm }}'
