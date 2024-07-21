@@ -3,9 +3,10 @@
   hosts: localhost
   gather_facts: no
   tasks:
-  vars:
-    vm_name: "{{ variables.server }}"
-    cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+
+    - name: Set cpu_cores variable
+      set_fact:
+         cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
 
     - name: Power off the VM
       vmware_guest_powerstate:
