@@ -2,11 +2,17 @@
 - name: Gather VM facts
   hosts: localhost
   gather_facts: no
-  tasks:
+  tasks:  
+  - name: Look up the VM called test_vm1 in the inventory
+    register: search_result
+    vmware.vmware_rest.vcenter_vm_info:
+      filter_names:
+      - "{{ vm_name }}"
+
   - name: Collect information about a specific VM
     vmware.vmware_rest.vcenter_vm_info:
-      vm: "{{ vm_name }}"
-    register: win_vm_info
+      vm: '{{ search_result.value[0].vm }}'
+    register: test_vm1_info
 
  # - name: Display CPU core count
   #  debug:
