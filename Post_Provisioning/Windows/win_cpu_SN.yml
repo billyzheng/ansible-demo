@@ -28,7 +28,7 @@
     - name: Check if CPU decrease would result in 0 or less CPUs
       fail:
         msg: "Cannot decrease CPU count to 0 or less"
-      when: variables.Action_Required == 'Decrease' and cpu_cores_decrease <= 0
+      when: variables.Action_Required == 'Decrease' and (cpu_cores_decrease | int) <= 0
 
     - name: Power off the VM
       vmware_guest_powerstate:
