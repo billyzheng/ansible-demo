@@ -25,6 +25,11 @@
         cpu_cores_decrease: "{{ (current_cpu_count | int) - (cpu_cores | int) }}"
       when: variables.Action_Required == "Decrease"
 
+    - name: Check if CPU decrease would result in 0 or less CPUs
+      fail:
+        msg: "Cannot decrease CPU count to 0 or less"
+      when: variables.Action_Required == 'Decrease' and cpu_cores_decrease <= 0
+
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
