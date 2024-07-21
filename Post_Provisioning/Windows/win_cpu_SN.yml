@@ -3,6 +3,10 @@
   hosts: localhost
   gather_facts: no
   tasks:
+  vars:
+    vm_name: "{{ variables.server }}"
+    cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ vm_name }}"
@@ -16,23 +20,23 @@
 
     - name: Edit VM Settings
       vmware_guest:
-        name: "{{ vm_name }}"
+        name: "{{ variables.server }}"
         hardware:
-          num_cpus: 4
-          num_cpu_cores_per_socket: 4                    
+          num_cpus: "{{ cpu_cores }}"
+          num_cpu_cores_per_socket: "{{ cpu_cores }}"               
         state: present
       register: cpu_result
 
     - name: Power on the VM
       vmware_guest_powerstate:
-        name: "{{ vm_name }}"
+        name: "{{ variables.server }}"
         state: powered-on
     
     - name: Look up the VM inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
-        - "{{ vm_name }}"
+        - "{{ variables.server }}"
 
     - name: Collect information about a specific VM
       vmware.vmware_rest.vcenter_vm_info:
