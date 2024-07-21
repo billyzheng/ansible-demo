@@ -15,6 +15,16 @@
         cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
         current_cpu_count: "{{ search_result.value[0].cpu_count | int }}"
 
+    - name: Set cpu_cores_increase variable when Action_Required is Increase
+      set_fact:
+        cpu_cores_increase: "{{ (current_cpu_count | int) + (cpu_cores | int) }}"
+      when: variables.Action_Required == "Increase"
+
+    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
+      set_fact:
+        cpu_cores_decrease: "{{ (current_cpu_count | int) - (cpu_cores | int) }}"
+      when: variables.Action_Required == "Decrease"
+
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
@@ -25,16 +35,6 @@
       wait_for:
         timeout: 5
       delegate_to: localhost
-
-    - name: Set cpu_cores_increase variable when Action_Required is Increase
-      set_fact:
-        cpu_cores_increase: "{{ (current_cpu_count | int) + (cpu_cores | int) }}"
-      when: variables.Action_Required == "Increase"
-
-    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
-      set_fact:
-        cpu_cores_decrease: "{{ (current_cpu_count | int) - (cpu_cores | int) }}"
-      when: variables.Action_Required == "Decrease"
 
     - name: Edit VM Settings (increase)
       vmware_guest:
