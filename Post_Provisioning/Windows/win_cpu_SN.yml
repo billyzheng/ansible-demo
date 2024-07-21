@@ -3,15 +3,17 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Set cpu_cores variable
-      set_fact:
-        cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
-    
+
     - name: Look up the VM inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
         - "{{ variables.server }}"
+
+    - name: Set cpu_cores variable
+      set_fact:
+        cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+        current_cpu_count: "{{ search_result.value[0].cpu_count | int }}"
 
     - name: Power off the VM
       vmware_guest_powerstate:
@@ -26,12 +28,12 @@
 
     - name: Set cpu_cores_increase variable when Action_Required is Increase
       set_fact:
-        cpu_cores_increase: "{{ search_result.value[0].cpu_count + cpu_cores }}"
+        cpu_cores_increase: "{{ current_cpu_count + cpu_cores }}"
       when: variables.Action_Required == "Increase"
 
     - name: Set cpu_cores_decrease variable when Action_Required is Decrease
       set_fact:
-        cpu_cores_decrease: "{{ search_result.value[0].cpu_count - cpu_cores }}"
+        cpu_cores_decrease: "{{ current_cpu_count - cpu_cores }}"
       when: variables.Action_Required == "Decrease"
 
     - name: Edit VM Settings (increase)
