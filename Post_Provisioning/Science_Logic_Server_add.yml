@@ -22,7 +22,7 @@
           description: "xf-s-aapwin04t addition using Ansible Automation"
           device_groups: [
             "/api/device_group/13",
-            "/api/device_group/17"
+            "/api/device_group/16"
           ]
           credentials: [
             "/api/credential/snmp/3074E50E642F46E786C443BB187F9CDE"
