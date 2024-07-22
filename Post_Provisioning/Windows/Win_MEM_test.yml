@@ -28,3 +28,8 @@
       set_fact:
         memory_decrease: "{{ (memory_size | int) - (ram_in_mb | int) }}"
       when: variables.Action_Required == "Decrease"
+
+    - name: Check if Memory decrease would result in 0 or less Memory
+      fail:
+        msg: "Cannot decrease memory size to 0 or less"
+      when: variables.Action_Required == 'Decrease' and (memory_decrease | int) <= 1024
