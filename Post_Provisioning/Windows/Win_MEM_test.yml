@@ -9,3 +9,8 @@
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
         - "{{ variables.server }}"
+
+    - name: Set memory variable
+      set_fact:
+        memory_request: "{{ variables.Memory_Size | regex_replace(' Core', '') | int }}"
+        memory_size: "{{ search_result.value[0].memory_size_MiB | int }}"
