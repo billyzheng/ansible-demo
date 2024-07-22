@@ -18,3 +18,13 @@
     - name: Convert RAM to MB
       set_fact:
          ram_in_mb: "{{ (memory_request | int) * 1024 }}"
+
+    - name: Set memory increase variable
+      set_fact:
+        memory_increase: "{{ (ram_in_mb | int) + (memory_size | int) }}"
+      when: variables.Action_Required == "Increase"
+
+    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
+      set_fact:
+        memory_decrease: "{{ (ram_in_mb | int) - (memory_size | int) }}"
+      when: variables.Action_Required == "Decrease"
