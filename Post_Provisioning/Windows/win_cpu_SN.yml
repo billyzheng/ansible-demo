@@ -49,7 +49,7 @@
           num_cpu_cores_per_socket: "{{ cpu_cores_increase }}"
         state: present
       when: variables.Action_Required == 'Increase'
-      register: cpu_result
+      register: cpu_result_increase
 
     - name: Edit VM Settings (decrease)
       vmware_guest:
@@ -59,7 +59,7 @@
           num_cpu_cores_per_socket: "{{ cpu_cores_decrease }}"
         state: present
       when: variables.Action_Required == 'Decrease'
-      register: cpu_result
+      register: cpu_result_decrease
 
     - name: Power on the VM
       vmware_guest_powerstate:
