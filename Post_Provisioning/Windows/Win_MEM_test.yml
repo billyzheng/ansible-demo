@@ -14,3 +14,7 @@
       set_fact:
         memory_request: "{{ variables.Memory_Size | regex_replace(' GB', '') | int }}"
         memory_size: "{{ search_result.value[0].memory_size_MiB | int }}"
+
+    - name: Convert RAM to MB
+      set_fact:
+         ram_in_mb: "{{ (memory_request | int) * 1024 }}"
