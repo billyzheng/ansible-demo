@@ -12,5 +12,5 @@
 
     - name: Set memory variable
       set_fact:
-        memory_request: "{{ variables.Memory_Size | regex_replace(' Core', '') | int }}"
+        memory_request: "{{ variables.Memory_Size | regex_replace(' GB', '') | int }}"
         memory_size: "{{ search_result.value[0].memory_size_MiB | int }}"
