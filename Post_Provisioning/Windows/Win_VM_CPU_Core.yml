@@ -1,46 +1,11 @@
 ---
-- name: Gather VM facts
+- name: Resize memory VM in vCenter
   hosts: localhost
   gather_facts: no
-  tasks:  
+  tasks:
 
-  - name: Power off the VM
-      vmware_guest_powerstate:
-        name: "{{ vm_name }}"
-        state: powered-off
-      ignore_errors: yes
-
-  - name: Wait for 30 seconds for VM to powered down
-      wait_for:
-        timeout: 10
-      delegate_to: localhost
-
-    - name: Edit VM Settings
-      vmware_guest:
-        name: "{{ vm_name }}"
-        hardware:
-          num_cpus: 4
-          num_cpu_cores_per_socket: 4                    
-        state: present
-      register: cpu_result
-
-    - name: Power on the VM
-      vmware_guest_powerstate:
-        name: "{{ variables.server }}"
-        state: powered-on
-        
     - name: Look up the VM inventory
       register: search_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
-        - "{{ vm_name }}"
-
-    - name: Collect information about a specific VM
-      vmware.vmware_rest.vcenter_vm_info:
-         vm: '{{ search_result.value[0].vm }}'
-      register: win_vm_info
-
-    - name: Fail if CPU resize did not happen
-      fail:
-        msg: "CPU is not resized on the server"
-      when: not cpu_result.changed
+        - "{{ variables.server }}"
