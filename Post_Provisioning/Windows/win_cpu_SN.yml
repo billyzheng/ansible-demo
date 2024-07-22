@@ -1,5 +1,5 @@
 ---
-- name: Resize memory and CPU for VM in vCenter
+- name: Resize CPU for VM in vCenter
   hosts: localhost
   gather_facts: no
   tasks:
@@ -15,12 +15,12 @@
         cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
         current_cpu_count: "{{ search_result.value[0].cpu_count | int }}"
 
-    - name: Set cpu_cores_increase variable when Action_Required is Increase
+    - name: Set CPU core increase variable value
       set_fact:
         cpu_cores_increase: "{{ (current_cpu_count | int) + (cpu_cores | int) }}"
       when: variables.Action_Required == "Increase"
 
-    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
+    - name: Set CPU core decrease variable value
       set_fact:
         cpu_cores_decrease: "{{ (current_cpu_count | int) - (cpu_cores | int) }}"
       when: variables.Action_Required == "Decrease"
@@ -41,7 +41,7 @@
         timeout: 5
       delegate_to: localhost
 
-    - name: Edit VM Settings (increase)
+    - name: Increase the CPU size on the VM
       vmware_guest:
         name: "{{ variables.server }}"
         hardware:
@@ -51,7 +51,7 @@
       when: variables.Action_Required == 'Increase'
       register: cpu_result_increase
 
-    - name: Edit VM Settings (decrease)
+    - name: Decrease the CPU size on the VM
       vmware_guest:
         name: "{{ variables.server }}"
         hardware:
