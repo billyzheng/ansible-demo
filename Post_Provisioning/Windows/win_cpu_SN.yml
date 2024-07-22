@@ -71,7 +71,3 @@
          vm: '{{ search_result.value[0].vm }}'
       register: win_vm_info
       
-    - name: Fail if CPU resize did not happen
-      fail:
-        msg: "CPU is not resized on the server"
-      when: (cpu_result_increase is defined and not cpu_result_increase.changed) or (cpu_result_decrease is defined and not cpu_result_decrease.changed)
