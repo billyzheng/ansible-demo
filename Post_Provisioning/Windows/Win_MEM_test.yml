@@ -21,10 +21,10 @@
 
     - name: Set memory increase variable
       set_fact:
-        memory_increase: "{{ (ram_in_mb | int) + (memory_size | int) }}"
+        memory_increase: "{{ (memory_size | int) + (ram_in_mb | int) }}"
       when: variables.Action_Required == "Increase"
 
     - name: Set cpu_cores_decrease variable when Action_Required is Decrease
       set_fact:
-        memory_decrease: "{{ (ram_in_mb | int) - (memory_size | int) }}"
+        memory_decrease: "{{ (memory_size | int) - (ram_in_mb | int) }}"
       when: variables.Action_Required == "Decrease"
