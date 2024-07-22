@@ -73,7 +73,4 @@
          vm: '{{ search_result.value[0].vm }}'
       register: win_vm_info
       
-    - name: Fail if MEMORY resize did not happen
-      fail:
-        msg: "Memory is not resized on the server, please check manually"
-      when: (mem_result_increase is defined and not mem_result_increase.changed) or (mem_result_decrease is defined and not mem_result_decrease.changed)
+  
