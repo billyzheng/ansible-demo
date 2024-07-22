@@ -31,5 +31,5 @@
 
     - name: Check if Memory decrease would result in 0 or less Memory
       fail:
-        msg: "Cannot decrease memory size to 0 or less"
+        msg: "Cannot decrease memory size to 1GB or less, please check manually"
       when: variables.Action_Required == 'Decrease' and (memory_decrease | int) <= 1024
