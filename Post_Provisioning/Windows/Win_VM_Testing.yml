@@ -20,11 +20,12 @@
     - name: Power off virtual machine
       vmware.vmware_rest.vcenter_vm_power:
         state: stop
-        vm: '{{ search_result.value[0].vm }}'
-
+  #      vm: '{{ search_result.value[0].vm }}'
+        vm: '{{ variables.server }}'
+        
     - name: Wait until virtual machine offline
       vmware.vmware_rest.vcenter_vm_tools_info:
-        vm: '{{ search_result.value[0].vm }}'
+        vm: '{{ variables.server }}'
       register: vm_tools_info
       until:
       - vm_tools_info is not failed
