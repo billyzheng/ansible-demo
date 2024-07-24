@@ -10,11 +10,11 @@
         filter_names:
         - "{{ variables.server }}"
 
-    # - name: Power off the VM
-    #   vmware_guest_powerstate:
-    #     name: "{{ variables.server }}"
-    #     state: powered-off
-    #   ignore_errors: yes
+    - name: Power off the VM
+      vmware_guest_powerstate:
+        name: "{{ variables.server }}"
+        state: powered-off
+      ignore_errors: yes
 
  
     # - name: Power off virtual machine
