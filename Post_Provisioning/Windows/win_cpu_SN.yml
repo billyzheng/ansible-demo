@@ -31,7 +31,7 @@
       when: variables.Action_Required == 'Decrease' and (cpu_cores_decrease | int) <= 0
 
     - name: Power off the VM
-      vmware_guest_powerstate:
+      community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-off
       ignore_errors: yes
@@ -42,7 +42,7 @@
       delegate_to: localhost
 
     - name: Increase the CPU size on the VM
-      vmware_guest:
+      community.vmware.vmware_guest:
         name: "{{ variables.server }}"
         hardware:
           num_cpus: "{{ cpu_cores_increase }}"
@@ -52,7 +52,7 @@
       register: cpu_result_increase
 
     - name: Decrease the CPU size on the VM
-      vmware_guest:
+      community.vmware.vmware_guest:
         name: "{{ variables.server }}"
         hardware:
           num_cpus: "{{ cpu_cores_decrease }}"
@@ -62,7 +62,7 @@
       register: cpu_result_decrease
 
     - name: Power on the VM
-      vmware_guest_powerstate:
+      community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
     
