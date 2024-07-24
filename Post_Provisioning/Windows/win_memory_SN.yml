@@ -35,7 +35,7 @@
       when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
 
     - name: Power off the VM
-      vmware_guest_powerstate:
+      community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-off
       ignore_errors: yes
