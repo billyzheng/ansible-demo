@@ -40,10 +40,15 @@
         state: powered-off
       ignore_errors: yes
 
-    - name: Wait for 5 seconds for VM to powered down
-      wait_for:
-        timeout: 5
-      delegate_to: localhost
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5
 
     - name: Increase Memory
       community.vmware.vmware_guest:
