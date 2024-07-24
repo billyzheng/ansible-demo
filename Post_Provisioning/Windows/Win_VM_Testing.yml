@@ -33,6 +33,9 @@
       retries: 60
       delay: 5
 
+    - debug:
+        var: vm_tools_info
+
     # - name: Power on the VM
     #   vmware_guest_powerstate:
     #     name: "{{ variables.server }}"
