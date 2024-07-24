@@ -10,11 +10,17 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Power off the VM
-      vmware_guest_powerstate:
-        name: "{{ variables.server }}"
-        state: powered-off
-      ignore_errors: yes
+    # - name: Power off the VM
+    #   vmware_guest_powerstate:
+    #     name: "{{ variables.server }}"
+    #     state: powered-off
+    #   ignore_errors: yes
+
+ 
+    - name: Power off virtual machine
+      vmware.vmware_rest.vcenter_vm_power:
+        state: stop
+        vm: '{{ search_result.value[0].vm }}'
 
     - name: Wait until virtual machine offline
       vmware.vmware_rest.vcenter_vm_tools_info:
@@ -26,14 +32,14 @@
       retries: 60
       delay: 5
 
-    - name: Power on the VM
-      vmware_guest_powerstate:
-        name: "{{ variables.server }}"
-        state: powered-on
+    # - name: Power on the VM
+    #   vmware_guest_powerstate:
+    #     name: "{{ variables.server }}"
+    #      state: powered-on
     
-    - name: Collect information about a specific VM
-      vmware.vmware_rest.vcenter_vm_info:
-         vm: '{{ search_result.value[0].vm }}'
-      register: win_vm_info
+    # - name: Collect information about a specific VM
+    #   vmware.vmware_rest.vcenter_vm_info:
+    #      vm: '{{ search_result.value[0].vm }}'
+    #   register: win_vm_info
       
   
