@@ -46,7 +46,7 @@
       delegate_to: localhost
 
     - name: Increase Memory
-      vmware_guest:
+      community.vmware.vmware_guest:
         name: "{{ variables.server }}"
         hardware:
           memory_mb: "{{ memory_increase }}"
@@ -55,7 +55,7 @@
       register: mem_result_increase
 
     - name: Decrease Memory
-      vmware_guest:
+      community.vmware.vmware_guest:
         name: "{{ variables.server }}"
         hardware:
           memory_mb: "{{ memory_decrease }}"
@@ -64,7 +64,7 @@
       register: mem_result_decrease
 
     - name: Power on the VM
-      vmware_guest_powerstate:
+      community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
     
