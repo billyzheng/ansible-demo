@@ -18,7 +18,7 @@
 
     - name: Wait until virtual machine offline
       vmware.vmware_rest.vcenter_vm_tools_info:
-        vm: '{{ search_result.id }}'
+        vm: '{{ search_result.value[0].vm }}'
       register: vm_tools_info
       until:
       - vm_tools_info is not failed
