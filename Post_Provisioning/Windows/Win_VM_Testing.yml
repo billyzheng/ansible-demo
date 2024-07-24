@@ -1,5 +1,5 @@
 ---
-- name: Resize memory VM in vCenter
+- name: Testing playbook
   hosts: localhost
   gather_facts: no
   tasks:
@@ -10,58 +10,21 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Set memory variable
-      set_fact:
-        memory_request: "{{ variables.Memory_Size | regex_replace(' GB', '') | int }}"
-        memory_size: "{{ search_result.value[0].memory_size_MiB | int }}"
-
-    - name: Convert RAM to MB
-      set_fact:
-         ram_in_mb: "{{ (memory_request | int) * 1024 }}"
-
-    - name: Set memory increase variable
-      set_fact:
-        memory_increase: "{{ (memory_size | int) + (ram_in_mb | int) }}"
-      when: variables.Action_Required == "Increase"
-
-    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
-      set_fact:
-        memory_decrease: "{{ (memory_size | int) - (ram_in_mb | int) }}"
-      when: variables.Action_Required == "Decrease"
-
-    - name: Check if Memory decrease would result in 0 or less Memory
-      fail:
-        msg: "Cannot decrease memory size to 1GB or less, please check manually"
-      when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
-
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-off
       ignore_errors: yes
 
-    - name: Wait for 5 seconds for VM to powered down
-      wait_for:
-        timeout: 5
-      delegate_to: localhost
-
-    - name: Increase Memory
-      vmware_guest:
-        name: "{{ variables.server }}"
-        hardware:
-          memory_mb: "{{ memory_increase }}"
-        state: present
-      when: variables.Action_Required == 'Increase'
-      register: mem_result_increase
-
-    - name: Decrease Memory
-      vmware_guest:
-        name: "{{ variables.server }}"
-        hardware:
-          memory_mb: "{{ memory_decrease }}"
-        state: present
-      when: variables.Action_Required == 'Decrease'
-      register: mem_result_decrease
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ search_result.id }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5
 
     - name: Power on the VM
       vmware_guest_powerstate:
