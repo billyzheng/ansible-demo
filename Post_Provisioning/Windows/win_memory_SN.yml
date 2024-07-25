@@ -92,8 +92,8 @@
     - name: Set Post VM Status
       set_fact:
         post_server_state: "{{ post_result.value[0].power_state }}"
-        current_memory_size_GB: "{{ (current_memory_size | int) / 1024 }}"
-        resized_mem_size_GB: "{{ (post_result.value[0].memory_size_MiB | int) / 1024 }}"        
+        current_memory_size_GB: "{{ (current_memory_size | int) / 1024 | int }}"
+        resized_mem_size_GB: "{{ (post_result.value[0].memory_size_MiB | int) / 1024 | int }}"        
         
     - set_stats:
         data:
