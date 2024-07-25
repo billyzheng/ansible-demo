@@ -13,16 +13,16 @@
     - name: Set Pre CPU core variable
       set_fact:
         requested_cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
-        current_cpu_count: "{{ pre_result.value[0].cpu_count | int }}"
+        current_cpu_cores: "{{ pre_result.value[0].cpu_count | int }}"
 
     - name: Set CPU core increase variable value
       set_fact:
-        cpu_cores_increase: "{{ (current_cpu_count | int) + (requested_cpu_cores | int) }}"
+        cpu_cores_increase: "{{ (current_cpu_cores | int) + (requested_cpu_cores | int) }}"
       when: variables.Action_Required == "Increase"
 
     - name: Set CPU core decrease variable value
       set_fact:
-        cpu_cores_decrease: "{{ (current_cpu_count | int) - (requested_cpu_cores | int) }}"
+        cpu_cores_decrease: "{{ (current_cpu_cores | int) - (requested_cpu_cores | int) }}"
       when: variables.Action_Required == "Decrease"
 
     - name: Check if CPU decrease would result in 0 or less CPUs
@@ -83,7 +83,7 @@
 
     - set_stats:
       data:
-        CPU_Core_before: "{{ current_cpu_count }}"  
+        CPU_Core_before: "{{ current_cpu_cores }}"  
         CPU_Core_after: "{{ resized_cpu_count }}" 
         
 
