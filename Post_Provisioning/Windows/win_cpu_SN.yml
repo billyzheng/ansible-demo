@@ -70,9 +70,21 @@
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
-    
-    - name: Collect information about a specific VM
+
+    - name: Look up the VM inventory
+      register: post_result
       vmware.vmware_rest.vcenter_vm_info:
-         vm: '{{ search_result.value[0].vm }}'
-      register: win_vm_info
+        filter_names:
+        - "{{ variables.server }}"
+
+    - name: Set cpu_cores variable
+      set_fact:
+        resized_cpu_count: "{{ search_result.value[0].cpu_count | int }}"
+        
+
+    
+    # - name: Collect information about a specific VM
+    #   vmware.vmware_rest.vcenter_vm_info:
+    #      vm: '{{ search_result.value[0].vm }}'
+    #   register: win_vm_info
       
