@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
 
-    - name: Look up the VM inventory
+    - name: Get the VM inventory - before changes
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
@@ -34,7 +34,7 @@
         msg: "Cannot decrease memory size to 1GB or less, please check manually"
       when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
 
-    - name: Power off the VM
+    - name: Power OFF the VM
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-off
@@ -72,6 +72,7 @@
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
+        
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
         vm: '{{ pre_result.value[0].vm }}'
@@ -82,7 +83,7 @@
       retries: 60
       delay: 5
 
-    - name: Look up the VM inventory
+    - name: Get the VM inventory - post changes
       register: post_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
