@@ -91,7 +91,7 @@
 
     - name: Set Post VM Status
       set_fact:
-        resized_mem_size: "{{ pre_result.value[0].memory_size_MiB | int }}"
+        resized_mem_size: "{{ post_result.value[0].memory_size_MiB | int }}"
         post_server_state: "{{ post_result.value[0].power_state }}"
         
     - set_stats:
