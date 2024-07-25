@@ -93,10 +93,12 @@
       set_fact:
         resized_mem_size: "{{ post_result.value[0].memory_size_MiB | int }}"
         post_server_state: "{{ post_result.value[0].power_state }}"
+        current_memory_size_GB: "{{ (current_memory_size | int) / 1024 }}"
+        resized_mem_size_GB: "{{ (resized_mem_size | int) / 1024 }}"
         
     - set_stats:
         data:
-          Mem_size_before: "{{ current_memory_size }}"  
-          Mem_size_after: "{{ resized_mem_size }}" 
+          Mem_size_before: "{{ current_memory_size_GB }}"  
+          Mem_size_after: "{{ resized_mem_size_GB }}" 
           vm_power_state: "{{ post_server_state }}"  
     
