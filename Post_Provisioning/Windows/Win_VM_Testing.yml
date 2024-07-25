@@ -13,7 +13,7 @@
     - name: Power off the VM
       vmware_guest_powerstate:
         name: "{{ variables.server }}"
-        state: powered-off
+        state: powered-on
       ignore_errors: yes
 
  
@@ -21,16 +21,26 @@
     #   vmware.vmware_rest.vcenter_vm_power:
     #     state: stop
     #     vm: '{{ search_result.value[0].vm }}'
-        
-    - name: Wait until virtual machine offline
+
+    - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
-        vm: '{{ search_result.value[0].vm }}'
+        vm: '{{ my_vm.id }}'
       register: vm_tools_info
       until:
       - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      - vm_tools_info.value.run_state == "RUNNING"
       retries: 60
       delay: 5
+        
+    # - name: Wait until virtual machine offline
+    #   vmware.vmware_rest.vcenter_vm_tools_info:
+    #     vm: '{{ search_result.value[0].vm }}'
+    #   register: vm_tools_info
+    #   until:
+    #   - vm_tools_info is not failed
+    #   - vm_tools_info.value.run_state == "NOT_RUNNING"
+    #   retries: 60
+    #   delay: 5
 
     - debug:
         var: vm_tools_info
