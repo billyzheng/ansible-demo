@@ -24,7 +24,7 @@
         memory_increase: "{{ (current_memory_size | int) + (ram_in_mb | int) }}"
       when: variables.Action_Required == "Increase"
 
-    - name: Set cpu_cores_decrease variable when Action_Required is Decrease
+    - name: Set memory decrease variable
       set_fact:
         memory_decrease: "{{ (current_memory_size | int) - (ram_in_mb | int) }}"
       when: variables.Action_Required == "Decrease"
@@ -68,9 +68,34 @@
       when: variables.Action_Required == 'Decrease'
       register: mem_result_decrease
 
-    - name: Power on the VM
+    - name: Power ON the VM
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
-    
+    - name: Wait until my VM is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: '{{ pre_result.value[0].vm }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
 
+    - name: Look up the VM inventory
+      register: post_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - "{{ variables.server }}"
+
+    - name: Set Post VM Status
+      set_fact:
+        resized_mem_size: "{{ pre_result.value[0].memory_size_MiB | int }}"
+        post_server_state: "{{ post_result.value[0].power_state }}"
+        
+    - set_stats:
+        data:
+          Mem_size_before: "{{ current_memory_size }}"  
+          Mem_size_after: "{{ resized_mem_size }}" 
+          vm_power_state: "{{ post_server_state }}"  
+    
