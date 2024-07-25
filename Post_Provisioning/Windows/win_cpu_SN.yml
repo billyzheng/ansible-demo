@@ -87,17 +87,18 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Set Post CPU core variable
+    - name: Set Post VM Status
       set_fact:
         resized_cpu_count: "{{ post_result.value[0].cpu_count | int }}"
-
+        post_server_state: "{{ post_result.value[0].power_state }}"
+        
     - set_stats:
         data:
           CPU_Core_before: "{{ current_cpu_cores }}"  
           CPU_Core_after: "{{ resized_cpu_count }}" 
+          vm_power_state: "{{ post_server_state }}"  
         
-
-    
+  
     # - name: Collect information about a specific VM
     #   vmware.vmware_rest.vcenter_vm_info:
     #      vm: '{{ pre_result.value[0].vm }}'
