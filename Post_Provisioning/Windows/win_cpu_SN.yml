@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
 
-    - name: Look up the VM inventory
+    - name: Get the VM inventory - before changes
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
@@ -30,7 +30,7 @@
         msg: "Cannot decrease CPU count to 0 or less"
       when: variables.Action_Required == 'Decrease' and (cpu_cores_decrease | int) <= 0
 
-    - name: Power off the VM
+    - name: Power OFF the VM
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-off
@@ -66,7 +66,7 @@
       when: variables.Action_Required == 'Decrease'
       register: cpu_result_decrease
 
-    - name: Power on the VM
+    - name: Power ON the VM
       community.vmware.vmware_guest_powerstate:
         name: "{{ variables.server }}"
         state: powered-on
@@ -81,7 +81,7 @@
       retries: 60
       delay: 5
 
-    - name: Look up the VM inventory
+    - name: Get the VM inventory - post changes
       register: post_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
