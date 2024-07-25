@@ -10,19 +10,19 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Set cpu_cores variable
+    - name: Set CPU core variable
       set_fact:
-        cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+        requested_cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
         current_cpu_count: "{{ pre_result.value[0].cpu_count | int }}"
 
     - name: Set CPU core increase variable value
       set_fact:
-        cpu_cores_increase: "{{ (current_cpu_count | int) + (cpu_cores | int) }}"
+        cpu_cores_increase: "{{ (current_cpu_count | int) + (requested_cpu_cores | int) }}"
       when: variables.Action_Required == "Increase"
 
     - name: Set CPU core decrease variable value
       set_fact:
-        cpu_cores_decrease: "{{ (current_cpu_count | int) - (cpu_cores | int) }}"
+        cpu_cores_decrease: "{{ (current_cpu_count | int) - (requested_cpu_cores | int) }}"
       when: variables.Action_Required == "Decrease"
 
     - name: Check if CPU decrease would result in 0 or less CPUs
@@ -77,9 +77,13 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Set cpu_cores variable
+    - name: Set CPU core variable
       set_fact:
         resized_cpu_count: "{{ post_result.value[0].cpu_count | int }}"
+
+    - set_stats:
+      data:
+        VMware_VM_IP_address: "{{ next_ip }}"  
         
 
     
