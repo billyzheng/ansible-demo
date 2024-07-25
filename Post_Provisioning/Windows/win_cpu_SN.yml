@@ -81,10 +81,10 @@
       set_fact:
         resized_cpu_count: "{{ post_result.value[0].cpu_count | int }}"
 
-    # - set_stats:
-    #   data:
-    #     CPU_Core_before: "{{ current_cpu_cores }}"  
-    #     CPU_Core_after: "{{ resized_cpu_count }}" 
+    - set_stats:
+        data:
+          CPU_Core_before: "{{ current_cpu_cores }}"  
+          CPU_Core_after: "{{ resized_cpu_count }}" 
         
 
     
