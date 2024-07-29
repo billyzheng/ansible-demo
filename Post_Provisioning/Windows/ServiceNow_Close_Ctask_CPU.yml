@@ -32,7 +32,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nCPU size is now resized to {{ CPU_Core_after }}GB from {{ CPU_Core_before }}GB.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nCPU size is now resized to {{ CPU_Core_after }} cores from {{ CPU_Core_before }} cores.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
           sys_id: "{{ change_task_sys_id }}"
       register: SR_close_ctask  
