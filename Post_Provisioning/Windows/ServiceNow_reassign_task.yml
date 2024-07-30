@@ -38,7 +38,7 @@
     - name: Ansible reassign this task to wintel manual queue
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
-        method: PATCH
+        method: PUT
         headers:
           Content-Type : application/json
           Accept : application/json
