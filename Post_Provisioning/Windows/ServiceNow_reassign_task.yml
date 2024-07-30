@@ -45,7 +45,9 @@
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
         body_format: json
         body: 
-          state: CLOSED_IN_COMPLETE
+          assignment_group: "{{ wintel_support_group }}"
+          assigned_to : ""
+          state: WORK_IN_PROGRESS
           work_notes: "Error has been encountered during the automation run"
           closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete  
