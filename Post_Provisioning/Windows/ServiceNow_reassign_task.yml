@@ -47,6 +47,7 @@
         body: 
           assignment_group: "{{ wintel_support_group }}"
           assigned_to : ""
+          close_code: "failed"
           state: WORK_IN_PROGRESS
           work_notes: "Error has been encountered during the automation run"
           closure_notes: "Automation job is incomplete"
