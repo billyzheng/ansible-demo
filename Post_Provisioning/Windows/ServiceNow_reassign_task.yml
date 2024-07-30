@@ -20,22 +20,22 @@
       debug: 
         msg: " {{ oauth_return_token.json.access_token }} "
 
-    - name: Ansible take SR task
-      ansible.builtin.uri:
-        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
-        method: PUT
-        headers:
-          Content-Type : application/json
-          Accept : application/json
-          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
-        body_format: json
-        body: 
-          assigned_to: int_ansible
-          state: WORK_IN_PROGRESS
-          work_notes: "Automation is in progress"
-      register: SR_task_wip  
+    # - name: Ansible take SR task
+    #   ansible.builtin.uri:
+    #     url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+    #     method: PUT
+    #     headers:
+    #       Content-Type : application/json
+    #       Accept : application/json
+    #       Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+    #     body_format: json
+    #     body: 
+    #       assigned_to: int_ansible
+    #       state: WORK_IN_PROGRESS
+    #       work_notes: "Automation is in progress"
+    #   register: SR_task_wip  
 
-    - name: Ansible update the state as closed incomplete if task fails
+    - name: Ansible reassign this task to wintel manual queue
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
         method: PATCH
@@ -47,11 +47,11 @@
         body: 
           assignment_group: "{{ wintel_support_group }}"
           assigned_to : ""
-    #      close_code: "failed"
+          close_code: "failed"
           state: WORK_IN_PROGRESS
-          work_notes: "Error has been encountered during the automation run"
-          closure_notes: "Automation job is incomplete"
-      register: SR_task_close_incomplete  
+          work_notes: "Error has been encountered during the automation run, please check manually"
+          closure_notes: "Automation job is incomplete due to error encountered, please check maually"
+      register: SR_task_reassign
 
 
 
