@@ -53,5 +53,8 @@
           closure_notes: "Automation job is incomplete due to error encountered, please check maually"
       register: SR_task_reassign
 
+    - name: display the details
+      debug: 
+        msg: " {{ SR_task_reassign }} "
 
 
