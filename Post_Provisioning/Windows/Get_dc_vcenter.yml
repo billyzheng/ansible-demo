@@ -1,0 +1,10 @@
+---
+- name: Get Vcenter
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Extract datacenter name
+    set_fact:
+      datacenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
+      
