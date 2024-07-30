@@ -38,7 +38,7 @@
     - name: Ansible update the state as closed incomplete if task fails
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
-        method: PUT
+        method: PATCH
         headers:
           Content-Type : application/json
           Accept : application/json
@@ -47,8 +47,8 @@
         body: 
           assignment_group: "{{ wintel_support_group }}"
           assigned_to : ""
-          close_code: "failed"
-       #   state: WORK_IN_PROGRESS
+    #      close_code: "failed"
+          state: WORK_IN_PROGRESS
           work_notes: "Error has been encountered during the automation run"
           closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete  
