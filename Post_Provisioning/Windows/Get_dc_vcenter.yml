@@ -1,5 +1,5 @@
 ---
-- name: Get Vcenter
+- name: Get Vcenter vm details
   hosts: localhost
   gather_facts: false
 
