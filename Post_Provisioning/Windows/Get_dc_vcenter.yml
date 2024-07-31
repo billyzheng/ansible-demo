@@ -7,4 +7,10 @@
   - name: Extract datacenter name
     set_fact:
       datacenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
+
+ - name: Get the VM inventory - before changes
+   register: pre_result
+   vmware.vmware_rest.vcenter_vm_info:
+      filter_names:
+      - "{{ server_name }}"
       
