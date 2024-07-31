@@ -11,7 +11,9 @@
   - name: Get the VM inventory - before changes
     vmware.vmware_rest.vcenter_vm_info:
       vcenter_hostname: "{{ datacenter_name }}"
+      vcenter_username: "{{ VMWARE_USERNAME }}"
+      vcenter_password: "{{ VMWARE_PASSWORD }}" 
       filter_names: 
       - "{{ server_name }}"
-    register: pre_result
+    register: vm_fact
       
