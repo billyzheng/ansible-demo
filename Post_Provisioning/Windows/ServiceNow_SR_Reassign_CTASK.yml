@@ -30,7 +30,7 @@
           Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
         body_format: json
         body: 
-          assignment_group: "{{ wintel_support_group }}"
+          assignment_group: "{{ command_center_support_group }}"
           close_code: "failed"
           close_notes: "Error has been encountered during the automation run. Ticket is re-assigned for further troubleshooting"
           work_notes: "Error has been encountered during the automation run. Ticket is re-assigned for further troubleshooting"
