@@ -16,7 +16,7 @@
       set_fact:
         datacenter_name: "{{ vm_info.virtual_machines[0.datacenter }}"
 
-        - name: Gather some info from a guest using the vSphere API output schema
+    - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
         name: xf-s-aapwin04t
         datacenter: XF-COMP
