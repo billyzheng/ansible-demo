@@ -16,11 +16,7 @@
           password : "{{ SN_PASSWORD }}"
       register: oauth_return_token
 
-    - name: display token info
-      debug: 
-        msg: " {{ oauth_return_token.json.access_token }} "
-
-    - name: Ansible close the CATASK if sucess
+    - name: Ansible Reassign the CTASK if failed
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
