@@ -45,7 +45,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nMemory {{ variables.Action_Required }} evidence:\n Before resize: {{ Mem_size_before }} cores\n After resize: {{ Mem_size_after }} cores.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
           sys_id: "{{ change_task_sys_id }}"
       when: variables.please_select_the_unit == 'Memory'
