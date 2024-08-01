@@ -15,6 +15,13 @@
     - debug: 
         var: boot_time_info
 
+    - name: Get VM guest last reboot time
+      vmware_guest:
+        name: xf-s-aapwin04t
+      register: vm_guest_info
+
+    - debug: var=vm_guest_info
+
     # - name: Reboot the virtual machine
     #   community.vmware.vmware_guest_powerstate:
     #      name: "{{ variables.server }}"
