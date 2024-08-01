@@ -50,7 +50,7 @@
           sys_id: "{{ change_task_sys_id }}"
       register: SR_close_ctask  
 
-   - name: Ansible close the CATASK if sucess
+    - name: Ansible close the CATASK if sucess
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
@@ -67,7 +67,7 @@
           sys_id: "{{ change_task_sys_id }}"
       register: SR_close_ctask  
 
-- name: Ansible close the CATASK if sucess
+    - name: Ansible close the CATASK if sucess
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
