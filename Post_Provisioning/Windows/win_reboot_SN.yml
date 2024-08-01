@@ -21,14 +21,14 @@
         filter_names:
         - xf-s-aapwin04t
         
-   - name: Collect information about a specific VM
-     vmware.vmware_rest.vcenter_vm_info:
-        vm: '{{ pre_result.value[0].vm }}'
-     register: test_vm1_info
+   # - name: Collect information about a specific VM
+   #   vmware.vmware_rest.vcenter_vm_info:
+   #      vm: '{{ pre_result.value[0].vm }}'
+   #   register: test_vm1_info
 
    - name: Retrieve the boot information from the VM
      vmware.vmware_rest.vcenter_vm_hardware_boot_info:
-        vm: '{{ test_vm1_info.id }}'
+        vm: xf-s-aapwin04t
 
     # - name: Reboot the virtual machine
     #   community.vmware.vmware_guest_powerstate:
