@@ -13,7 +13,7 @@
       vcenter_hostname: "{{ datacenter_name }}"
       vcenter_username: "{{ VMWARE_USERNAME }}"
       vcenter_password: "{{ VMWARE_PASSWORD }}" 
-      validate_certs: no
+      vcenter_validate_certs: false
       filter_names: 
       - "{{ server_name }}"
     register: vm_fact
