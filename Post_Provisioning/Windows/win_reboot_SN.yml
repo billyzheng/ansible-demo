@@ -6,7 +6,7 @@
 
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
-        name: "{{ variables.server }}"
+        name: xf-s-aapwin04t
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
       register: boot_time_info
