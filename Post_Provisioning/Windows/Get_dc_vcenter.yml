@@ -17,7 +17,7 @@
       hostname: '{{ datacenter_name }}'
       username: '{{ VMWARE_USERNAME }}'
       password: '{{ VMWARE_PASSWORD }}'
-      vm_name: {{ server_name }}
+      vm_name: "{{ server_name }}"
       validate_certs: false
     register: vminfo
 
