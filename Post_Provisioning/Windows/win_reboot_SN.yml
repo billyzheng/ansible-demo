@@ -15,13 +15,13 @@
     # - debug: 
     #     var: boot_time_info
 
-   - name: Gather one specific VM
-     community.vmware.vmware_vm_info:
-        vm_name: xf-s-aapwin04t
-     register: vm_info
+    - name: Gather one specific VM
+      community.vmware.vmware_vm_info:
+         vm_name: xf-s-aapwin04t
+      register: vm_info
 
-   - debug: 
-       var: vm_info
+    - debug: 
+        var: vm_info
 
     # - name: Reboot the virtual machine
     #   community.vmware.vmware_guest_powerstate:
