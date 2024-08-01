@@ -16,25 +16,6 @@
           password : "{{ SN_PASSWORD }}"
       register: oauth_return_token
 
-    - name: display token info
-      debug: 
-        msg: " {{ oauth_return_token.json.access_token }} "
-
-    - name: Ansible take SR task
-      ansible.builtin.uri:
-        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
-        method: PUT
-        headers:
-          Content-Type : application/json
-          Accept : application/json
-          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
-        body_format: json
-        body: 
-          assigned_to: int_ansible
-          state: WORK_IN_PROGRESS
-          work_notes: "Automation is in progress"
-      register: SR_task_wip  
-
     - name: Ansible update the state as closed incomplete if task fails
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
