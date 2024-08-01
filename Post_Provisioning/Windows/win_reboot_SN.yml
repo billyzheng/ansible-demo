@@ -14,7 +14,7 @@
         
     - name: Filter datacenter value
       set_fact:
-        datacenter_name: "{{ vm_info.virtual_machines[0.datacenter }}"
+        datacenter_name: "{{ vm_info.virtual_machines['datacenter'] }}"
 
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
