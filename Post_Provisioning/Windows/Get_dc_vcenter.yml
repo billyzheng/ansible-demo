@@ -21,6 +21,9 @@
       validate_certs: false
     register: vminfo
 
+  - debug:
+      var: vminfo
+
 
 #  - name: Get the VM inventory
 #    vmware.vmware_rest.vcenter_vm_info:
