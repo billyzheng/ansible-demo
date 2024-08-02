@@ -44,6 +44,11 @@
          state: reboot-guest
       register: reboot_result
 
+    - name: wait for task complete
+      ansible.builtin.wait_for:
+         timeout: 30
+
+
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
         vm: '{{ pre_result.value[0].vm }}'
@@ -74,6 +79,4 @@
       set_fact:
         latest_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
       
-    # - name: wait for task complete
-    #   wait_for:
-    #     timeout: 30
+    
