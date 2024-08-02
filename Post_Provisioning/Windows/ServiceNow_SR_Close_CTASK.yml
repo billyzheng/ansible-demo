@@ -66,7 +66,7 @@
           close_notes: "Automation is completed. Successfully updated/created the resource(s).\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
           sys_id: "{{ change_task_sys_id }}"
-      when: catalog_item == 'Server Reboot'    
+      when: catalog_item == 'Reboot'    
       register: SR_close_ctask  
 
     # - name: Ansible close the CATASK if sucess
