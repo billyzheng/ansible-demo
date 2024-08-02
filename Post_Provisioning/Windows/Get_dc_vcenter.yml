@@ -23,6 +23,7 @@
 
   - name: Reboot the virtual machine
     community.vmware.vmware_guest_powerstate:
+       hostname: '{{ Vcenter_Name }}'
        name: "{{ server_name }}"
        state: reboot-guest
   
