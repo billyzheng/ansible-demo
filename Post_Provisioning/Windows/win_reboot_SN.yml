@@ -42,6 +42,11 @@
          state: reboot-guest
       register: reboot_result
 
+    - name: Fail if VM reboot is not happen
+      fail:
+        msg: "VM is already in shutdown state, Please check the reason manually"
+      when: not reboot_result.changed
+
     - name: wait for task complete
       ansible.builtin.wait_for:
          timeout: 30
@@ -55,11 +60,6 @@
       - vm_tools_info.value.run_state == "RUNNING"
       retries: 60
       delay: 5
-
-    - name: Fail if VM reboot is not happen
-      fail:
-        msg: "VM is already in shutdown state"
-      when: not reboot_result.changed
 
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
