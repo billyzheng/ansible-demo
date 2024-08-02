@@ -13,15 +13,14 @@
     - name: Gather one specific VM
       community.vmware.vmware_vm_info:
          vm_name: xf-s-aapwin04t
-  #    register: vm_info
+      register: vm_info
 
-#    - debug: 
- #       var: vm_info
+    - debug: var=vm_info
         
     - name: Filter datacenter value
       set_fact:
-      #  datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
-        datacenter_value: "{{ virtual_machines[0].datacenter }}"
+        datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
+        
 
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
@@ -29,15 +28,15 @@
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
- #     register: time_before_boot
+      register: time_before_boot
 
- #   - debug: 
-  #      var: time_before_boot
+    - debug: 
+        var: time_before_boot
 
     - name: Set last boot time fact
       set_fact:
-    #    last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
-        last_boot_time: "{{ instance.summary.runtime.bootTime }}"
+        last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
+        
 
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
@@ -72,14 +71,14 @@
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
-#      register: time_after_boot
+      register: time_after_boot
 
- #   - debug: 
-  #      var: time_after_boot
+    - debug: 
+        var: time_after_boot
 
     - name: Set last boot time fact
       set_fact:
         latest_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
-        latest_boot_time: "{{ instance.summary.runtime.bootTime }}"
+
       
     
