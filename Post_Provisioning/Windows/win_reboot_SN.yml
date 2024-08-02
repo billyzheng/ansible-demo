@@ -46,7 +46,7 @@
 
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
-        vm: xf-s-aapwin04t
+        vm: '{{ pre_result.value[0].vm }}'
       register: vm_tools_info
       until:
       - vm_tools_info is not failed
