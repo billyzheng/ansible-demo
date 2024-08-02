@@ -38,6 +38,16 @@
          state: reboot-guest
       register: reboot_result
 
+    - name: Wait until my VM is ready
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vm: xf-s-aapwin04t
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "RUNNING"
+      retries: 60
+      delay: 5
+
     - name: Fail if VM reboot is not happen
       fail:
         msg: "VM is already in shutdown state"
