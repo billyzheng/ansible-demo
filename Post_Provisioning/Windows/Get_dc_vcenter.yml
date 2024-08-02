@@ -26,6 +26,7 @@
        hostname: '{{ Vcenter_Name }}'
        username: '{{ VMWARE_USERNAME }}'
        password: '{{ VMWARE_PASSWORD }}'
+       validate_certs: false
        name: "{{ server_name }}"
        state: reboot-guest
   
