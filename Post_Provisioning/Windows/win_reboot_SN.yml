@@ -22,25 +22,41 @@
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
-      register: boot_time_info
+      register: time_before_boot
 
     - debug: 
-        var: boot_time_info
+        var: time_before_boot
 
     - name: Set last boot time fact
       set_fact:
-        last_boot_time: "{{ boot_time_info.instance.summary.runtime.bootTime }}"
+        last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
 
-    # - name: Reboot the virtual machine
-    #   community.vmware.vmware_guest_powerstate:
-    #      name: "{{ variables.server }}"
-    #      state: reboot-guest
-    #   register: reboot_result
+   - name: Reboot the virtual machine
+     community.vmware.vmware_guest_powerstate:
+ #       name: "{{ variables.server }}"
+        name: xf-s-aapwin04t
+        state: reboot-guest
+     register: reboot_result
 
-    # - name: Fail if VM reboot is not happen
-    #   fail:
-    #     msg: "VM is already in shutdown state"
-    #   when: not reboot_result.changed
+   - name: Fail if VM reboot is not happen
+     fail:
+       msg: "VM is already in shutdown state"
+     when: not reboot_result.changed
+
+   - name: Gather some info from a guest using the vSphere API output schema
+      community.vmware.vmware_guest_info:
+        name: xf-s-aapwin04t
+        datacenter: "{{ datacenter_value }}"
+        schema: "vsphere"
+        properties: ["summary.runtime.bootTime"]
+      register: time_after_boot
+
+    - debug: 
+        var: time_after_boot
+
+    - name: Set last boot time fact
+      set_fact:
+        latest_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
       
     # - name: wait for task complete
     #   wait_for:
