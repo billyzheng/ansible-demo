@@ -6,7 +6,7 @@
   tasks:
   - name: Extract datacenter name
     set_fact:
-      datacenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
+      datacenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] | to_yaml }}"
 
   - name: display info
     debug: 
