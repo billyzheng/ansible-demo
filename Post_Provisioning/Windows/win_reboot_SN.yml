@@ -20,8 +20,7 @@
     - name: Filter datacenter value
       set_fact:
         datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
-        
-
+       
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
         name: xf-s-aapwin04t
@@ -30,14 +29,12 @@
         properties: ["summary.runtime.bootTime"]
       register: time_before_boot
 
-    - debug: 
-        var: time_before_boot
+    - debug: var=time_before_boot
 
     - name: Set last boot time fact
       set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
-        
-
+       
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
  #       name: "{{ variables.server }}"
@@ -48,7 +45,6 @@
     - name: wait for task complete
       ansible.builtin.wait_for:
          timeout: 30
-
 
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
@@ -73,12 +69,27 @@
         properties: ["summary.runtime.bootTime"]
       register: time_after_boot
 
-    - debug: 
-        var: time_after_boot
+    - debug: var=time_after_boot
 
     - name: Set last boot time fact
       set_fact:
-        latest_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
+        final_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
+    
+    - name: Get the VM inventory - post changes
+      register: post_result
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+      #  - "{{ variables.server }}"
+        - xf-s-aapwin04t
 
+    - name: Set Post VM Status
+      set_fact:
+        post_server_state: "{{ post_result.value[0].power_state }}"
+        
+    - set_stats:
+        data:
+          time_before_reboot: "{{ last_boot_time }}"
+          time_after_reboot: "{{ final_boot_time }}"
+          vm_power_state: "{{ post_server_state }}" 
       
     
