@@ -1,5 +1,5 @@
 ---
-- name: Reboot using SNOW variable
+- name: Reboot the VM
   hosts: localhost
   gather_facts: no
   tasks:
@@ -10,7 +10,7 @@
         filter_names:
         - "{{ variables.server }}"
 
-    - name: Gather one specific VM
+    - name: Gather VM information
       community.vmware.vmware_vm_info:
          vm_name: "{{ variables.server }}"
       register: vm_info
@@ -21,7 +21,7 @@
       set_fact:
         datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
        
-    - name: Gather some info from a guest using the vSphere API output schema
+    - name: Fetch the VM time before reboot
       community.vmware.vmware_guest_info:
         name: "{{ variables.server }}"
         datacenter: "{{ datacenter_value }}"
@@ -31,7 +31,7 @@
 
     - debug: var=time_before_boot
 
-    - name: Set last boot time fact
+    - name: Set last reboot time 
       set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
        
@@ -46,7 +46,7 @@
         msg: "VM is already in shutdown state, Please check the reason manually"
       when: not reboot_result.changed
 
-    - name: wait for task complete
+    - name: wait for reboot to happen
       ansible.builtin.wait_for:
          timeout: 30
 
@@ -60,7 +60,7 @@
       retries: 60
       delay: 5
 
-    - name: Gather some info from a guest using the vSphere API output schema
+    - name: Fetch the VM time after reboot
       community.vmware.vmware_guest_info:
         name: "{{ variables.server }}"
         datacenter: "{{ datacenter_value }}"
@@ -70,7 +70,7 @@
 
     - debug: var=time_after_boot
 
-    - name: Set last boot time fact
+    - name: Set latest reboot time
       set_fact:
         final_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
     
