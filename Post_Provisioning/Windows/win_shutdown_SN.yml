@@ -41,13 +41,13 @@
         filter_names:
         - "{{ variables.server }}"
 
-   - name: Set Post VM Status
-     set_fact:
-        pre_server_state: "{{ pre_result.value[0].power_state }}"
-        post_server_state: "{{ post_result.value[0].power_state }}"
+    - name: Set Post VM Status
+      set_fact:
+         pre_server_state: "{{ pre_result.value[0].power_state }}"
+         post_server_state: "{{ post_result.value[0].power_state }}"
 
-   - set_stats:
-        data:
-          vm_pre_power_state: "{{ pre_server_state }}" 
-          vm_post_power_state: "{{ post_server_state }}" 
-          catalog_item: Shutdown
+    - set_stats:
+         data:
+           vm_pre_power_state: "{{ pre_server_state }}" 
+           vm_post_power_state: "{{ post_server_state }}" 
+           catalog_item: Shutdown
