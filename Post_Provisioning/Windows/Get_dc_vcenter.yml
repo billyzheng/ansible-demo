@@ -21,12 +21,12 @@
       validate_certs: false
     register: vminfo
 
-  - name: Reboot the virtual machine
-    community.vmware.vmware_guest_powerstate:
-       hostname: '{{ Vcenter_Name }}'
-       username: '{{ VMWARE_USERNAME }}'
-       password: '{{ VMWARE_PASSWORD }}'
-       validate_certs: false
-       name: "{{ server_name }}"
-       state: reboot-guest
+  # - name: Reboot the virtual machine
+  #   community.vmware.vmware_guest_powerstate:
+  #      hostname: '{{ Vcenter_Name }}'
+  #      username: '{{ VMWARE_USERNAME }}'
+  #      password: '{{ VMWARE_PASSWORD }}'
+  #      validate_certs: false
+  #      name: "{{ server_name }}"
+  #      state: reboot-guest
   
