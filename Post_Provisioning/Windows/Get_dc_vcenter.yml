@@ -6,7 +6,7 @@
   tasks:
   - name: Extract datacenter name
     set_fact:
-      Vcenter_Name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
+      Vcenter_Name: "{{ hostvars[server_name]['tag_category']['vcenter'] | first }}"
 
   - name: display info
     debug: 
