@@ -24,8 +24,8 @@
         properties: ["summary.runtime.bootTime"]
       register: boot_time_info
 
-    # - debug: 
-    #     var: boot_time_info
+    - debug: 
+        var: boot_time_info
 
     # - name: Reboot the virtual machine
     #   community.vmware.vmware_guest_powerstate:
