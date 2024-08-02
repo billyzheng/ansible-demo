@@ -96,5 +96,6 @@
         data:
           CPU_Core_before: "{{ current_cpu_cores }}"  
           CPU_Core_after: "{{ resized_cpu_count }}" 
-          vm_power_state: "{{ post_server_state }}"  
+          vm_power_state: "{{ post_server_state }}" 
+          catalog_item: CPU
         
