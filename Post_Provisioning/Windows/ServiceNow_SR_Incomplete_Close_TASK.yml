@@ -27,7 +27,7 @@
         body_format: json
         body: 
           state: CLOSED_IN_COMPLETE
-          work_notes: "Ansible job is failed, Operation team is working on this RITM"
+          work_notes: "Ansible job is failed, Operations team is working on this RITM"
           closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete  
 
