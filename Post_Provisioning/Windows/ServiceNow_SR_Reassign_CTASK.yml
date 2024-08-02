@@ -27,8 +27,6 @@
         body_format: json
         body: 
           assignment_group: "{{ command_center_support_group }}"
-       #   close_code: "failed"
-       #   close_notes: "Error has been encountered during the automation run. Ticket is re-assigned for further troubleshooting"
           work_notes: "Error has been encountered during the automation run. Ticket is re-assigned for further troubleshooting"
           assigned_to : ""
           sys_id: "{{ change_task_sys_id }}"
