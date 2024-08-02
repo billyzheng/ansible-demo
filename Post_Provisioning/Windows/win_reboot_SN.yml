@@ -8,11 +8,11 @@
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
-        - xf-s-aapwin04t
+        - "{{ variables.server }}"
 
     - name: Gather one specific VM
       community.vmware.vmware_vm_info:
-         vm_name: xf-s-aapwin04t
+         vm_name: "{{ variables.server }}"
       register: vm_info
 
     - debug: var=vm_info
@@ -23,7 +23,7 @@
        
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
-        name: xf-s-aapwin04t
+        name: "{{ variables.server }}"
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
@@ -37,8 +37,7 @@
        
     - name: Reboot the virtual machine
       community.vmware.vmware_guest_powerstate:
- #       name: "{{ variables.server }}"
-         name: xf-s-aapwin04t
+         name: "{{ variables.server }}"
          state: reboot-guest
       register: reboot_result
 
@@ -63,7 +62,7 @@
 
     - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
-        name: xf-s-aapwin04t
+        name: "{{ variables.server }}"
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
@@ -79,9 +78,8 @@
       register: post_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
-      #  - "{{ variables.server }}"
-        - xf-s-aapwin04t
-
+        - "{{ variables.server }}"
+      
     - name: Set Post VM Status
       set_fact:
         post_server_state: "{{ post_result.value[0].power_state }}"
