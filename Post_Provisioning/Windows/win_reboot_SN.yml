@@ -31,19 +31,19 @@
       set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
 
-   - name: Reboot the virtual machine
-     community.vmware.vmware_guest_powerstate:
+    - name: Reboot the virtual machine
+      community.vmware.vmware_guest_powerstate:
  #       name: "{{ variables.server }}"
-        name: xf-s-aapwin04t
-        state: reboot-guest
-     register: reboot_result
+         name: xf-s-aapwin04t
+         state: reboot-guest
+      register: reboot_result
 
-   - name: Fail if VM reboot is not happen
-     fail:
-       msg: "VM is already in shutdown state"
-     when: not reboot_result.changed
+    - name: Fail if VM reboot is not happen
+      fail:
+        msg: "VM is already in shutdown state"
+      when: not reboot_result.changed
 
-   - name: Gather some info from a guest using the vSphere API output schema
+    - name: Gather some info from a guest using the vSphere API output schema
       community.vmware.vmware_guest_info:
         name: xf-s-aapwin04t
         datacenter: "{{ datacenter_value }}"
