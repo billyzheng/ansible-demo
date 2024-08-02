@@ -6,15 +6,15 @@
   tasks:
   - name: Extract datacenter name
     set_fact:
-      datacenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
+      vcenter_name: "{{ hostvars[server_name]['tag_category']['vcenter'] }}"
 
   - name: display info
     debug: 
-      msg: "{{ datacenter_name }}"
+      msg: "{{ vcenter_name }}"
 
   - name: Gather all registered virtual machines
     community.vmware.vmware_vm_info:
-      hostname: '{{ datacenter_name }}'
+      hostname: '{{ vcenter_name }}'
       username: '{{ VMWARE_USERNAME }}'
       password: '{{ VMWARE_PASSWORD }}'
       vm_name: "{{ server_name }}"
