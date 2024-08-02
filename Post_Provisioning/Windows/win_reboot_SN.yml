@@ -89,6 +89,6 @@
           time_before_reboot: "{{ last_boot_time }}"
           time_after_reboot: "{{ final_boot_time }}"
           vm_power_state: "{{ post_server_state }}" 
-          variables.please_select_the_unit: dummy
+          catalog_item: Reboot
       
     
