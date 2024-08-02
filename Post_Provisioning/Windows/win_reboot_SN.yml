@@ -27,6 +27,10 @@
     - debug: 
         var: boot_time_info
 
+    - name: Set last boot time fact
+      set_fact:
+        last_boot_time: "{{ boot_time_info.instance.summary.runtime.bootTime }}"
+
     # - name: Reboot the virtual machine
     #   community.vmware.vmware_guest_powerstate:
     #      name: "{{ variables.server }}"
