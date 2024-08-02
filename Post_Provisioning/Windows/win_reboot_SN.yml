@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
 
-   - name: Get the VM inventory - before changes
+    - name: Get the VM inventory - before changes
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
         filter_names:
