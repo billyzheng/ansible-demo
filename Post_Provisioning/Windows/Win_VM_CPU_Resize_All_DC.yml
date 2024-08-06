@@ -129,7 +129,7 @@
         post_server_state: "{{ post_result.value[0].power_state }}"
         
     - name: Pass the collected artifacts
-    - ansible.builtin.set_stats:
+      ansible.builtin.set_stats:
         data:
           CPU_Core_before: "{{ current_cpu_cores }}"  
           CPU_Core_after: "{{ resized_cpu_count }}" 
