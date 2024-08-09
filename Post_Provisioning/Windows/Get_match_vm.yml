@@ -28,24 +28,23 @@
   #   debug:
   #      msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | map('lower') | list }}"
 
-  - name: Set fact with guest names in lowercase
+  - name: Create a list with guest names and their lowercase versions
     set_fact:
-      lowercase_vms: >
+      vm_guest_names: >
         {{
           all_servers.virtual_machines | 
-          map('extract', 'guest_name') | 
-          map('lower') | 
-          zip(all_servers.virtual_machines) | 
-          map('list') | 
-          map('dict', ['guest_name', 'guest_name_lower']) | 
-          items2dict
+          map('combine', {
+            'guest_name': item.guest_name, 
+            'guest_name_lower': item.guest_name | lower
+          }) | 
+          list
         }}
 
   - name: Find and set the actual guest name for a given host_name
     set_fact:
       actual_guest_name: >
         {{
-          (lowercase_vms | 
+          (vm_guest_names | 
           selectattr('guest_name_lower', 'equalto', variables.server) | 
           map(attribute='guest_name') | 
           first) | 
