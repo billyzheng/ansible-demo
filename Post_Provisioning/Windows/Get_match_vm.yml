@@ -20,9 +20,9 @@
       validate_certs: false
     register: all_servers
 
-  - name: Display all VM guest names
-    debug:
-        msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
+  # - name: Display all VM guest names
+  #   debug:
+  #       msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
 
   # - name: Display all VM guest names in lowercase
   #   debug:
