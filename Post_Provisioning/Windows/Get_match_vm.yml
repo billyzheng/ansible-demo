@@ -33,19 +33,32 @@
 
   - name: Populate the list with guest names and their lowercase versions
     set_fact:
-      vm_guest_names: >
-        {{
-          vm_guest_names + [
-            {
-              'guest_name_lower': item | lower,
-              'guest_name': all_servers.virtual_machines[loop.index].guest_name
-            }
-            for item in all_servers.virtual_machines | map(attribute='guest_name')
-          ]
-        }}
-    loop_control:
-      loop_var: item
-    with_items: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
+      vm_guest_names: "{{ vm_guest_names | default([]) + [{'guest_name_lower': item.lower(), 'guest_name': item}] }}"
+      loop: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
+
+  - name: Find and set the actual guest name for a given host_name
+    set_fact:
+      actual_guest_name: "{{ (vm_guest_names | selectattr('guest_name_lower', 'equalto', variables.server) | map(attribute='guest_name') | first) | default('Not Found') }}"
+
+  - name: Display the actual guest name
+    debug:
+      msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
+
+  # - name: Populate the list with guest names and their lowercase versions
+  #   set_fact:
+  #     vm_guest_names: >
+  #       {{
+  #         vm_guest_names + [
+  #           {
+  #             'guest_name_lower': item | lower,
+  #             'guest_name': all_servers.virtual_machines[loop.index].guest_name
+  #           }
+  #           for item in all_servers.virtual_machines | map(attribute='guest_name')
+  #         ]
+  #       }}
+  #   loop_control:
+  #     loop_var: item
+  #   with_items: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
   
   # - name: Create a list with guest names and their lowercase versions
   #   set_fact:
@@ -59,20 +72,20 @@
   #         list
   #       }}
       
-  - name: Find and set the actual guest name for a given host_name
-    set_fact:
-      actual_guest_name: >
-        {{
-          (vm_guest_names | 
-          selectattr('guest_name_lower', 'equalto', variables.server) | 
-          map(attribute='guest_name') | 
-          first) | 
-          default('Not Found')
-        }}
+  # - name: Find and set the actual guest name for a given host_name
+  #   set_fact:
+  #     actual_guest_name: >
+  #       {{
+  #         (vm_guest_names | 
+  #         selectattr('guest_name_lower', 'equalto', variables.server) | 
+  #         map(attribute='guest_name') | 
+  #         first) | 
+  #         default('Not Found')
+  #       }}
 
-  - name: Display the actual guest name
-    debug:
-      msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
+  # - name: Display the actual guest name
+  #   debug:
+  #     msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
 
   # - name: Manually filter servers case-insensitively
   #   set_fact:
