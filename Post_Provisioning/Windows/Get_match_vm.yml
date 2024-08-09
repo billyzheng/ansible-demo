@@ -33,13 +33,13 @@
       vm_guest_names: >
         {{
           all_servers.virtual_machines | 
-          map('combine', {
+          map(lambda item: {
             'guest_name': item.guest_name, 
             'guest_name_lower': item.guest_name | lower
           }) | 
           list
         }}
-
+      
   - name: Find and set the actual guest name for a given host_name
     set_fact:
       actual_guest_name: >
