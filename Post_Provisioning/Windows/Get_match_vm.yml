@@ -40,7 +40,7 @@
       msg: "{{ matched_servers }}"
 
   - name: Convert VM details to list of key-value pairs
-      set_fact:
+    set_fact:
         vm_details_list: >-
           {{
             all_servers.virtual_machines | 
