@@ -1,5 +1,5 @@
 ---
-- name: Get Vcenter vm details
+- name: Get Vcenter and  VM details
   hosts: localhost
   gather_facts: false
 
@@ -36,3 +36,12 @@
   - name: Display the actual guest name
     debug:
       msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
+
+  - name: Get the VM details
+    community.vmware.vmware_vm_info:
+      hostname: '{{ Vcenter_Name }}'
+      username: '{{ VMWARE_USERNAME }}'
+      password: '{{ VMWARE_PASSWORD }}'
+      vm_name: "{{ actual_guest_name }}"
+      validate_certs: false
+    register: vminfo
