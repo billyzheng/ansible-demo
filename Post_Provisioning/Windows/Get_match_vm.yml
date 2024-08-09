@@ -25,7 +25,7 @@
         msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
 
   - name: Manually filter servers case-insensitively
-      set_fact:
+    set_fact:
         matched_servers: >-
           {{
             all_servers.virtual_machines |
