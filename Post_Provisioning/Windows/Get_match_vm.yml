@@ -27,23 +27,26 @@
   # - name: Display all VM guest names in lowercase
   #   debug:
   #      msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | map('lower') | list }}"
+  - name: Initialize an empty list for vm_guest_names
+    set_fact:
+      vm_guest_names: []
 
-  - name: Create a list with guest names and their lowercase versions
+  - name: Populate the list with guest names and their lowercase versions
     set_fact:
       vm_guest_names: >
         {{
-          [
+          vm_guest_names + [
             {
-              'guest_name_lower': item.0 | lower,
-              'guest_name': item.1
+              'guest_name_lower': item | lower,
+              'guest_name': all_servers.virtual_machines[loop.index].guest_name
             }
-            for item in zip(
-              all_servers.virtual_machines | map(attribute='guest_name'),
-              all_servers.virtual_machines | map(attribute='guest_name')
-            )
+            for item in all_servers.virtual_machines | map(attribute='guest_name')
           ]
         }}
-
+    loop_control:
+      loop_var: item
+    with_items: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
+  
   # - name: Create a list with guest names and their lowercase versions
   #   set_fact:
   #     vm_guest_names: >
