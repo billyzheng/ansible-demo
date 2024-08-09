@@ -25,7 +25,7 @@
         matched_servers: >-
           {{
             all_servers.virtual_machines | 
-            selectattr('guest_name', 'search', variables.server | lower) | 
+            selectattr('guest_name', 'search', variables.server) | 
             map(attribute='guest_name') | 
             list
           }}
