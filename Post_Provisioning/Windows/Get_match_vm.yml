@@ -36,7 +36,7 @@
           map(attribute='guest_name') | 
           map('lower') | 
           zip(all_servers.virtual_machines | map(attribute='guest_name')) | 
-          map('dict', guest_name_lower='first', guest_name='second') |
+          map('community.general.dict', guest_name_lower='first', guest_name='second') |
           list
         }}
       
