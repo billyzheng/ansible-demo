@@ -48,8 +48,8 @@
             list
           }}
 
-    - name: Display VM details as key-value pairs
-      debug:
+  - name: Display VM details as key-value pairs
+     debug:
         msg: "{{ vm_details_list }}"
 
   # - name: Reboot the virtual machine
