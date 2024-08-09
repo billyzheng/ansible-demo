@@ -21,7 +21,7 @@
     register: all_servers
 
   - name: Filter servers case-insensitively
-      set_fact:
+    set_fact:
         matched_servers: >-
           {{
             all_servers.virtual_machines | 
