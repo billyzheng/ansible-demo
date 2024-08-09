@@ -6,7 +6,7 @@
   tasks:
   - name: Extract datacenter name
     set_fact:
-      Vcenter_Name: "{{ hostvars[variables.server]['tag_category']['vcenter'] | first }}"
+      Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
 
   - name: display info
     debug: 
@@ -17,7 +17,7 @@
       hostname: '{{ Vcenter_Name }}'
       username: '{{ VMWARE_USERNAME }}'
       password: '{{ VMWARE_PASSWORD }}'
-      vm_name: "{{ variables.server }}"
+      vm_name: "{{ variables.server | upper }}"
       validate_certs: false
     register: vminfo
 
