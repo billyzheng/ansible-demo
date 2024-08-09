@@ -17,7 +17,7 @@
       hostname: '{{ Vcenter_Name }}'
       username: '{{ VMWARE_USERNAME }}'
       password: '{{ VMWARE_PASSWORD }}'
-      vm_name: "{{ variables.server | upper }}"
+      vm_name: "{{ variables.server }}"
       validate_certs: false
     register: vminfo
 
