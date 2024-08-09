@@ -33,10 +33,10 @@
       vm_guest_names: >
         {{
           all_servers.virtual_machines | 
-          map(lambda item: {
-            'guest_name': item.guest_name, 
-            'guest_name_lower': item.guest_name | lower
-          }) | 
+          map(attribute='guest_name') | 
+          map('lower') | 
+          zip(all_servers.virtual_machines | map(attribute='guest_name')) | 
+          map('combine', key_name='guest_name_lower', value_name='guest_name') | 
           list
         }}
       
