@@ -46,7 +46,7 @@
       actual_guest_name: >
         {{
           (lowercase_vms | 
-          selectattr('guest_name_lower', 'equalto', host_name) | 
+          selectattr('guest_name_lower', 'equalto', variables.server) | 
           map(attribute='guest_name') | 
           first) | 
           default('Not Found')
@@ -54,7 +54,7 @@
 
   - name: Display the actual guest name
     debug:
-      msg: "The actual guest name for '{{ host_name }}' is '{{ actual_guest_name }}'"
+      msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
 
   # - name: Manually filter servers case-insensitively
   #   set_fact:
