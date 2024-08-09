@@ -39,6 +39,19 @@
     debug:
       msg: "{{ matched_servers }}"
 
+  - name: Convert VM details to list of key-value pairs
+      set_fact:
+        vm_details_list: >-
+          {{
+            all_servers.virtual_machines | 
+            map('community.builtin.dict2items') | 
+            list
+          }}
+
+    - name: Display VM details as key-value pairs
+      debug:
+        msg: "{{ vm_details_list }}"
+
   # - name: Reboot the virtual machine
   #   community.vmware.vmware_guest_powerstate:
   #      hostname: '{{ Vcenter_Name }}'
