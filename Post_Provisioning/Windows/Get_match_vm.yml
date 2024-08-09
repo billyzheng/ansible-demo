@@ -24,13 +24,14 @@
     debug:
         msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
 
-  - name: Filter servers case-insensitively
-    set_fact:
+  - name: Manually filter servers case-insensitively
+      set_fact:
         matched_servers: >-
           {{
-            all_servers.virtual_machines | 
-            selectattr('guest_name', 'equalto', variables.server) | 
-            map(attribute='guest_name') | 
+            all_servers.virtual_machines |
+            selectattr('guest_name', 'defined') |
+            selectattr('guest_name', 'search', variables.server | lower) |
+            map(attribute='guest_name') |
             list
           }}
 
