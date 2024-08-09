@@ -31,10 +31,10 @@
     set_fact:
       vm_guest_names: []
 
-   - name: Populate the list with guest names and their lowercase versions
-     set_fact:
-       vm_guest_names: "{{ vm_guest_names | default([]) + [{'guest_name_lower': item.guest_name | lower, 'guest_name': item.guest_name}] }}"
-     loop: "{{ all_servers.virtual_machines }}"
+  - name: Populate the list with guest names and their lowercase versions
+    set_fact:
+      vm_guest_names: "{{ vm_guest_names | default([]) + [{'guest_name_lower': item.guest_name | lower, 'guest_name': item.guest_name}] }}"
+    loop: "{{ all_servers.virtual_machines }}"
     
   - name: Find and set the actual guest name for a given host_name
     set_fact:
