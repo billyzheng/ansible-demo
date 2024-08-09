@@ -20,12 +20,16 @@
       validate_certs: false
     register: all_servers
 
+  - name: Display all VM guest names
+    debug:
+        msg: "{{ all_servers.virtual_machines | map(attribute='guest_name') | list }}"
+
   - name: Filter servers case-insensitively
     set_fact:
         matched_servers: >-
           {{
             all_servers.virtual_machines | 
-            selectattr('guest_name', 'search', variables.server) | 
+            selectattr('guest_name', 'equalto', variables.server) | 
             map(attribute='guest_name') | 
             list
           }}
