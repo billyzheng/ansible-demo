@@ -3,9 +3,9 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Extract datacenter name
-      ansible.builtin.set_fact:
-        Vcenter_Name: "{{ hostvars[variables.server]['tag_category']['vcenter'] | first }}"
+    # - name: Extract datacenter name
+    #   ansible.builtin.set_fact:
+    #     Vcenter_Name: "{{ hostvars[VM_servername]['tag_category']['vcenter'] | first }}"
         
     - name: Get the VM inventory - before changes
       register: pre_result
@@ -15,16 +15,15 @@
         vcenter_password: '{{ VMWARE_PASSWORD }}'
         vcenter_validate_certs: false
         filter_names:
-        - "{{ variables.server }}"
+        - "{{ VM_servername }}"
 
     - name: Gather VM information
       community.vmware.vmware_vm_info:
          hostname: '{{ Vcenter_Name }}'
          username: '{{ VMWARE_USERNAME }}'
          password: '{{ VMWARE_PASSWORD }}'
-         vm_name: "{{ variables.server }}"
+         vm_name: "{{ VM_servername }}"
          validate_certs: false
-         vm_name: "{{ variables.server }}"
       register: vm_info
 
     - ansible.builtin.debug: var=vm_info
@@ -39,7 +38,7 @@
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
         validate_certs: false
-        name: "{{ variables.server }}"
+        name: "{{ VM_servername }}"
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
@@ -56,7 +55,7 @@
          hostname: '{{ Vcenter_Name }}'
          username: '{{ VMWARE_USERNAME }}'
          password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ variables.server }}"
+         name: "{{ VM_servername }}"
          validate_certs: false
          state: reboot-guest
       register: reboot_result
@@ -90,7 +89,7 @@
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
         validate_certs: false
-        name: "{{ variables.server }}"
+        name: "{{ VM_servername }}"
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
         properties: ["summary.runtime.bootTime"]
@@ -110,7 +109,7 @@
         vcenter_password: '{{ VMWARE_PASSWORD }}'
         vcenter_validate_certs: false
         filter_names:
-        - "{{ variables.server }}"
+        - "{{ VM_servername }}"
       
     - name: Set Post VM Status
       ansible.builtin.set_fact:
