@@ -5,11 +5,11 @@
 
   tasks:
   - name: Extract datacenter name
-    set_fact:
+    ansible.builtin.set_fact:
       Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
 
   - name: display info
-    debug: 
+    ansible.builtin.debug: 
       msg: "{{ Vcenter_Name }}"
 
   - name: Gather all registered virtual machines
@@ -21,21 +21,21 @@
     register: all_servers
 
   - name: Initialize an empty list for vm_guest_names
-    set_fact:
+    ansible.builtin.set_fact:
       vm_guest_names: []
 
   - name: Populate the list with guest names and their lowercase versions
-    set_fact:
+    ansible.builtin.set_fact:
       vm_guest_names: "{{ vm_guest_names | default([]) + [{'guest_name_lower': item.guest_name | lower, 'guest_name': item.guest_name}] }}"
     loop: "{{ all_servers.virtual_machines }}"
     
   - name: Find and set the actual guest name for a given host_name
-    set_fact:
+    ansible.builtin.set_fact:
       actual_guest_name: "{{ (vm_guest_names | selectattr('guest_name_lower', 'equalto', variables.server) | map(attribute='guest_name') | first) | default('Not Found') }}"
 
   - name: Display the actual guest name
-    debug:
-      msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
+    ansible.builtin.debug:
+      msg: "The actual guest name for '{{ variables.server }}' is as '{{ actual_guest_name }}' in '{{ Vcenter_Name }}'"
 
   - name: Get the VM details
     community.vmware.vmware_vm_info:
@@ -45,3 +45,9 @@
       vm_name: "{{ actual_guest_name }}"
       validate_certs: false
     register: vminfo
+
+  - ansible.builtin.set_stats:
+        data:
+          Vcenter_Name: "{{ Vcenter_Name }}"
+          VM_servername: "{{ actual_guest_name }}"
+  
