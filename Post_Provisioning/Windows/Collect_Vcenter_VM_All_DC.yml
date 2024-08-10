@@ -50,4 +50,8 @@
         data:
           Vcenter_Name: "{{ Vcenter_Name }}"
           VM_servername: "{{ actual_guest_name }}"
+
+  - name: Fail the playbook
+    fail:
+      msg: "This playbook has failed intentionally"
   
