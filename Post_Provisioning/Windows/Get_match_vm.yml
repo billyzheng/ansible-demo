@@ -34,8 +34,9 @@
       actual_guest_name: "{{ (vm_guest_names | selectattr('guest_name_lower', 'equalto', variables.server) | map(attribute='guest_name') | first) | default('Not Found') }}"
 
   - name: Display the actual guest name
-    debug:
-      msg: "The actual guest name for '{{ variables.server }}' is '{{ actual_guest_name }}'"
+    ansible.builtin.debug:
+      msg: "The actual guest name for '{{ variables.server }}' is as '{{ actual_guest_name }}' in '{{ Vcenter_Name }}'"
+
 
   - name: Get the VM details
     community.vmware.vmware_vm_info:
