@@ -2,8 +2,8 @@
 - name: Get Vcenter and  VM details
   hosts: localhost
   gather_facts: false
-
   tasks:
+ 
   - name: Extract datacenter name
     ansible.builtin.set_fact:
       Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
@@ -33,15 +33,15 @@
           validate_certs: false
         register: vminfo
  
-  - name: display info
+  - name: display VM info
     ansible.builtin.debug: var=vminfo
 
-  - name: Extract guest name
+  - name: Extract VM name
     ansible.builtin.set_fact:
       Vm_guest_name: "{{ vminfo.virtual_machines[0].guest_name }}"
      
- 
-  - ansible.builtin.set_stats:
+  - name: Pass the artifacts of VM and assocated Vcenter names
+    ansible.builtin.set_stats:
         data:
           Vcenter_Name: "{{ Vcenter_Name }}"
           VM_servername: "{{ Vm_guest_name }}"
