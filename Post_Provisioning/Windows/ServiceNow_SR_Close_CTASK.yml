@@ -28,7 +28,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task successfully resized the CPU on server {{ variables.server }}.\nCPU {{ variables.Action_Required }} evidence:\n Before resize: {{ CPU_Core_before }} cores\n After resize: {{ CPU_Core_after }} cores.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation task successfully {{ variables.Action_Required }} the CPU on server {{ variables.server }}.\nCPU {{ variables.Action_Required }} evidence:\n Before resize: {{ CPU_Core_before }} cores\n After resize: {{ CPU_Core_after }} cores.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation task is resizing the CPU on server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'CPU'
@@ -46,7 +46,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task successfully resized the Memory on server {{ variables.server }}.\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation task successfully {{ variables.Action_Required }} the Memory on server {{ variables.server }}.\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation task is resizing the Memory on server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Memory'
