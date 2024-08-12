@@ -34,8 +34,8 @@
         register: vminfo
  
   - name: display info
-    ansible.builtin.debug:
-      msg: "{{ vminfo }}"
+    ansible.builtin.debug: var=vminfo
+     
  
   # - ansible.builtin.set_stats:
   #       data:
