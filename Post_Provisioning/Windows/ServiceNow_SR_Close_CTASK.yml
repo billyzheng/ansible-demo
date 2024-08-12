@@ -64,8 +64,8 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task rebooted the VM Successfully.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
-          work_notes: "Automation task rebooted the VM."
+          close_notes: "Automation task rebooted the {{ variables.server }} Successfully.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
+          work_notes: "Automation task rebooted the server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Reboot'    
       register: SR_close_ctask  
@@ -82,8 +82,8 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nVirtual Machin Shutdown Evidence:\n  Server status before Shutdown: {{ vm_pre_power_state }}\n  Current status of server: {{ vm_post_power_state }}"
-          work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
+          close_notes: "Automation task Shutdown the {{ variables.server }} Successfully.\nVirtual Machin Shutdown Evidence:\n  Server status before Shutdown: {{ vm_pre_power_state }}\n  Current status of server: {{ vm_post_power_state }}"
+          work_notes: "Automation task Shutdown the server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Shutdown'    
       register: SR_close_ctask  
