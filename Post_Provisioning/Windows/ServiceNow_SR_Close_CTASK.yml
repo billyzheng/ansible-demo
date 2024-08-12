@@ -34,7 +34,7 @@
       when: catalog_item == 'CPU'
       register: SR_close_ctask  
 
-    - name: Ansible close the CATASK if Memory resize sucess
+    - name: Ansible close the CATASK if Memory resize success
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
@@ -52,7 +52,7 @@
       when: catalog_item == 'Memory'
       register: SR_close_ctask  
 
-    - name: Ansible close the CATASK if sucess
+    - name: Ansible close the CATASK if VM reboot is success
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
@@ -64,13 +64,13 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation is completed. Successfully updated/created the resource(s).\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
-          work_notes: "Automation is completed. Successfuly updated/created the resource(s)."
+          close_notes: "Automation task rebooted the VM Successfully.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
+          work_notes: "Automation task rebooted the VM."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Reboot'    
       register: SR_close_ctask  
 
-    - name: Ansible close the CATASK if sucess
+    - name: Ansible close the CATASK if VM shutdown is success
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
         method: PATCH
