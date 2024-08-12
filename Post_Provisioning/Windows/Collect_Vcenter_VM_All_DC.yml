@@ -35,9 +35,13 @@
  
   - name: display info
     ansible.builtin.debug: var=vminfo
+
+  - name: Extract guest name
+    ansible.builtin.set_fact:
+      Vm_guest_name: "{{ vminfo.virtual_machines[0].guest_name }}
      
  
-  # - ansible.builtin.set_stats:
-  #       data:
-  #         Vcenter_Name: "{{ Vcenter_Name }}"
-  #         VM_servername: "{{ actual_guest_name }}"
+  - ansible.builtin.set_stats:
+        data:
+          Vcenter_Name: "{{ Vcenter_Name }}"
+          VM_servername: "{{ Vm_guest_name }}"
