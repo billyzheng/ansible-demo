@@ -28,7 +28,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task resized the CPU on server {{ variables.server }}Successfully.\nCPU {{ variables.Action_Required }} evidence:\n Before resize: {{ CPU_Core_before }} cores\n After resize: {{ CPU_Core_after }} cores.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation task successfully resized the CPU on server {{ variables.server }}.\nCPU {{ variables.Action_Required }} evidence:\n Before resize: {{ CPU_Core_before }} cores\n After resize: {{ CPU_Core_after }} cores.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation task is resizing the CPU on server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'CPU'
@@ -46,7 +46,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task resized the Memory on server {{ variables.server }}Successfully.\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation task successfully resized the Memory on server {{ variables.server }}.\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation task is resizing the Memory on server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Memory'
@@ -64,7 +64,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task rebooted the server {{ variables.server }} Successfully.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
+          close_notes: "Automation task successfully rebooted the server {{ variables.server }}.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
           work_notes: "Automation task is rebooting the server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Reboot'    
@@ -82,7 +82,7 @@
         body: 
           state: "3"
           close_code: "successful"
-          close_notes: "Automation task Shutdown the server {{ variables.server }} Successfully.\nVirtual Machin Shutdown Evidence:\n  Server status before Shutdown: {{ vm_pre_power_state }}\n  Current status of server: {{ vm_post_power_state }}"
+          close_notes: "Automation task successfully shutdown the server {{ variables.server }}.\nVirtual Machin Shutdown Evidence:\n  Server status before Shutdown: {{ vm_pre_power_state }}\n  Current status of server: {{ vm_post_power_state }}"
           work_notes: "Automation task is shuting down the server {{ variables.server }}."
           sys_id: "{{ change_task_sys_id }}"
       when: catalog_item == 'Shutdown'    
