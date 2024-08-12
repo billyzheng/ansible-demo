@@ -28,7 +28,7 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed"
+          closure_notes: "Ansible Automation job is completed successfully"
       register: SR_task_close  
 
 
