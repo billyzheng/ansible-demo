@@ -35,6 +35,9 @@
         visibility: "Organization"
         aligned_resource: "/api/device/9222"
       status_code: 201
+      headers:
+        Content-Type: "application/json"
+        Authorization: "Basic {{ login_response.json.token }}"
     register: task_response
 
   - name: Get task details
