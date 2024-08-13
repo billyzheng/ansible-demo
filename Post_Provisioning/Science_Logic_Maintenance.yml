@@ -41,5 +41,9 @@
       password: "{{ password }}"
     register: task_response
 
+  - name: Extract task ID
+    set_fact:
+      task_id: "{{ task_response.json.task_guid }}"
+
   # - name: Get task details
   #   debug: var=task_response
