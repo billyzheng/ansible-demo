@@ -3,10 +3,6 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Extract datacenter name
-      ansible.builtin.set_fact:
-        Vcenter_Name: "{{ hostvars[variables.server]['tag_category']['vcenter'] | first }}"
-
     - name: Get the VM inventory - before changes
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
@@ -15,7 +11,7 @@
         vcenter_password: '{{ VMWARE_PASSWORD }}'
         vcenter_validate_certs: false
         filter_names:
-        - "{{ variables.server }}"
+        - "{{ VM_servername }}"
 
     - name: Set Pre CPU core variable
       ansible.builtin.set_fact:
@@ -42,7 +38,7 @@
          hostname: '{{ Vcenter_Name }}'
          username: '{{ VMWARE_USERNAME }}'
          password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ variables.server }}"
+         name: "{{ VM_servername }}"
          validate_certs: false
          state: powered-off
       ignore_errors: yes
@@ -67,7 +63,7 @@
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
         validate_certs: false
-        name: "{{ variables.server }}"
+        name: "{{ VM_servername }}"
         hardware:
           num_cpus: "{{ cpu_cores_increase }}"
           num_cpu_cores_per_socket: "{{ cpu_cores_increase }}"
@@ -81,7 +77,7 @@
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
         validate_certs: false
-        name: "{{ variables.server }}"
+        name: "{{ VM_servername }}"
         hardware:
           num_cpus: "{{ cpu_cores_decrease }}"
           num_cpu_cores_per_socket: "{{ cpu_cores_decrease }}"
@@ -94,9 +90,9 @@
          hostname: '{{ Vcenter_Name }}'
          username: '{{ VMWARE_USERNAME }}'
          password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ variables.server }}"
+         name: "{{ VM_servername }}"
          validate_certs: false
-         name: "{{ variables.server }}"
+         name: "{{ VM_servername }}"
          state: powered-on
 
     - name: Wait until my VM is ready
@@ -121,7 +117,7 @@
         vcenter_password: '{{ VMWARE_PASSWORD }}'
         vcenter_validate_certs: false
         filter_names:
-        - "{{ variables.server }}"
+        - "{{ VM_servername }}"
 
     - name: Set Post VM Status
       ansible.builtin.set_fact:
