@@ -43,7 +43,7 @@
 
   - name: Extract task ID
     set_fact:
-       task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
+       task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') | int }}"
 
   - ansible.builtin.set_stats:
       data:
