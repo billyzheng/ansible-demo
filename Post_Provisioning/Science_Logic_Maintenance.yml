@@ -17,28 +17,31 @@
       password: "{{ password }}"
     register: login_response
 
-  - name: Create task
-    uri:
-      url: https://test.monitoring.abb.com/api/task/
-      method: POST
-      body_format: json
-      body:
-        name: "Automation Ansible testing"
-        description: "Creating the task id"
-        enabled: "1"
-        details:
-          active: "12"
-          patch_window: "0"
-        last_run: "0"
-        owner: "/api/account/20"
-        organization: "/api/organization/1"
-        visibility: "Organization"
-        aligned_resource: "/api/device/9222"
-      status_code: 201
-      headers:
-        Content-Type: "application/json"
-        Authorization: "Basic {{ login_response.json.token }}"
-    register: task_response
+  - name: Debug login response
+    debug: var=login_response
 
-  - name: Get task details
-    debug: var=task_response
+  # - name: Create task
+  #   uri:
+  #     url: https://test.monitoring.abb.com/api/task/
+  #     method: POST
+  #     body_format: json
+  #     body:
+  #       name: "Automation Ansible testing"
+  #       description: "Creating the task id"
+  #       enabled: "1"
+  #       details:
+  #         active: "12"
+  #         patch_window: "0"
+  #       last_run: "0"
+  #       owner: "/api/account/20"
+  #       organization: "/api/organization/1"
+  #       visibility: "Organization"
+  #       aligned_resource: "/api/device/9222"
+  #     status_code: 201
+  #     headers:
+  #       Content-Type: "application/json"
+  #       Authorization: "Basic {{ login_response.json.token }}"
+  #   register: task_response
+
+  # - name: Get task details
+  #   debug: var=task_response
