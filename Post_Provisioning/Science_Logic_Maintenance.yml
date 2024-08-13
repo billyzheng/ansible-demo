@@ -47,7 +47,7 @@
 
   - name: Convert task ID to string and remove brackets
     set_fact:
-      task_id: "{{ task_id_list[0] }}"
+      task_id: "{{ task_id_str[0] }}"
 
   - ansible.builtin.set_stats:
       data:
