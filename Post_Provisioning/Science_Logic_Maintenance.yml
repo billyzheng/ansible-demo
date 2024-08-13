@@ -43,7 +43,16 @@
 
   - name: Extract task ID
     set_fact:
-      task_id: "{{ task_response.json.schedules.URI | regex_search('task\\/([0-9]+') | regex_replace('task/', '') }}"
+       task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
+
+
+  # - name: Extract task ID
+  #   set_fact:
+  #      task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)') }}"
+
+  # - name: Extract task ID
+  #   set_fact:
+  #     task_id: "{{ task_response.json.schedules.URI | regex_search('task\\/([0-9]+') | regex_replace('task/', '') }}"
     
   # - name: Get task details
   #   debug: var=task_response
