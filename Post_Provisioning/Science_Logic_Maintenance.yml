@@ -17,9 +17,12 @@
       password: "{{ password }}"
     register: login_response
 
-  - name: Debug login response
-    debug: var=login_response
+  - name: Debug searchspec
+    debug: var=login_response.json.searchspec
 
+  - name: Debug fields
+    debug: var=login_response.json.searchspec.fields
+    
   # - name: Create task
   #   uri:
   #     url: https://test.monitoring.abb.com/api/task/
