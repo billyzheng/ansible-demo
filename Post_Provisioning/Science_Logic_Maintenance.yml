@@ -45,9 +45,9 @@
     set_fact:
        task_id_str: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
 
-  - name: Convert task ID to integer
+  - name: Convert task ID to string and remove brackets
     set_fact:
-      task_id: "{{ task_id_str | int }}"
+      task_id: "{{ task_id_list[0] }}"
 
   - ansible.builtin.set_stats:
       data:
