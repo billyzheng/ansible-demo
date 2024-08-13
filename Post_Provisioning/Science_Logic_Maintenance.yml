@@ -22,6 +22,9 @@
 
   - name: Debug fields
     debug: var=login_response.json.searchspec.fields
+
+  - name: Debug name field
+    debug: var=login_response.json.searchspec.fields[?contains(@, 'name')]
     
   # - name: Create task
   #   uri:
