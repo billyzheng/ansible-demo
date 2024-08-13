@@ -41,10 +41,10 @@
         msg: "Cannot decrease memory size to 1GB or less, please check manually"
       when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
 
-    - name: Check if Memory increase would result in 64000 or more Memory
-      ansible.builtin.fail:
-        msg: "Cannot increase memory size to 64GB or more, please check manually"
-      when: variables.Action_Required == 'Increase' and (memory_increase | int) > 64000
+    # - name: Check if Memory increase would result in 64000 or more Memory
+    #   ansible.builtin.fail:
+    #     msg: "Cannot increase memory size to 64GB or more, please check manually"
+    #   when: variables.Action_Required == 'Increase' and (memory_increase | int) > 64000
 
     - name: Power OFF the VM
       community.vmware.vmware_guest_powerstate:
