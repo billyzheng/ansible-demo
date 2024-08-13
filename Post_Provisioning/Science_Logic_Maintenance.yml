@@ -43,11 +43,17 @@
 
   - name: Extract task ID
     set_fact:
-       task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') | int }}"
+       task_id_str: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
+
+  - name: Convert task ID to integer
+    set_fact:
+      task_id: "{{ task_id_str | int }}"
 
   - ansible.builtin.set_stats:
       data:
         tasks_id: "{{ task_id }}"
+
+
    
 
 
