@@ -113,3 +113,8 @@
         tasks:
           - "{{ task_id }}"
       status_code: 200
+      headers:
+        Content-Type: "application/json"
+      user: "{{ username }}"
+      password: "{{ password }}"
+    register: server_scheduled
