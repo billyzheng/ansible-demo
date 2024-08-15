@@ -25,9 +25,6 @@
     loop: "{{ api_response.json.result_set }}"
     when: item.description == server_name
 
-  # - debug:
-  #      msg: "URI for {{ server_name }} is {{ server_api }}"
-
   - name: Create task
     uri:
       url: https://test.monitoring.abb.com/api/task/
@@ -63,15 +60,3 @@
   - ansible.builtin.set_stats:
       data:
         tasks_id: "{{ task_id }}"
-
-
-  # - name: Extract task ID
-  #   set_fact:
-  #      task_id: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)') }}"
-
-  # - name: Extract task ID
-  #   set_fact:
-  #     task_id: "{{ task_response.json.schedules.URI | regex_search('task\\/([0-9]+') | regex_replace('task/', '') }}"
-    
-  # - name: Get task details
-  #   debug: var=task_response
