@@ -15,7 +15,19 @@
       body_format: form-urlencoded
       user: "{{ username }}"
       password: "{{ password }}"
-    register: login_response
+    register: api_response
+
+  - debug:
+        var: api_response
+
+    - name: Find device API for server "{{ server_name }}"
+      set_fact:
+        server_api: "{{ item.URI }}"
+      loop: "{{ api_response.json.result_set }}"
+      when: item.description == server_name
+
+    - debug:
+        msg: "URI for {{ server_name }} is {{ server_api }}"
 
   - name: Create task
     uri:
@@ -33,7 +45,8 @@
         owner: "/api/account/20"
         organization: "/api/organization/1"
         visibility: "Organization"
-        aligned_resource: "/api/device/9222"
+        aligned_resource: "{{ server_api }}"
+       #aligned_resource: "/api/device/9222"
       status_code: 201
       headers:
         Content-Type: "application/json"
