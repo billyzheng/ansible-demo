@@ -92,3 +92,14 @@
   
   - debug: var=schedule_response
 
+  - name: Extract task ID
+    set_fact:
+       schedule_id_str: "{{ schedule_response.json.tasks.URI | regex_search('schedule/([0-9]+)', '\\1') }}" 
+       
+  - name: Convert task ID to string and remove brackets
+    set_fact:
+      scheduled_id: "{{ schedule_id_str[0] }}"
+
+  - ansible.builtin.set_stats:
+      data:
+        schedule_id: "{{ scheduled_id }}"
