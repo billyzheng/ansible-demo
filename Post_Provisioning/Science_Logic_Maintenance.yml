@@ -98,8 +98,8 @@
        
   - name: Convert task ID to string and remove brackets
     set_fact:
-      scheduled_id: "{{ schedule_id_str[0] }}"
+      schedule_id: "{{ schedule_id_str[0] }}"
 
   - ansible.builtin.set_stats:
       data:
-        schedule_id: "{{ scheduled_id }}"
+        scheduling_id: "{{ schedule_id }}"
