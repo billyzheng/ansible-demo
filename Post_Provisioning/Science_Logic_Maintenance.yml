@@ -55,7 +55,6 @@
   - name: Extract task ID
     set_fact:
        task_id_str: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
-
        
   - name: Convert task ID to string and remove brackets
     set_fact:
