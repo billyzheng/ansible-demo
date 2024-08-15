@@ -17,17 +17,16 @@
       password: "{{ password }}"
     register: api_response
 
+  - debug: var=api_response
+
+  - name: Find device API for server "{{ server_name }}"
+    set_fact:
+      server_api: "{{ item.URI }}"
+    loop: "{{ api_response.json.result_set }}"
+    when: item.description == server_name
+
   - debug:
-        var: api_response
-
-    - name: Find device API for server "{{ server_name }}"
-      set_fact:
-        server_api: "{{ item.URI }}"
-      loop: "{{ api_response.json.result_set }}"
-      when: item.description == server_name
-
-    - debug:
-        msg: "URI for {{ server_name }} is {{ server_api }}"
+       msg: "URI for {{ server_name }} is {{ server_api }}"
 
   - name: Create task
     uri:
@@ -65,9 +64,6 @@
   - ansible.builtin.set_stats:
       data:
         tasks_id: "{{ task_id }}"
-
-
-   
 
 
   # - name: Extract task ID
