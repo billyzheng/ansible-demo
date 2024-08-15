@@ -103,3 +103,13 @@
   - ansible.builtin.set_stats:
       data:
         scheduling_id: "{{ schedule_id }}"
+
+  - name: Link task to schedule
+    uri:
+      url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
+      method: PUT
+      body_format: json
+      body:
+        tasks:
+          - "{{ task_id }}"
+      status_code: 200
