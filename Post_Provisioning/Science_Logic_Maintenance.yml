@@ -45,7 +45,7 @@
         organization: "/api/organization/1"
         visibility: "Organization"
         aligned_resource: "{{ server_api }}"
-       status_code: 201
+      status_code: 201
       headers:
         Content-Type: "application/json"
       user: "{{ username }}"
