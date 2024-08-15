@@ -84,7 +84,7 @@
         tasks:
           - "{{ task_id }}"
       status_code: 201
-       headers:
+      headers:
         Content-Type: "application/json"
       user: "{{ username }}"
       password: "{{ password }}"
