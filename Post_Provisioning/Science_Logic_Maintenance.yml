@@ -84,6 +84,10 @@
         tasks:
           - "{{ task_id }}"
       status_code: 201
+       headers:
+        Content-Type: "application/json"
+      user: "{{ username }}"
+      password: "{{ password }}"
     register: schedule_response
   
   - debug: var=schedule_response
