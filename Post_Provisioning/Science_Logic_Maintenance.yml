@@ -67,20 +67,20 @@
       method: POST
       body_format: json
       body:
-        dtstart: "1692340800"
-        timezone: "390"
-        duration: "60"
-        description: "Automation Ansible schedule Creation Aug 15"
-        recur_expr: "0"
-        recur_unit: null
-        recur_until: "0"
-        owner: "/api/account/20"
-        organization: "/api/organization/0"
-        visibility: "Organization"
-        in_window: "0"
-        preserve_in_db: "0"
-        ppguid: null
-        schedule_guid: null
+        # dtstart: "1692340800"
+        # timezone: "390"
+        # duration: "60"
+        # description: "Automation Ansible schedule Creation Aug 15"
+        # recur_expr: "0"
+        # recur_unit: null
+        # recur_until: "0"
+        # owner: "/api/account/20"
+        # organization: "/api/organization/0"
+        # visibility: "Organization"
+        # in_window: "0"
+        # preserve_in_db: "0"
+        # ppguid: null
+        # schedule_guid: null
         tasks:
           - "{{ task_id }}"
       status_code: 201
@@ -104,17 +104,17 @@
       data:
         scheduling_id: "{{ schedule_id }}"
 
-  - name: Link task to schedule
-    uri:
-      url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
-      method: PUT
-      body_format: json
-      body:
-        tasks:
-          - "{{ task_id }}"
-      status_code: 200
-      headers:
-        Content-Type: "application/json"
-      user: "{{ username }}"
-      password: "{{ password }}"
-    register: server_scheduled
+  # - name: Link task to schedule
+  #   uri:
+  #     url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
+  #     method: PUT
+  #     body_format: json
+  #     body:
+  #       tasks:
+  #         - "{{ task_id }}"
+  #     status_code: 200
+  #     headers:
+  #       Content-Type: "application/json"
+  #     user: "{{ username }}"
+  #     password: "{{ password }}"
+  #   register: server_scheduled
