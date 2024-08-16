@@ -67,7 +67,7 @@
       method: POST
       body_format: json
       body:
-        dtstart: "1692340800"
+        dtstart: "1724011200"
         timezone: "390"
         duration: "60"
         description: "Ansible Schedule Creation"
