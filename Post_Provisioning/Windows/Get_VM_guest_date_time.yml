@@ -35,17 +35,29 @@
       set_fact:
         VM_folder: "{{ vm_folder.folders | first }}"
 
-    - name: Get VM info
-      community.vmware.vmware_vm_info:
-         hostname: "{{ Vcenter_Name }}"
-         username: "{{ VMWARE_USERNAME }}"
-         password: "{{ VMWARE_PASSWORD }}"
-         datacenter: "{{ datacenter_value }}"
-         folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
-         validate_certs: false
-         name: "{{ VM_servername }}"
-      register: VM_info
+    - name: Find PowerShell executable
+      community.vmware.vmware_vm_shell :
+        hostname: "{{ Vcenter_Name }}"
+        username: "{{ VMWARE_USERNAME }}"
+        password: "{{ VMWARE_PASSWORD }}"
+        vm_id: "{{ VM_servername }}"
+        vm_username: "{{ VMWARE_USERNAME }}"
+        vm_password: "{{ VMWARE_PASSWORD }}"
+        vm_shell: "cmd.exe"
+        vm_shell_args: "/c where powershell"
+      register: powershell_path
 
-    - name: Get VM ID
-      set_fact:
-        VM_id: "{{ VM_info.virtual_machines.vm_id }}"
+    # - name: Get VM info
+    #   community.vmware.vmware_vm_info:
+    #      hostname: "{{ Vcenter_Name }}"
+    #      username: "{{ VMWARE_USERNAME }}"
+    #      password: "{{ VMWARE_PASSWORD }}"
+    #      datacenter: "{{ datacenter_value }}"
+    #      folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
+    #      validate_certs: false
+    #      name: "{{ VM_servername }}"
+    #   register: VM_info
+
+    # - name: Get VM ID
+    #   set_fact:
+    #     VM_id: "{{ VM_info.virtual_machines.vm_id }}"
