@@ -45,6 +45,7 @@
         vm_password: "{{ VMWARE_PASSWORD }}"
         vm_shell: "cmd.exe"
         vm_shell_args: "/c where powershell"
+        validate_certs: false
       register: powershell_path
 
     # - name: Get VM info
