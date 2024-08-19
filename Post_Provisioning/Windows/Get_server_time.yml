@@ -17,18 +17,7 @@
     - name: Filter datacenter value
       ansible.builtin.set_fact:
         datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
-       
-    - name: Fetch the VM time
-      community.vmware.vmware_guest_info:
-        hostname: '{{ Vcenter_Name }}'
-        username: '{{ VMWARE_USERNAME }}'
-        password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
-        datacenter: "{{ datacenter_value }}"
-        schema: "vsphere"
-     #   properties: ["summary.runtime.bootTime"]
-      register: system_time
+
     - name: Find folder path of a virtual machine
       community.vmware.vmware_guest_find:
         hostname: "{{ Vcenter_Name }}"
@@ -70,7 +59,7 @@
          vm_password: "{{ vm_password }}"
          vm_shell: "cmd.exe"
          vm_shell_args: "/c where powershell"
-     register: powershell_path
+      register: powershell_path
 	 
     - name: Execute PowerShell command
       community.vmware.vmware_vm_shell :
@@ -82,4 +71,4 @@
          vm_password: "{{ vm_password }}"
          vm_shell: "{{ powershell_path.stdout_lines }}"
          vm_shell_args: "-Command 'Get-Date'"
-    register: command_output
+      register: command_output
