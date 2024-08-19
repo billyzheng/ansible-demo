@@ -3,72 +3,10 @@
   hosts: localhost
   gather_facts: no
   tasks:      
-    - name: Gather VM information
-      community.vmware.vmware_vm_info:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         vm_name: "{{ VM_servername }}"
-         validate_certs: false
-      register: vm_info
+    - name: Convert date to epoch
+      command: TZ="Europe/Amsterdam" date -d "20 Aug 2024 20:00:00" +%s
+      register: result
 
-    - ansible.builtin.debug: var=vm_info
-        
-    - name: Filter datacenter value
-      ansible.builtin.set_fact:
-        datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
-
-    - name: Find folder path of a virtual machine
-      community.vmware.vmware_guest_find:
-        hostname: "{{ Vcenter_Name }}"
-        username: "{{ VMWARE_USERNAME }}"
-        password: "{{ VMWARE_PASSWORD }}"
-        name: "{{ VM_servername }}"
-        delegate_to: localhost
-      register: vm_folder
-
-    # - name: Print the folder path
-    #   debug:
-    #     var: vm_folder.folders
-
-    # - name: Get VM folder details
-    #   set_fact:
-    #     vm_folder: "{{ vm_folder.folders }}"
-	
-    # - name: Get VM info
-    #   community.vmware.vmware_vm_info:
-    #     hostname: "{{ Vcenter_Name }}"
-    #     username: "{{ VMWARE_USERNAME }}"
-    #     password: "{{ VMWARE_PASSWORD }}"
-    #     datacenter: "{{ datacenter_value }}"
-    #     folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
-    #     name: "{{ VM_servername }}"
-    #   register: vm_info
-
-    # - name: Get VM ID
-    #   set_fact:
-    #     VM_id: "{{ vm_info.virtual_machines.vm_id }}"
-	
-    # - name: Find PowerShell executable
-    #   community.vmware.vmware_vm_shell :
-    #      hostname: "{{ Vcenter_Name }}"
-    #      username: "{{ VMWARE_USERNAME }}"
-    #      password: "{{ VMWARE_PASSWORD }}"
-    #      vm_id: "{{ VM_id }}"
-    #      vm_username: "{{ vm_username }}"
-    #      vm_password: "{{ vm_password }}"
-    #      vm_shell: "cmd.exe"
-    #      vm_shell_args: "/c where powershell"
-    #   register: powershell_path
-	 
-    # - name: Execute PowerShell command
-    #   community.vmware.vmware_vm_shell :
-    #      hostname: "{{ Vcenter_Name }}"
-    #      username: "{{ VMWARE_USERNAME }}"
-    #      password: "{{ VMWARE_PASSWORD }}"
-    #      vm_id: "{{ vm_name }}"
-    #      vm_username: "{{ vm_username }}"
-    #      vm_password: "{{ vm_password }}"
-    #      vm_shell: "{{ powershell_path.stdout_lines }}"
-    #      vm_shell_args: "-Command 'Get-Date'"
-    #   register: command_output
+    - name: Debug output
+      debug:
+        msg: "The epoch time is {{ result.stdout }}"
