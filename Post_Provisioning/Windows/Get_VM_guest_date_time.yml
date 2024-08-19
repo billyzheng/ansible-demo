@@ -3,34 +3,51 @@
   hosts: localhost
   gather_facts: no
   tasks:      
-    - name: Gather VM information
-      community.vmware.vmware_vm_info:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         vm_name: "{{ VM_servername }}"
-         validate_certs: false
-      register: vm_info
+    # - name: Gather VM information
+    #   community.vmware.vmware_vm_info:
+    #      hostname: '{{ Vcenter_Name }}'
+    #      username: '{{ VMWARE_USERNAME }}'
+    #      password: '{{ VMWARE_PASSWORD }}'
+    #      vm_name: "{{ VM_servername }}"
+    #      validate_certs: false
+    #   register: vm_info
 
-    - ansible.builtin.debug: var=vm_info
+    # - ansible.builtin.debug: var=vm_info
         
-    - name: Filter datacenter value
-      ansible.builtin.set_fact:
-        datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
+    # - name: Filter datacenter value
+    #   ansible.builtin.set_fact:
+    #     datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
         
-    - name: Fetch the VM time after reboot
-      community.vmware.vmware_guest_info:
+    # - name: Fetch the VM time after reboot
+    #   community.vmware.vmware_guest_info:
+    #     hostname: '{{ Vcenter_Name }}'
+    #     username: '{{ VMWARE_USERNAME }}'
+    #     password: '{{ VMWARE_PASSWORD }}'
+    #     validate_certs: false
+    #     name: "{{ VM_servername }}"
+    #     datacenter: "{{ datacenter_value }}"
+    #     schema: "vsphere"
+    #     # properties:
+    #     #   - guest.dateTime
+    #     #   - guest.timezone
+    #   register: vm_guest_facts
+
+    # - ansible.builtin.debug: var=vm_guest_facts
+
+    - name: Get timezone from VM guest
+      community.vmware.vmware_guest:
         hostname: '{{ Vcenter_Name }}'
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
         datacenter: "{{ datacenter_value }}"
-        schema: "vsphere"
-        # properties:
-        #   - guest.dateTime
-        #   - guest.timezone
-      register: vm_guest_facts
+        name: "{{ VM_servername }}"
+        state: present
+     #   command: "timedatectl status"  # For Linux systems
+        command: "tzutil /g"  # For Windows systems
+        delegate_to: localhost
+      register: timezone_info
 
-    - ansible.builtin.debug: var=vm_guest_facts
+    - name: Display timezone
+      debug:
+        var: timezone_info
 
