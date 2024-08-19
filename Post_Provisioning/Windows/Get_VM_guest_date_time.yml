@@ -24,4 +24,5 @@
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
         name: "{{ VM_servername }}"
+        validate_certs: false
       register: vm_folder
