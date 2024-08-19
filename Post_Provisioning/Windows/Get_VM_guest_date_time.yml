@@ -33,4 +33,4 @@
 
     - name: Get VM folder details
       set_fact:
-        VM_folder: "{{ vm_folder.folders }}"
+        VM_folder: "{{ vm_folder.folders | first }}"
