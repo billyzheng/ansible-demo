@@ -34,3 +34,13 @@
     - name: Get VM folder details
       set_fact:
         VM_folder: "{{ vm_folder.folders | first }}"
+
+    - name: Get VM info
+      community.vmware.vmware_vm_info:
+         hostname: "{{ Vcenter_Name }}"
+         username: "{{ VMWARE_USERNAME }}"
+         password: "{{ VMWARE_PASSWORD }}"
+         datacenter: "{{ datacenter_value }}"
+         folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
+         name: "{{ VM_servername }}"
+      register: vm_info
