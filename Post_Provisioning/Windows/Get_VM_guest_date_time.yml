@@ -24,5 +24,4 @@
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
         name: "{{ VM_servername }}"
-        delegate_to: localhost
       register: vm_folder
