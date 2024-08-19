@@ -42,6 +42,7 @@
          password: "{{ VMWARE_PASSWORD }}"
          datacenter: "{{ datacenter_value }}"
          folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
+         validate_certs: false
          name: "{{ VM_servername }}"
       register: VM_info
 
