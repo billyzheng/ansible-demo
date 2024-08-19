@@ -43,11 +43,9 @@
         validate_certs: false
         name: "{{ VM_servername }}"
         state: present
-     #   command: "timedatectl status"  # For Linux systems
-        command: "tzutil /g"  # For Windows systems
       register: timezone_info
 
-    - name: Display timezone
-      debug:
-        var: timezone_info
-
+    - name: Execute command inside VM
+      win_shell:
+        cmd: tzutil /g
+      delegate_to: "{{ VM_servername }}"
