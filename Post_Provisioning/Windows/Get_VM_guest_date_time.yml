@@ -43,4 +43,8 @@
          datacenter: "{{ datacenter_value }}"
          folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
          name: "{{ VM_servername }}"
-      register: vm_info
+      register: VM_info
+
+    - name: Get VM ID
+      set_fact:
+        VM_id: "{{ VM_info.virtual_machines.vm_id }}"
