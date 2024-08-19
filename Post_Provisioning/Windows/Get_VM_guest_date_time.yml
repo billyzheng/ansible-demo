@@ -17,48 +17,20 @@
     - name: Filter datacenter value
       ansible.builtin.set_fact:
         datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
-
-    - name: Find folder path of a virtual machine
-      community.vmware.vmware_guest_find:
-        hostname: "{{ Vcenter_Name }}"
-        username: "{{ VMWARE_USERNAME }}"
-        password: "{{ VMWARE_PASSWORD }}"
+        
+    - name: Fetch the VM time after reboot
+      community.vmware.vmware_guest_info:
+        hostname: '{{ Vcenter_Name }}'
+        username: '{{ VMWARE_USERNAME }}'
+        password: '{{ VMWARE_PASSWORD }}'
+        validate_certs: false
         name: "{{ VM_servername }}"
-        validate_certs: false
-      register: vm_folder
+        datacenter: "{{ datacenter_value }}"
+        schema: "vsphere"
+        properties:
+          - guest.dateTime
+          - guest.timezone
+      register: vm_guest_facts
 
-    - name: Print the folder path
-      debug:
-        var: vm_folder.folders
+    - ansible.builtin.debug: var=vm_guest_facts
 
-    - name: Get VM folder details
-      set_fact:
-        VM_folder: "{{ vm_folder.folders | first }}"
-
-    - name: Find PowerShell executable
-      community.vmware.vmware_vm_shell :
-        hostname: "{{ Vcenter_Name }}"
-        username: "{{ VMWARE_USERNAME }}"
-        password: "{{ VMWARE_PASSWORD }}"
-        vm_id: "{{ VM_servername }}"
-        vm_username: "{{ VMWARE_USERNAME }}"
-        vm_password: "{{ VMWARE_PASSWORD }}"
-        vm_shell: "cmd.exe"
-        vm_shell_args: "/c where powershell"
-        validate_certs: false
-      register: powershell_path
-
-    # - name: Get VM info
-    #   community.vmware.vmware_vm_info:
-    #      hostname: "{{ Vcenter_Name }}"
-    #      username: "{{ VMWARE_USERNAME }}"
-    #      password: "{{ VMWARE_PASSWORD }}"
-    #      datacenter: "{{ datacenter_value }}"
-    #      folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
-    #      validate_certs: false
-    #      name: "{{ VM_servername }}"
-    #   register: VM_info
-
-    # - name: Get VM ID
-    #   set_fact:
-    #     VM_id: "{{ VM_info.virtual_machines.vm_id }}"
