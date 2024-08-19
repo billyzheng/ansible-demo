@@ -40,11 +40,11 @@
         username: '{{ VMWARE_USERNAME }}'
         password: '{{ VMWARE_PASSWORD }}'
         datacenter: "{{ datacenter_value }}"
+        validate_certs: false
         name: "{{ VM_servername }}"
         state: present
      #   command: "timedatectl status"  # For Linux systems
         command: "tzutil /g"  # For Windows systems
-        delegate_to: localhost
       register: timezone_info
 
     - name: Display timezone
