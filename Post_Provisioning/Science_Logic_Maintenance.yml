@@ -67,7 +67,7 @@
       method: POST
       body_format: json
       body:
-        dtstart: "1724180400"
+        dtstart: "1724176800"
         timezone: "390"
         duration: "60"
         description: "Ansible Schedule Creation"
@@ -110,7 +110,7 @@
       method: PUT
       body_format: json
       body:
-        dtstart: "1724180400"
+        dtstart: "1724176800"
         timezone: "390"
         duration: "60"
         description: "Ansible Creates and Enable the Maintenance Schedule"
