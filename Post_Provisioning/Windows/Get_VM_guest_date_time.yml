@@ -26,3 +26,11 @@
         name: "{{ VM_servername }}"
         validate_certs: false
       register: vm_folder
+
+    - name: Print the folder path
+      debug:
+        var: vm_folder.folders
+
+    - name: Get VM folder details
+      set_fact:
+        VM_folder: "{{ vm_folder.folders }}"
