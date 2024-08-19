@@ -27,9 +27,9 @@
         name: "{{ VM_servername }}"
         datacenter: "{{ datacenter_value }}"
         schema: "vsphere"
-        properties:
-          - guest.dateTime
-          - guest.timezone
+        # properties:
+        #   - guest.dateTime
+        #   - guest.timezone
       register: vm_guest_facts
 
     - ansible.builtin.debug: var=vm_guest_facts
