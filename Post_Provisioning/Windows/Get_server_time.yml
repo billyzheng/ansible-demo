@@ -34,7 +34,7 @@
         hostname: "{{ Vcenter_Name }}"
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
-        name: "{{ vm_name }}"
+        name: "{{ VM_servername }}"
         delegate_to: localhost
       register: vm_folder
 
@@ -51,9 +51,9 @@
         hostname: "{{ Vcenter_Name }}"
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
-        datacenter: "{{ datacenter }}"
-        folder: "/{{ datacenter }}/vm"
-        name: "{{ vm_name }}"
+        datacenter: "{{ datacenter_value }}"
+        folder: "/{{ datacenter_value }}/vm/{{ vm_folder }}"
+        name: "{{ VM_servername }}"
       register: vm_info
 
     - name: Get VM ID
