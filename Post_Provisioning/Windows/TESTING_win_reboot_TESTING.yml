@@ -63,8 +63,8 @@
     - name: Set the state of a virtual machine to poweroff
       community.vmware.vmware_guest_powerstate:
         hostname: "{{ Vcenter_Name }}"
-        username: "{{ vcenter_username }}"
-        password: "{{ vcenter_password }}"
+        username: "{{ VMWARE_USERNAME }}"
+        password: "{{ VMWARE_PASSWORD }}"
         name: "{{ guest_name }}"
         state: powered-off
       register: poweroff_result
@@ -86,8 +86,8 @@
     - name: Power ON the virtual machine
       community.vmware.vmware_guest_powerstate:
          hostname: "{{ Vcenter_Name }}"
-         username: "{{ vcenter_username }}"
-         password: "{{ vcenter_password }}"
+         username: "{{ VMWARE_USERNAME }}"
+         password: "{{ VMWARE_PASSWORD }}"
          name: "{{ guest_name }}"
          state: powered-on
 
