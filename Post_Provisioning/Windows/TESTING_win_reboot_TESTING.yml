@@ -66,6 +66,7 @@
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
         name: "{{ VM_servername }}"
+        validate_certs: false
         state: powered-off
       register: poweroff_result
 
@@ -89,6 +90,7 @@
          username: "{{ VMWARE_USERNAME }}"
          password: "{{ VMWARE_PASSWORD }}"
          name: "{{ VM_servername }}"
+         validate_certs: false
          state: powered-on
       register: poweron_result
 
