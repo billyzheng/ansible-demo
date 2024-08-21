@@ -84,6 +84,10 @@
       retries: 60
       delay: 5
 
+    - name: Set few seconds wait time at poweroff state
+      ansible.builtin.wait_for:
+         timeout: 10
+
     - name: Power ON the virtual machine
       community.vmware.vmware_guest_powerstate:
          hostname: "{{ Vcenter_Name }}"
