@@ -61,6 +61,11 @@
     #     msg: "VM is already in shutdown state, Please check the reason manually"
     #   when: not reboot_result.changed
 
+    - name: Fail if VM poweroff is not successful
+      ansible.builtin.fail:
+        msg: "VM is already in shutdown state, Please check the reason manually"
+      when: not poweroff_result.changed
+
     - name: Set the state of a virtual machine to poweroff
       community.vmware.vmware_guest_powerstate:
         hostname: "{{ vcenter_hostname }}"
@@ -70,10 +75,20 @@
         state: powered-off
       register: poweroff_result
 
-    - name: Fail if VM poweroff is not successful
-      ansible.builtin.fail:
-        msg: "VM is already in shutdown state, Please check the reason manually"
-      when: not poweroff_result.changed
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vcenter_hostname: '{{ Vcenter_Name }}'
+        vcenter_username: '{{ VMWARE_USERNAME }}'
+        vcenter_password: '{{ VMWARE_PASSWORD }}'
+        vcenter_validate_certs: false
+        vm: '{{ pre_result.value[0].vm }}'
+      register: vm_tools_info
+      until:
+      - vm_tools_info is not failed
+      - vm_tools_info.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5
+
 
     # - name: wait for reboot to happen
     #   ansible.builtin.wait_for:
