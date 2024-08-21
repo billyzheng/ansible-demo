@@ -46,24 +46,46 @@
       ansible.builtin.set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
        
-    - name: Reboot the virtual machine
-      community.vmware.vmware_guest_powerstate:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ VM_servername }}"
-         validate_certs: false
-         state: reboot-guest
-      register: reboot_result
+    # - name: Reboot the virtual machine
+    #   community.vmware.vmware_guest_powerstate:
+    #      hostname: '{{ Vcenter_Name }}'
+    #      username: '{{ VMWARE_USERNAME }}'
+    #      password: '{{ VMWARE_PASSWORD }}'
+    #      name: "{{ VM_servername }}"
+    #      validate_certs: false
+    #      state: reboot-guest
+    #   register: reboot_result
 
-    - name: Fail if VM reboot is not happen
+    # - name: Fail if VM reboot is not happen
+    #   ansible.builtin.fail:
+    #     msg: "VM is already in shutdown state, Please check the reason manually"
+    #   when: not reboot_result.changed
+
+    - name: Set the state of a virtual machine to poweroff
+      community.vmware.vmware_guest_powerstate:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        name: "{{ guest_name }}"
+        state: powered-off
+      register: poweroff_result
+
+    - name: Fail if VM poweroff is not successful
       ansible.builtin.fail:
         msg: "VM is already in shutdown state, Please check the reason manually"
-      when: not reboot_result.changed
+      when: not poweroff_result.changed
 
-    - name: wait for reboot to happen
-      ansible.builtin.wait_for:
-         timeout: 30
+    # - name: wait for reboot to happen
+    #   ansible.builtin.wait_for:
+    #      timeout: 30
+
+     - name: Power on the virtual machine
+       community.vmware.vmware_guest_powerstate:
+         hostname: "{{ vcenter_hostname }}"
+         username: "{{ vcenter_username }}"
+         password: "{{ vcenter_password }}"
+         name: "{{ guest_name }}"
+         state: powered-on
 
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
