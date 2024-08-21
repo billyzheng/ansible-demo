@@ -87,6 +87,10 @@
          name: "{{ guest_name }}"
          state: powered-on
 
+    - name: wait for reboot to happen
+      ansible.builtin.wait_for:
+         timeout: 30
+
     - name: Wait until my VM is ready
       vmware.vmware_rest.vcenter_vm_tools_info:
         vcenter_hostname: '{{ Vcenter_Name }}'
