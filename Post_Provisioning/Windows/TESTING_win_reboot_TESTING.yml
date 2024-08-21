@@ -65,7 +65,7 @@
         hostname: "{{ Vcenter_Name }}"
         username: "{{ VMWARE_USERNAME }}"
         password: "{{ VMWARE_PASSWORD }}"
-        name: "{{ guest_name }}"
+        name: "{{ VM_servername }}"
         state: powered-off
       register: poweroff_result
 
@@ -88,8 +88,9 @@
          hostname: "{{ Vcenter_Name }}"
          username: "{{ VMWARE_USERNAME }}"
          password: "{{ VMWARE_PASSWORD }}"
-         name: "{{ guest_name }}"
+         name: "{{ VM_servername }}"
          state: powered-on
+      register: poweron_result
 
     - name: wait for reboot to happen
       ansible.builtin.wait_for:
