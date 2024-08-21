@@ -46,10 +46,19 @@
       ansible.builtin.set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
        
-    - name: Fail if VM poweroff is not successful
+    - name: Check VM power state
+      community.vmware.vmware_vm_info:
+         hostname: '{{ Vcenter_Name }}'
+         username: '{{ VMWARE_USERNAME }}'
+         password: '{{ VMWARE_PASSWORD }}'
+         vm_name: "{{ VM_servername }}"
+         validate_certs: false
+      register: vm_power_state
+
+    - name: Fail if server is already shut down or shutdown task did not change state
       ansible.builtin.fail:
-        msg: "VM is already in shutdown state, Please check the reason manually"
-      when: not poweroff_result.changed
+         msg: "Server is already shut down or shutdown task did not change state."
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
 
     - name: Set the state of a virtual machine to poweroff
       community.vmware.vmware_guest_powerstate:
@@ -74,7 +83,7 @@
       retries: 60
       delay: 5
 
-    - name: Power on the virtual machine
+    - name: Power ON the virtual machine
       community.vmware.vmware_guest_powerstate:
          hostname: "{{ vcenter_hostname }}"
          username: "{{ vcenter_username }}"
