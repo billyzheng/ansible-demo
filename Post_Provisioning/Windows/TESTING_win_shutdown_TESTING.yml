@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Get the VM inventory - before changes
+    - name: Collect the VM inventory details - before changes
       register: pre_result
       vmware.vmware_rest.vcenter_vm_info:
         vcenter_hostname: '{{ Vcenter_Name }}'
@@ -55,7 +55,7 @@
       ansible.builtin.wait_for:
          timeout: 20
 
-    - name: Re-check VM power state after wait
+    - name: Re-check VM power state after wait and collect the VM inventory details - after changes
       community.vmware.vmware_vm_info:
         hostname: '{{ Vcenter_Name }}'
         username: '{{ VMWARE_USERNAME }}'
