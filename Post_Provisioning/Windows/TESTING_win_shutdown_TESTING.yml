@@ -84,7 +84,7 @@
     - name: Set Post VM Status
       ansible.builtin.set_fact:
          pre_server_state: "{{ pre_result.value[0].power_state }}"
-         post_server_state: "{{ post_result.value[0].power_state }}"
+         post_server_state: "{{ post_result.virtual_machines[0].power_state }}"
 
     - name: Pass the collected artifacts to next workflow
       ansible.builtin.set_stats:
