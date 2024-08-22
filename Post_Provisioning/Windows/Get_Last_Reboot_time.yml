@@ -28,7 +28,7 @@
       ansible.builtin.set_fact:
         datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
 
-     - name: Fetch the VM last reboot time
+    - name: Fetch the VM last reboot time
       community.vmware.vmware_guest_info:
         hostname: '{{ Vcenter_Name }}'
         username: '{{ VMWARE_USERNAME }}'
