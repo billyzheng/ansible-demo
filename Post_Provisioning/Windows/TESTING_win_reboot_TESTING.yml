@@ -55,9 +55,9 @@
          validate_certs: false
       register: vm_power_state
 
-    - name: Fail if server is already shut down or shutdown task did not change state
+    - name: Fail if server is already Powered off. 
       ansible.builtin.fail:
-         msg: "Server is already shut down or shutdown task did not change state."
+         msg: "Server is already is in Powered OFF state. Please check the server manually."
       when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
 
     - name: Set the state of a virtual machine to poweroff
