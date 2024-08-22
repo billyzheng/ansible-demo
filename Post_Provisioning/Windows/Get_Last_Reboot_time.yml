@@ -45,4 +45,9 @@
     - name: Set last reboot time 
       ansible.builtin.set_fact:
         last_boot_time: "{{ last_reboot_time.instance.summary.runtime.bootTime }}"
+
+    - ansible.builtin.set_stats:
+        data:
+          last_boot_time: "{{ last_boot_time }}"
+         
        
