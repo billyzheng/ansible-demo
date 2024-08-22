@@ -49,7 +49,21 @@
       - vm_tools_info is not failed
       - vm_tools_info.value.run_state == "NOT_RUNNING"
       retries: 60
-      delay: 5
+      delay: 10
+
+    - name: Re-check VM power state after wait
+      community.vmware.vmware_vm_info:
+        hostname: '{{ Vcenter_Name }}'
+        username: '{{ VMWARE_USERNAME }}'
+        password: '{{ VMWARE_PASSWORD }}'
+        vm_name: "{{ VM_servername }}"
+        validate_certs: false
+      register: post_result
+      until:
+      - post_result.virtual_machines | length > 0
+      - post_result.virtual_machines[0].power_state == 'poweredOff'
+      retries: 10
+      delay: 30
 
     - name: Get the VM inventory - after changes
       register: post_result
