@@ -49,7 +49,11 @@
       - vm_tools_info is not failed
       - vm_tools_info.value.run_state == "NOT_RUNNING"
       retries: 60
-      delay: 10
+      delay: 5
+
+    - name: Set few seconds wait time at poweroff state
+      ansible.builtin.wait_for:
+         timeout: 20
 
     - name: Re-check VM power state after wait
       community.vmware.vmware_vm_info:
@@ -63,7 +67,7 @@
       - post_result.virtual_machines | length > 0
       - post_result.virtual_machines[0].power_state == 'poweredOff'
       retries: 10
-      delay: 30
+      delay: 5
 
     - name: Log VM power state before and after shutdown
       ansible.builtin.debug:
