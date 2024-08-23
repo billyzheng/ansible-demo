@@ -96,7 +96,7 @@
         recur_unit: null
         recur_until: "0"
         owner: "{{ owner_id }}"
-        organization: "{{ organization_id }}"
+        organization: "/api/organization/1"
         visibility: "Organization"
         in_window: "0"
         preserve_in_db: "0"
@@ -139,7 +139,7 @@
         recur_unit: null
         recur_until: "0"
         owner: "{{ owner_id }}"
-        organization: "{{ organization_id }}"
+        organization: "/api/organization/1"
         visibility: "Organization"
         in_window: "0"
         preserve_in_db: "0"
