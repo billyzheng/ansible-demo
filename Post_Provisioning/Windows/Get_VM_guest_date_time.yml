@@ -7,10 +7,6 @@
       ansible.builtin.set_fact:
         current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
 
-    - name: Display the current UTC time
-      ansible.builtin.debug:
-        msg: "Current time (UTC): {{ current_time_utc }}"
-
     - name: Show the current time variable
       ansible.builtin.debug:
         var: current_time_utc
