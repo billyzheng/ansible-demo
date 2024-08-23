@@ -88,9 +88,9 @@
       method: POST
       body_format: json
       body:
-        dtstart: "1724428800"
-        timezone: "390"
-        duration: "60"
+        dtstart: "{{ epoch_unix_time }}"
+        timezone: "548"
+        duration: "30"
         description: "Ansible Schedule Creation"
         recur_expr: "0"
         recur_unit: null
@@ -131,9 +131,9 @@
       method: PUT
       body_format: json
       body:
-        dtstart: "1724428800"
-        timezone: "390"
-        duration: "60"
+        dtstart: "{{ epoch_unix_time }}"
+        timezone: "548"
+        duration: "30"
         description: "Ansible Creates and Enable the Maintenance Schedule"
         recur_expr: "0"
         recur_unit: null
