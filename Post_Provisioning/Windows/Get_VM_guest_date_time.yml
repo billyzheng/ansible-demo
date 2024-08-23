@@ -15,11 +15,6 @@
       ansible.builtin.debug:
         var: current_time_utc
 
-    # - name: Convert UTC time to Unix timestamp
-    #   ansible.builtin.command:
-    #     command: "date -u -d '{{ current_time_utc }}' +%s"
-    #   register: timestamp_result
-
     - name: Convert UTC time to Unix timestamp
       ansible.builtin.command:
         argv:
