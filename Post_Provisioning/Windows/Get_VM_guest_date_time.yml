@@ -6,3 +6,17 @@
     - name: Get current time in UTC
       ansible.builtin.debug:
          msg: "Current time (UTC): {{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
+
+    - name: Display the current UTC time
+      ansible.builtin.debug:
+        msg: "Current time (UTC): {{ current_time_utc }}"
+
+    - name: Convert UTC time to Unix timestamp
+      ansible.builtin.command:
+        cmd: "date -u -d '{{ current_time_utc }}' +%s"
+      register: timestamp_result
+
+    - name: Show Unix timestamp
+      ansible.builtin.debug:
+        msg: "Unix timestamp: {{ timestamp_result.stdout }}"
+
