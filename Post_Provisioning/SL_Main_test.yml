@@ -113,6 +113,10 @@
   
   - ansible.builtin.debug: var=schedule_response
 
+  - name: Get schedule guid
+    ansible.builtin.set_fact:
+        schedule_guid_str: "{{ schedule_response.json.schedule_guid }}"
+        
   - name: Extract schedule ID
     ansible.builtin.set_fact:
        schedule_id_str: "{{ schedule_response.json.tasks.URI | regex_search('schedule/([0-9]+)', '\\1') }}" 
@@ -125,31 +129,31 @@
       data:
         scheduling_id: "{{ schedule_id }}"
 
-  - name: Link Task with Schedule for the Server "{{ server_name }}"
-    ansible.builtin.uri:
-      url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
-      method: PUT
-      body_format: json
-      body:
-        dtstart: "{{ epoch_unix_time }}"
-        timezone: "548"
-        duration: "30"
-        description: "Ansible Creates and Enable the Maintenance Schedule"
-        recur_expr: "0"
-        recur_unit: null
-        recur_until: "0"
-        owner: "{{ owner_id }}"
-        organization: "/api/organization/1"
-        visibility: "Organization"
-        in_window: "0"
-        preserve_in_db: "0"
-        ppguid: null
-        schedule_guid: null
-        tasks:
-          - "{{ task_id }}"
-      status_code: 200
-      headers:
-        Content-Type: "application/json"
-      user: "{{ username }}"
-      password: "{{ password }}"
-    register: server_scheduled
+  # - name: Link Task with Schedule for the Server "{{ server_name }}"
+  #   ansible.builtin.uri:
+  #     url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
+  #     method: PUT
+  #     body_format: json
+  #     body:
+  #       dtstart: "{{ epoch_unix_time }}"
+  #       timezone: "548"
+  #       duration: "30"
+  #       description: "Ansible Creates and Enable the Maintenance Schedule"
+  #       recur_expr: "0"
+  #       recur_unit: null
+  #       recur_until: "0"
+  #       owner: "{{ owner_id }}"
+  #       organization: "/api/organization/1"
+  #       visibility: "Organization"
+  #       in_window: "0"
+  #       preserve_in_db: "0"
+  #       ppguid: null
+  #       schedule_guid: null
+  #       tasks:
+  #         - "{{ task_id }}"
+  #     status_code: 200
+  #     headers:
+  #       Content-Type: "application/json"
+  #     user: "{{ username }}"
+  #     password: "{{ password }}"
+  #   register: server_scheduled
