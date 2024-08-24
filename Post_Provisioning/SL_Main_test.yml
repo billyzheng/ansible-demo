@@ -56,8 +56,8 @@
         description: "Ansible Creating Task ID"
         enabled: "1"
         details:
-          active: "12"
-          patch_window: "0"
+          active: 12
+          patch_window: 0
         last_run: "0"
         owner: "{{ owner_id }}"
         organization: "/api/organization/1"
