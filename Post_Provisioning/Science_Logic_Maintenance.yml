@@ -5,7 +5,7 @@
   tasks:
   - name: Get current time in UTC
     ansible.builtin.set_fact:
-      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M') }}"
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
 
   - name: Show the current time variable
     ansible.builtin.debug:
@@ -54,10 +54,10 @@
       body:
         name: "Ansible Task Creation"
         description: "Ansible Creating Task ID"
-        enabled: "1"
+        enabled: 1
         details:
-          active: "12"
-          patch_window: "0"
+          active: 12
+          patch_window: 0
         last_run: "0"
         owner: "{{ owner_id }}"
         organization: "/api/organization/1"
@@ -113,6 +113,10 @@
   
   - ansible.builtin.debug: var=schedule_response
 
+  - name: Get schedule guid
+    ansible.builtin.set_fact:
+        scheduling_guid: "{{ schedule_response.json.schedule_guid }}"
+        
   - name: Extract schedule ID
     ansible.builtin.set_fact:
        schedule_id_str: "{{ schedule_response.json.tasks.URI | regex_search('schedule/([0-9]+)', '\\1') }}" 
@@ -144,7 +148,7 @@
         in_window: "0"
         preserve_in_db: "0"
         ppguid: null
-        schedule_guid: null
+        schedule_guid: "{{ scheduling_guid }}"
         tasks:
           - "{{ task_id }}"
       status_code: 200
