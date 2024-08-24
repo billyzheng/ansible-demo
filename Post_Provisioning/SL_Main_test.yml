@@ -1,0 +1,155 @@
+---
+- name: Create server maintenance task and schedule
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Get current time in UTC
+    ansible.builtin.set_fact:
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M') }}"
+
+  - name: Show the current time variable
+    ansible.builtin.debug:
+      var: current_time_utc
+
+  - name: Convert UTC time to Unix timestamp
+    ansible.builtin.command:
+      argv:
+        - "date"
+        - "-u"
+        - "-d"
+        - "{{ current_time_utc }}"
+        - "+%s"
+    register: timestamp_result
+
+  - name: Get Current Unix Timestamp
+    ansible.builtin.set_fact:
+      epoch_unix_time: "{{ timestamp_result.stdout }}"
+  
+  - name: Login into SL to get list of Server Device ID's
+    ansible.builtin.uri:
+      url: "{{ device_url }}"
+      method: GET
+      return_content: yes
+      status_code: 200
+      headers:
+        Content-Type: "application/xml"
+      body_format: form-urlencoded
+      user: "{{ username }}"
+      password: "{{ password }}"
+    register: api_response
+
+  - ansible.builtin.debug: var=api_response
+
+  - name: Filter the device API for server "{{ server_name }}"
+    ansible.builtin.set_fact:
+      server_api: "{{ item.URI }}"
+    loop: "{{ api_response.json.result_set }}"
+    when: item.description == server_name
+
+  - name: Create the Maintenance Task for the Server "{{ server_name }}"
+    ansible.builtin.uri:
+      url: "{{ task_url }}"
+      method: POST
+      body_format: json
+      body:
+        name: "Ansible Task Creation"
+        description: "Ansible Creating Task ID"
+        enabled: "1"
+        details:
+          active: "12"
+          patch_window: "0"
+        last_run: "0"
+        owner: "{{ owner_id }}"
+        organization: "/api/organization/1"
+        visibility: "Organization"
+        aligned_resource: "{{ server_api }}"
+      status_code: 201
+      headers:
+        Content-Type: "application/json"
+      user: "{{ username }}"
+      password: "{{ password }}"
+    register: task_response
+
+  - name: Extract task ID
+    ansible.builtin.set_fact:
+       task_id_str: "{{ task_response.json.schedules.URI | regex_search('task/([0-9]+)', '\\1') }}"
+       
+  - name: Convert task ID to string and remove brackets
+    ansible.builtin.set_fact:
+      task_id: "{{ task_id_str[0] }}"
+
+  - ansible.builtin.set_stats:
+      data:
+        tasks_id: "{{ task_id }}"
+
+  - name: Create Maintenance Schedule for the Server "{{ server_name }}"
+    ansible.builtin.uri:
+      url: "{{ schedule_url }}"
+      method: POST
+      body_format: json
+      body:
+        dtstart: "{{ epoch_unix_time }}"
+        timezone: "548"
+        duration: "30"
+        description: "Ansible Schedule Creation"
+        recur_expr: "0"
+        recur_unit: null
+        recur_until: "0"
+        owner: "{{ owner_id }}"
+        organization: "/api/organization/1"
+        visibility: "Organization"
+        in_window: "0"
+        preserve_in_db: "0"
+        ppguid: null
+        schedule_guid: null
+        tasks:
+          - "{{ task_id }}"
+      status_code: 201
+      headers:
+        Content-Type: "application/json"
+      user: "{{ username }}"
+      password: "{{ password }}"
+    register: schedule_response
+  
+  - ansible.builtin.debug: var=schedule_response
+
+  - name: Extract schedule ID
+    ansible.builtin.set_fact:
+       schedule_id_str: "{{ schedule_response.json.tasks.URI | regex_search('schedule/([0-9]+)', '\\1') }}" 
+       
+  - name: Filter the exact schedule ID number
+    ansible.builtin.set_fact:
+      schedule_id: "{{ schedule_id_str[0] }}"
+
+  - ansible.builtin.set_stats:
+      data:
+        scheduling_id: "{{ schedule_id }}"
+
+  - name: Link Task with Schedule for the Server "{{ server_name }}"
+    ansible.builtin.uri:
+      url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
+      method: PUT
+      body_format: json
+      body:
+        dtstart: "{{ epoch_unix_time }}"
+        timezone: "548"
+        duration: "30"
+        description: "Ansible Creates and Enable the Maintenance Schedule"
+        recur_expr: "0"
+        recur_unit: null
+        recur_until: "0"
+        owner: "{{ owner_id }}"
+        organization: "/api/organization/1"
+        visibility: "Organization"
+        in_window: "0"
+        preserve_in_db: "0"
+        ppguid: null
+        schedule_guid: null
+        tasks:
+          - "{{ task_id }}"
+      status_code: 200
+      headers:
+        Content-Type: "application/json"
+      user: "{{ username }}"
+      password: "{{ password }}"
+    register: server_scheduled
