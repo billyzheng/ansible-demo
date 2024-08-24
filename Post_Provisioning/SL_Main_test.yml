@@ -54,7 +54,7 @@
       body:
         name: "Ansible Task Creation"
         description: "Ansible Creating Task ID"
-        enabled: "1"
+        enabled: 1
         details:
           active: 12
           patch_window: 0
