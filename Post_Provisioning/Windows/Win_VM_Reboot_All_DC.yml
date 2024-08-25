@@ -46,20 +46,57 @@
       ansible.builtin.set_fact:
         last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
        
-    - name: Reboot the virtual machine
-      community.vmware.vmware_guest_powerstate:
+    - name: Check VM power state
+      community.vmware.vmware_vm_info:
          hostname: '{{ Vcenter_Name }}'
          username: '{{ VMWARE_USERNAME }}'
          password: '{{ VMWARE_PASSWORD }}'
+         vm_name: "{{ VM_servername }}"
+         validate_certs: false
+      register: vm_power_state
+
+    - name: Fail if server is already Powered off. 
+      ansible.builtin.fail:
+         msg: "Server is already is in Powered OFF state. Please check the server manually."
+      when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
+
+    - name: Set the state of a virtual machine to poweroff
+      community.vmware.vmware_guest_powerstate:
+        hostname: "{{ Vcenter_Name }}"
+        username: "{{ VMWARE_USERNAME }}"
+        password: "{{ VMWARE_PASSWORD }}"
+        name: "{{ VM_servername }}"
+        validate_certs: false
+        state: powered-off
+      register: poweroff_result
+
+    - name: Wait until virtual machine offline
+      vmware.vmware_rest.vcenter_vm_tools_info:
+        vcenter_hostname: '{{ Vcenter_Name }}'
+        vcenter_username: '{{ VMWARE_USERNAME }}'
+        vcenter_password: '{{ VMWARE_PASSWORD }}'
+        vcenter_validate_certs: false
+        vm: '{{ pre_result.value[0].vm }}'
+      register: vm_tools_info_off
+      until:
+      - vm_tools_info_off is not failed
+      - vm_tools_info_off.value.run_state == "NOT_RUNNING"
+      retries: 60
+      delay: 5
+
+    - name: Set few seconds wait time at poweroff state
+      ansible.builtin.wait_for:
+         timeout: 10
+
+    - name: Power ON the virtual machine
+      community.vmware.vmware_guest_powerstate:
+         hostname: "{{ Vcenter_Name }}"
+         username: "{{ VMWARE_USERNAME }}"
+         password: "{{ VMWARE_PASSWORD }}"
          name: "{{ VM_servername }}"
          validate_certs: false
-         state: reboot-guest
-      register: reboot_result
-
-    - name: Fail if VM reboot is not happen
-      ansible.builtin.fail:
-        msg: "VM is already in shutdown state, Please check the reason manually"
-      when: not reboot_result.changed
+         state: powered-on
+      register: poweron_result
 
     - name: wait for reboot to happen
       ansible.builtin.wait_for:
@@ -72,10 +109,10 @@
         vcenter_password: '{{ VMWARE_PASSWORD }}'
         vcenter_validate_certs: false
         vm: '{{ pre_result.value[0].vm }}'
-      register: vm_tools_info
+      register: vm_tools_info_on
       until:
-      - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "RUNNING"
+      - vm_tools_info_on is not failed
+      - vm_tools_info_on.value.run_state == "RUNNING"
       retries: 60
       delay: 5
 
@@ -117,4 +154,3 @@
           time_after_reboot: "{{ final_boot_time }}"
           vm_power_state: "{{ post_server_state }}" 
           catalog_item: Reboot
-      
