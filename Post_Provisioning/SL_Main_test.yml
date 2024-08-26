@@ -13,15 +13,15 @@
 
   - name: Login into SL to get list of Server Device ID's
     ansible.builtin.uri:
-      url: "{{ SL1_HOSTNAME }}api/task/"
+      url: "{{ SL1_HOSTNAME }}api/device?limit=10000"
       method: GET
       return_content: yes
       status_code: 200
       headers:
         Content-Type: "application/xml"
       body_format: form-urlencoded
-      user: "{{ username }}"
-      password: "{{ password }}"
+      user: "{{ SL1_USERNAME }}"
+      password: "{{ SL1_PASSWORD }}"
     register: api_response
 
   - ansible.builtin.debug: var=api_response
@@ -34,7 +34,7 @@
 
   - name: Create the Maintenance Task for the Server "{{ server_name }}"
     ansible.builtin.uri:
-      url: "{{ task_url }}"
+      url: "{{ SL1_HOSTNAME }}api/task/"
       method: POST
       body_format: json
       body:
@@ -52,8 +52,8 @@
       status_code: 201
       headers:
         Content-Type: "application/json"
-      user: "{{ username }}"
-      password: "{{ password }}"
+      user: "{{ SL1_USERNAME }}"
+      password: "{{ SL1_PASSWORD }}"
     register: task_response
 
   - name: Extract task ID
@@ -70,7 +70,7 @@
 
   - name: Create Maintenance Schedule for the Server "{{ server_name }}"
     ansible.builtin.uri:
-      url: "{{ schedule_url }}"
+      url: "{{ SL1_HOSTNAME }}api/schedule"
       method: POST
       body_format: json
       body:
@@ -93,8 +93,8 @@
       status_code: 201
       headers:
         Content-Type: "application/json"
-      user: "{{ username }}"
-      password: "{{ password }}"
+      user: "{{ SL1_USERNAME }}"
+      password: "{{ SL1_PASSWORD }}"
     register: schedule_response
   
   - ansible.builtin.debug: var=schedule_response
@@ -140,6 +140,6 @@
       status_code: 200
       headers:
         Content-Type: "application/json"
-      user: "{{ username }}"
-      password: "{{ password }}"
+      user: "{{ SL1_USERNAME }}"
+      password: "{{ SL1_PASSWORD }}"
     register: server_scheduled
