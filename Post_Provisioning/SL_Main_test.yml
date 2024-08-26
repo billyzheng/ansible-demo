@@ -11,13 +11,13 @@
     ansible.builtin.debug:
         var: now_time_utc
         
-  # - name: Get current time in UTC
-  #   ansible.builtin.set_fact:
-  #     current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
+  - name: Get current time in UTC
+    ansible.builtin.set_fact:
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
 
-  # - name: Show the current time variable
-  #   ansible.builtin.debug:
-  #     var: current_time_utc
+  - name: Show the current time variable
+    ansible.builtin.debug:
+      var: current_time_utc
 
   # - name: Convert UTC time to Unix timestamp
   #   ansible.builtin.command:
