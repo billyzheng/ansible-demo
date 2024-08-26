@@ -1,7 +1,7 @@
 ---
 - name: Create server maintenance task and schedule
   hosts: localhost
-  gather_facts: false
+  gather_facts: true
   tasks:
   - name: Get current time in UTC
     ansible.builtin.set_fact:
