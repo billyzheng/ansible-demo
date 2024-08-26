@@ -13,7 +13,7 @@
 
   - name: Login into SL to get list of Server Device ID's
     ansible.builtin.uri:
-      url: "{{ device_url }}"
+      url: "{{ SL1_HOSTNAME }}api/task/"
       method: GET
       return_content: yes
       status_code: 200
