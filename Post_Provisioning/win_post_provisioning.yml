@@ -37,9 +37,9 @@
   #   import_role:
   #     name: defender_onboarding
 
- - name: Adding the DNS Suffix
-   import_role:
-     name: dns_suffix_add
+  - name: Adding the DNS Suffix
+    import_role:
+      name: dns_suffix_add
 
   # - name: Qualys Installation
   #   import_role:
