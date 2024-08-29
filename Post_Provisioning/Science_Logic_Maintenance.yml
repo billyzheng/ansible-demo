@@ -45,7 +45,7 @@
           active: 12
           patch_window: 0
         last_run: "0"
-        owner: "{{ owner_id }}"
+        owner: "/api/account/77"
         organization: "/api/organization/0"
         visibility: "Organization"
         aligned_resource: "{{ server_api }}"
@@ -81,7 +81,7 @@
         recur_expr: "0"
         recur_unit: null
         recur_until: "0"
-        owner: "{{ owner_id }}"
+        owner: "/api/account/77"
         organization: "/api/organization/0"
         visibility: "Organization"
         in_window: "0"
@@ -128,7 +128,7 @@
         recur_expr: "0"
         recur_unit: null
         recur_until: "0"
-        owner: "{{ owner_id }}"
+        owner: "/api/account/77"
         organization: "/api/organization/0"
         visibility: "Organization"
         in_window: "0"
