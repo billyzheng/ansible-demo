@@ -34,6 +34,6 @@
             - className: cmdb_ci_win_server
               values:
                 name: xf-s-aapwin04t
-                cpu_core_count: '6'
+                cpu_core_count: '8'
                 cpu_count: '1'
-       #         ram: '8192'
+                ram: '3814'
