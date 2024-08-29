@@ -46,7 +46,7 @@
           patch_window: 0
         last_run: "0"
         owner: "{{ owner_id }}"
-        organization: "/api/organization/1"
+        organization: "/api/organization/0"
         visibility: "Organization"
         aligned_resource: "{{ server_api }}"
       status_code: 201
@@ -82,7 +82,7 @@
         recur_unit: null
         recur_until: "0"
         owner: "{{ owner_id }}"
-        organization: "/api/organization/1"
+        organization: "/api/organization/0"
         visibility: "Organization"
         in_window: "0"
         preserve_in_db: "0"
@@ -129,7 +129,7 @@
         recur_unit: null
         recur_until: "0"
         owner: "{{ owner_id }}"
-        organization: "/api/organization/1"
+        organization: "/api/organization/0"
         visibility: "Organization"
         in_window: "0"
         preserve_in_db: "0"
