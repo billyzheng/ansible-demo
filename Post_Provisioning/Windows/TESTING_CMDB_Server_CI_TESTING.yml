@@ -37,3 +37,7 @@
                 cpu_core_count: '8'
                 cpu_count: '1'
                 ram: '3814'
+      register: ci_updates
+      
+    - debug: 
+        var: ci_updates
