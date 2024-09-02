@@ -130,7 +130,7 @@
       ansible.builtin.set_fact:
         post_server_state: "{{ post_result.value[0].power_state }}"
         current_memory_size_GB: "{{ ((current_memory_size | int) / 1024) | int }}"
-        resized_mem_size_GB: "{{ ((post_result.value[0].memory_size_MiB | int) / 1024) | int }}"        
+        resized_mem_size_GB: "{{ ((post_result.value[0].memory_size_MiB | int) / 1024) | int }}" 
         
     - name: Pass the collected artifact evidence to update SN close records
       ansible.builtin.set_stats:
@@ -138,4 +138,5 @@
           Mem_size_before: "{{ current_memory_size_GB }}"  
           Mem_size_after: "{{ resized_mem_size_GB }}" 
           vm_power_state: "{{ post_server_state }}"
+          Mem_size_after_MB: "{{ post_result.value[0].memory_size_MiB }}"
           catalog_item: Memory
