@@ -140,4 +140,3 @@
           vm_power_state: "{{ post_server_state }}"
           Mem_size_after_MB: "{{ post_result.value[0].memory_size_MiB }}"
           catalog_item: Memory
-    
