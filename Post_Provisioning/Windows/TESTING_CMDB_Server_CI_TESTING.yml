@@ -16,9 +16,9 @@
           password : "{{ SN_PASSWORD }}"
       register: oauth_return_token
 
-    - name: display token info
-      debug: 
-        msg: " {{ oauth_return_token.json.access_token }} "
+    # - name: display token info
+    #   debug: 
+    #     msg: " {{ oauth_return_token.json.access_token }} "
 
     - name: Ansible CMDB modification
       ansible.builtin.uri:
@@ -33,7 +33,7 @@
           items:
             - className: cmdb_ci_win_server
               values:
-                name: xf-s-aapwin04t
+                name: "{{ VM_servername }}"
                 cpu_core_count: "{{ CPU_Core_after }}"
                 cpu_count: '1'
                 
@@ -51,6 +51,6 @@
           items:
             - className: cmdb_ci_win_server
               values:
-                name: xf-s-aapwin04t
+                name: "{{ VM_servername }}"
                 ram: "{{ Mem_size_after_MB }}"
      
