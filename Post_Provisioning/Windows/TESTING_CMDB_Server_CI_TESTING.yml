@@ -32,8 +32,7 @@
                 name: "{{ VM_servername }}"
                 cpu_core_count: "{{ CPU_Core_after }}"
                 cpu_count: '1'
-      when: catalog_item == 'CPU'
-                
+      when: catalog_item == 'CPU'             
                 
     - name: Ansible CMDB modification for Memory
       ansible.builtin.uri:
@@ -51,4 +50,3 @@
                 name: "{{ VM_servername }}"
                 ram: "{{ Mem_size_after_MB }}"
       when: catalog_item == 'Memory'
-        
