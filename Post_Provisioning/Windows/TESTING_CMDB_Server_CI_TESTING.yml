@@ -16,11 +16,7 @@
           password : "{{ SN_PASSWORD }}"
       register: oauth_return_token
 
-    # - name: display token info
-    #   debug: 
-    #     msg: " {{ oauth_return_token.json.access_token }} "
-
-    - name: Ansible CMDB modification
+    - name: Ansible CMDB modification for CPU
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
         method: POST
@@ -38,7 +34,7 @@
                 cpu_count: '1'
                 
                 
-    - name: Ansible CMDB modification
+    - name: Ansible CMDB modification for Memory
       ansible.builtin.uri:
         url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
         method: POST
@@ -53,4 +49,6 @@
               values:
                 name: "{{ VM_servername }}"
                 ram: "{{ Mem_size_after_MB }}"
+      when: catalog_item == 'Memory'
+        
      
