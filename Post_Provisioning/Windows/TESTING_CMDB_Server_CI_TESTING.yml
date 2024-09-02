@@ -34,10 +34,23 @@
             - className: cmdb_ci_win_server
               values:
                 name: xf-s-aapwin04t
-                cpu_core_count: '8'
+                cpu_core_count: "{{ CPU_Core_after }}"
                 cpu_count: '1'
-                ram: '3814'
-      register: ci_updates
-      
-    - debug: 
-        var: ci_updates
+                
+                
+    - name: Ansible CMDB modification
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
+        method: POST
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body:
+          items:
+            - className: cmdb_ci_win_server
+              values:
+                name: xf-s-aapwin04t
+                ram: "{{ Mem_size_after_MB }}"
+     
