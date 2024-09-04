@@ -6,7 +6,7 @@
   vars:
     downtime_windows_start: "2024-09-04 17:14:59"
     downtime_windows_end: "2024-09-04 17:20:12"
-    select_date_and_time: ""
+    select_date_and_time: "Immediately"
 
   tasks:
   - name: Calculate time difference block
@@ -18,12 +18,12 @@
       - name: Convert seconds difference to minutes
         set_fact:
           minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-    when: select_date_and_time != "Immediately"
+    when: select_date_and_time is defined and select_date_and_time != "Immediately"
 
   - name: Set minutes_duration to 30 if select_date_and_time is Immediately
     set_fact:
         minutes_duration: 30
-    when: select_date_and_time == "Immediately"
+    when: select_date_and_time is defined and select_date_and_time = "Immediately"
 
   - name: Show the minutes difference
     debug:
