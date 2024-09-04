@@ -6,7 +6,7 @@
   vars:
     downtime_windows_start: "2024-08-02 14:00:00"
     downtime_windows_end: "2024-08-03 14:00:07"
-    select_date_and_time: ""
+    select_date_and_time: "Immediately"
 
   tasks:
   - name: Calculate time difference block
