@@ -23,7 +23,7 @@
   - name: Set minutes_duration to 30 if select_date_and_time is Immediately
     set_fact:
         minutes_duration: 30
-    when: select_date_and_time is defined and select_date_and_time = "Immediately"
+    when: select_date_and_time is defined and select_date_and_time == "Immediately"
 
   - name: Show the minutes difference
     debug:
