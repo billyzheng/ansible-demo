@@ -16,6 +16,10 @@
   - debug:
       var: time_diff_output
 
+  - name: Convert a duration into minutes
+    ansible.builtin.debug:
+      msg: "{{ '30h 20m 10s 123ms' | community.general.to_minutes }}"
+ 
   - name: Convert time difference to minutes
     set_fact:
        time_diff_minutes: "{{ time_diff_output.ansible_facts.time_diff | community.general.to_minutes }}"
