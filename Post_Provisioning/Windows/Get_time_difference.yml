@@ -1,0 +1,21 @@
+---
+- name: Calculate time difference
+  hosts: localhost
+  gather_facts: no
+  tasks:      
+  vars:
+    downtime_windows_end: "2024-08-03 14:00:07"
+    Downtime_Windows_Start: "2024-08-02 14:00:00"
+
+  tasks:
+  - name: Calculate time difference
+    set_fact:
+      time_diff: "{{ (downtime_windows_end | to_datetime) - (Downtime_Windows_Start | to_datetime) }}"
+
+  - name: Convert time difference to minutes
+    set_fact:
+      time_diff_minutes: "{{ time_diff.total_seconds() | int / 60 }}"
+
+  - name: Print time difference in minutes
+    debug:
+      msg: "Time difference: {{ time_diff_minutes }} minutes"
