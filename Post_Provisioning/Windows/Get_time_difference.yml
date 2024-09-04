@@ -16,12 +16,12 @@
   - debug:
       var: time_diff_output
 
-  - name: Convert time difference to minutes
-    set_fact:
-      time_diff_days: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[0] | regex_replace(' day', '') | int }}"
-      time_diff_hours: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[1] | regex_replace(':', ' ') | split(' ')[0] | int }}"
-      time_diff_minutes: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[1] | regex_replace(':', ' ') | split(' ')[1] | int }}"
-      total_minutes: "{{ (time_diff_days * 24 * 60) + (time_diff_hours * 60) + time_diff_minutes }}"
+  # - name: Convert time difference to minutes
+  #   set_fact:
+  #     time_diff_days: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[0] | regex_replace(' day', '') | int }}"
+  #     time_diff_hours: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[1] | regex_replace(':', ' ') | split(' ')[0] | int }}"
+  #     time_diff_minutes: "{{ time_diff_output.ansible_facts.time_diff.split(', ')[1] | regex_replace(':', ' ') | split(' ')[1] | int }}"
+  #     total_minutes: "{{ (time_diff_days * 24 * 60) + (time_diff_hours * 60) + time_diff_minutes }}"
 
-  - debug:
-      msg: "Time difference: {{ total_minutes }} minutes"
+  # - debug:
+  #     msg: "Time difference: {{ total_minutes }} minutes"
