@@ -10,12 +10,16 @@
   tasks:
   - name: Calculate time difference
     set_fact:
-      time_diff: "{{ '%Y-%m-%d %H:%M:%S' | strftime(downtime_windows_end) - '%Y-%m-%d %H:%M:%S' | strftime(Downtime_Windows_Start) }}"
+      time_diff: "{{ (downtime_windows_end | to_datetime) - (Downtime_Windows_Start | to_datetime) }}"
+    register: time_diff_output
 
-  - name: Convert time difference to minutes
-    set_fact:
-      time_diff_minutes: "{{ (time_diff.seconds + time_diff.days * 24 * 60 * 60) / 60 }}"
+  - debug:
+      var: time_diff_output
+      
+  # - name: Convert time difference to minutes
+  #   set_fact:
+  #     time_diff_minutes: "{{ time_diff.seconds / 60 + time_diff.days * 24 * 60 }}"
 
-  - name: Print time difference in minutes
-    debug:
-      msg: "Time difference: {{ time_diff_minutes }} minutes"
+  # - name: Print time difference in minutes
+  #   debug:
+  #     msg: "Time difference: {{ time_diff_minutes }} minutes"
