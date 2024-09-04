@@ -4,15 +4,10 @@
   gather_facts: no
 
   vars:
-    Downtime_Windows_Start: "2024-08-02 14:00:00"
+    downtime_windows_start: "2024-08-02 14:00:00"
     downtime_windows_end: "2024-08-03 14:00:07"
 
-  tasks:
-  - name: Calculate time difference
-    set_fact:
-      start_time: "{{ Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S') }}"
-      end_time: "{{ downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') }}"
-
-  - name: Find the difference
-    set_fact:
-      time_diff: "{{ (end_time - start_time).total_seconds() }}"
+   tasks:
+    - name: Calculate the difference in seconds
+      set_fact:
+        seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
