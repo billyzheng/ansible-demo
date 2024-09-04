@@ -15,7 +15,8 @@
 
   - name: Convert seconds difference to minutes
     set_fact:
-      minutes_diff: "{{ (seconds_diff / 60) | round(2) }}"
+    #  minutes_diff: "{{ (seconds_diff / 60) | round(2) }}"
+      minutes_diff: "{{ (seconds_diff | float / 60) | round(2) }}"
 
   - name: Show the minutes difference
     debug:
