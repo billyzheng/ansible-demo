@@ -11,3 +11,11 @@
   - name: Calculate the difference in seconds
     set_fact:
        seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
+
+  - name: Convert seconds difference to minutes
+    set_fact:
+      minutes_diff: "{{ (seconds_diff / 60) | round(2) }}"
+
+  - name: Show the minutes difference
+    debug:
+      msg: "The difference is {{ minutes_diff }} minutes
