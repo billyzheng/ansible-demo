@@ -12,4 +12,7 @@
     set_fact:
       start_time: "{{ Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S') }}"
       end_time: "{{ downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') }}"
+
+  - name: Find the difference
+    set_fact:
       time_diff: "{{ (end_time - start_time).total_seconds() }}"
