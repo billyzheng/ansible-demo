@@ -4,9 +4,9 @@
   gather_facts: no
 
   vars:
-    downtime_windows_start: "2024-08-02 14:00:00"
-    downtime_windows_end: "2024-08-03 14:00:07"
-    select_date_and_time: "Immediately"
+    downtime_windows_start: "2024-09-04 17:14:59
+    downtime_windows_end: "2024-09-04 17:20:12"
+    select_date_and_time: ""
 
   tasks:
   - name: Calculate time difference block
