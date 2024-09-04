@@ -16,10 +16,10 @@
   - debug:
       var: time_diff_output
 
- - name: Convert time difference to minutes
-   set_fact:
-      time_diff_minutes: "{{ time_diff_output.ansible_facts.time_diff | community.general.to_minutes }}"
-   register: time_diff_minutes_output
+  - name: Convert time difference to minutes
+    set_fact:
+       time_diff_minutes: "{{ time_diff_output.ansible_facts.time_diff | community.general.to_minutes }}"
+    register: time_diff_minutes_output
 
   - debug:
       var: time_diff_minutes_output
