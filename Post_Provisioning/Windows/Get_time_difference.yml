@@ -10,14 +10,10 @@
   tasks:
   - name: Calculate the difference in seconds
     set_fact:
-   #    seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
-       seconds_diff: "{{ ((downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+        seconds_diff: "{{ ((downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
   - name: Convert seconds difference to minutes
     set_fact:
-    #  minutes_diff: "{{ (seconds_diff / 60) | round(2) }}"
-    #  minutes_diff: "{{ (seconds_diff | float / 60) | round(2) }}"
-    #  minutes_diff: "{{ (seconds_diff / 60) | int }}"
       minutes_diff: "{{ (seconds_diff | float / 60) | int }}"
 
   - name: Show the minutes difference
