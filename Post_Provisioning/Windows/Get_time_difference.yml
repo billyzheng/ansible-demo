@@ -7,7 +7,7 @@
     downtime_windows_start: "2024-08-02 14:00:00"
     downtime_windows_end: "2024-08-03 14:00:07"
 
-   tasks:
-    - name: Calculate the difference in seconds
-      set_fact:
-        seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
+  tasks:
+  - name: Calculate the difference in seconds
+    set_fact:
+       seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
