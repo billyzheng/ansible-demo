@@ -10,7 +10,8 @@
   tasks:
   - name: Calculate the difference in seconds
     set_fact:
-       seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
+   #    seconds_diff: "{{ (downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds() }}"
+       seconds_diff: "{{ ((downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
   - name: Convert seconds difference to minutes
     set_fact:
