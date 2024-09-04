@@ -18,4 +18,4 @@
 
   - name: Show the minutes difference
     debug:
-      msg: "The difference is {{ minutes_diff }} minutes
+      msg: "The difference is {{ minutes_diff }} minutes"
