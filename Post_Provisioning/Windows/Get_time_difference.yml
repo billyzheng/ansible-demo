@@ -44,9 +44,13 @@
 
   - name: Calculate SL maintenance duration for Shutdown
     block:
+      - name: Ensure shutdown_period has a time component
+        set_fact:
+          shutdown_period_with_time: "{{ shutdown_period + ' 00:00:00' }}"
+
       - name: Calculate the difference in seconds
         set_fact:
-          seconds_diff: "{{ ((shutdown_period | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+          seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
       
       - name: Convert seconds difference to minutes
         set_fact:
