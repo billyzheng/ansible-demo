@@ -8,9 +8,11 @@
     downtime_windows_end: "2024-09-04 17:20:12"
   #  select_date_and_time: "Immediately"
   #  please_select_server_reboot_time: "Immediately"
-    please_select_server_reboot_time: "Future Date" 
-    Start_Date: "2024-09-06 07:28:00"
-    End_Date: "2024-09-07 07:25:46"
+    # please_select_server_reboot_time: "Future Date" 
+    # Start_Date: "2024-09-06 07:28:00"
+    # End_Date: "2024-09-07 07:25:46"
+    please_select_server_shutdown_time: "Immediately"
+    shutdown_period: "2024-09-07"
 
   tasks:
   - name: Calculate SL maintenance duration for CPU or MEM
