@@ -7,7 +7,10 @@
     downtime_windows_start: "2024-09-04 17:14:59"
     downtime_windows_end: "2024-09-04 17:20:12"
   #  select_date_and_time: "Immediately"
-    please_select_server_reboot_time: "Immediately"
+  #  please_select_server_reboot_time: "Immediately"
+    please_select_server_reboot_time: "Future Date" 
+    Start_Date: "2024-09-06 07:28:00"
+    End_Date: "2024-09-07 07:25:46"
 
   tasks:
   - name: Calculate SL maintenance duration for CPU or MEM
@@ -48,7 +51,7 @@
           minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
     when: please_select_server_shutdown_time is defined 
 
-  - name: Set minutes_duration to 30 if select_date_and_time is Immediately
+  - name: Set SL minutes duration to 30 when reboot, CPU and MEM task performed immediately
     set_fact:
         minutes_duration: 30
     when: (please_select_server_reboot_time | default('') == "Immediately") or (select_date_and_time | default('') == "Immediately")
