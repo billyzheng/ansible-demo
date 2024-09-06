@@ -50,9 +50,7 @@
   - name: Set minutes_duration to 30 if select_date_and_time is Immediately
     set_fact:
         minutes_duration: 30
-    when: 
-      - (please_select_server_reboot_time | default('') == "Immediately") or
-      - (select_date_and_time | default('') == "Immediately")
+    when: (please_select_server_reboot_time | default('') == "Immediately") or (select_date_and_time | default('') == "Immediately")
     
   - name: Show the minutes difference
     debug:
