@@ -25,7 +25,7 @@
     #   ansible.builtin.debug:
     #     msg: "Unix timestamp: {{ timestamp_result.stdout }}"
 
-    - name: Get Current Unix Timestamp
-      ansible.builtin.set_fact:
-        epoch_unix_time: "{{ timestamp_result.stdout }}"
+    # - name: Get Current Unix Timestamp
+    #   ansible.builtin.set_fact:
+    #     epoch_unix_time: "{{ timestamp_result.stdout }}"
 
