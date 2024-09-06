@@ -9,7 +9,7 @@
     select_date_and_time: "Immediately"
 
   tasks:
-  - name: Calculate time difference block
+  - name: Calculate SL maintenance duration for CPU or MEM
     block:
       - name: Calculate the difference in seconds
         set_fact:
@@ -18,12 +18,39 @@
       - name: Convert seconds difference to minutes
         set_fact:
           minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-    when: select_date_and_time is defined and select_date_and_time != "Immediately"
+    when: select_date_and_time is defined and select_date_and_time == "Future Date"
+
+  - name: Calculate SL maintenance duration for Reboot
+    block:
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((End_Date | to_datetime('%Y-%m-%d %H:%M:%S') - Start_Date | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: please_select_server_reboot_time is defined and please_select_server_reboot_time == "Future Date"  
+
+  - name: Get current time in UTC
+    ansible.builtin.set_fact:
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
+    when: please_select_server_shutdown_time is defined 
+
+  - name: Calculate SL maintenance duration for Shutdown
+    block:
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((shutdown_period | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+      
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: please_select_server_shutdown_time is defined 
 
   - name: Set minutes_duration to 30 if select_date_and_time is Immediately
     set_fact:
         minutes_duration: 30
-    when: select_date_and_time is defined and select_date_and_time == "Immediately"
+    when: please_select_server_reboot_time == "Immediately" or select_date_and_time == "Immediately"
 
   - name: Show the minutes difference
     debug:
