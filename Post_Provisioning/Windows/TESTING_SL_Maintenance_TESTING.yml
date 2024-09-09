@@ -41,8 +41,8 @@
           seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
       
   - name: Convert seconds difference to minutes
-        set_fact:
-          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    set_fact:
+      minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
     when: variables.please_select_server_shutdown_time is defined 
 
   - name: Set SL minutes duration to 30 when reboot, CPU and MEM task performed immediately
