@@ -74,13 +74,13 @@
 
   - ansible.builtin.debug: var=api_response
 
-  - name: Filter the device API for server "{{ server_name }}"
+  - name: Filter the device API for server "{{ VM_servername }}"
     ansible.builtin.set_fact:
       server_api: "{{ item.URI }}"
     loop: "{{ api_response.json.result_set }}"
-    when: item.description == server_name
+    when: item.description == VM_servername
 
-  - name: Create the Maintenance Task for the Server "{{ server_name }}"
+  - name: Create the Maintenance Task for the Server "{{ VM_servername }}"
     ansible.builtin.uri:
       url: "{{ SL1_HOSTNAME }}api/task/"
       method: POST
@@ -116,7 +116,7 @@
       data:
         tasks_id: "{{ task_id }}"
 
-  - name: Create Maintenance Schedule for the Server "{{ server_name }}"
+  - name: Create Maintenance Schedule for the Server "{{ VM_servername }}"
     ansible.builtin.uri:
       url: "{{ SL1_HOSTNAME }}api/schedule"
       method: POST
@@ -163,7 +163,7 @@
       data:
         scheduling_id: "{{ schedule_id }}"
 
-  - name: Link Task with Schedule for the Server "{{ server_name }}"
+  - name: Link Task with Schedule for the Server "{{ VM_servername }}"
     ansible.builtin.uri:
       url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
       method: PUT
