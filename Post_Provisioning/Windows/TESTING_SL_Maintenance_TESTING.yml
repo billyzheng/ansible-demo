@@ -3,14 +3,57 @@
   hosts: localhost
   gather_facts: true
   tasks:
-  - name: Get current time in UTC
+  - name: Calculate SL maintenance duration for CPU or MEM
+    block:
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - downtime_windows_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: select_date_and_time is defined and select_date_and_time == "Future Date"
+
+  - name: Calculate SL maintenance duration for Reboot
+    block:
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((End_Date | to_datetime('%Y-%m-%d %H:%M:%S') - Start_Date | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: please_select_server_reboot_time is defined and please_select_server_reboot_time == "Future Date"  
+
+  - name: Get current time in UTC to calculate the total downtime for Server Shutdown
+    ansible.builtin.set_fact:
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
+    when: please_select_server_shutdown_time is defined 
+
+  - name: Calculate SL maintenance duration for Shutdown
+    block:
+      - name: Ensure shutdown_period has a time component
+        set_fact:
+          shutdown_period_with_time: "{{ shutdown_period + ' 00:00:00' }}"
+
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+      
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: please_select_server_shutdown_time is defined 
+
+  - name: Set SL minutes duration to 30 when reboot, CPU and MEM task performed immediately
+    set_fact:
+        minutes_duration: 30
+    when: (please_select_server_reboot_time | default('') == "Immediately") or (select_date_and_time | default('') == "Immediately")
+    
+  - name: Get current time in UTC for calculating down time start
     ansible.builtin.set_fact:
       epoch_unix_time: "{{ ansible_date_time.epoch }}"
  
-  - name: Show the current time variable
-    ansible.builtin.debug:
-        var: epoch_unix_time
-
   - name: Login into SL to get list of Server Device ID's
     ansible.builtin.uri:
       url: "{{ SL1_HOSTNAME }}api/device?limit=10000"
@@ -76,7 +119,7 @@
       body:
         dtstart: "{{ epoch_unix_time }}"
         timezone: "548"
-        duration: "30"
+        duration: "{{ minutes_duration }}"
         description: "Ansible Schedule Creation"
         recur_expr: "0"
         recur_unit: null
@@ -123,7 +166,7 @@
       body:
         dtstart: "{{ epoch_unix_time }}"
         timezone: "548"
-        duration: "30"
+        duration: "{{ minutes_duration }}"
         description: "Ansible Creates and Enable the Maintenance Schedule"
         recur_expr: "0"
         recur_unit: null
