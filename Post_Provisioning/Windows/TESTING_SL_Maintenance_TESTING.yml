@@ -3,11 +3,16 @@
   hosts: localhost
   gather_facts: true
   tasks:
+  - name: Extract and set downtime variables from SN
+    ansible.builtin.set_fact:
+      cpu_mem_downtime_end: "{{ variables.downtime_windows_end }}"
+      cpu_mem_downtime_start: "{{ variables.downtime_windows_start }}"     
+         
   - name: Calculate SL maintenance duration for CPU or MEM
     block:
       - name: Calculate the difference in seconds
         set_fact:
-          seconds_diff: "{{ ((variables['downtime_windows_end'] | to_datetime('%Y-%m-%d %H:%M:%S') - variables['downtime_windows_start'] | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+          seconds_diff: "{{ ((cpu_mem_downtime_end | to_datetime('%Y-%m-%d %H:%M:%S') - cpu_mem_downtime_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
       - name: Convert seconds difference to minutes
         set_fact:
