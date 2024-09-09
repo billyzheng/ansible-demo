@@ -3,17 +3,6 @@
   hosts: localhost
   gather_facts: true
   tasks:
-  # - name: Extract and set downtime variables from SN
-  #   ansible.builtin.set_fact:
-  #     cpu_mem_downtime_end: "{{ variables['downtime_windows_end'] }}"
-  #     cpu_mem_downtime_start: "{{ variables['downtime_windows_start'] }}"     
-         
-  # - name: Calculate SL maintenance duration for CPU or MEM
-  #   block:
-  #     - name: Calculate the difference in seconds
-  #       set_fact:
-  #         seconds_diff: "{{ ((cpu_mem_downtime_end | to_datetime('%Y-%m-%d %H:%M:%S') - cpu_mem_downtime_start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
-
   - name: Calculate SL maintenance duration for CPU or MEM
     block:
       - name: Calculate the difference in seconds
@@ -25,41 +14,41 @@
       minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
     when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date"
 
-  # - name: Calculate SL maintenance duration for Reboot
-  #   block:
-  #     - name: Calculate the difference in seconds
-  #       set_fact:
-  #         seconds_diff: "{{ ((variables.End_Date | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Start_Date | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+  - name: Calculate SL maintenance duration for Reboot
+    block:
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((variables.End_Date | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Start_Date | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
-  #     - name: Convert seconds difference to minutes
-  #       set_fact:
-  #         minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-  #   when: variables.please_select_server_reboot_time is defined and variables.please_select_server_reboot_time == "Future Date"  
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: variables.please_select_server_reboot_time is defined and variables.please_select_server_reboot_time == "Future Date"  
 
-  # - name: Get current time in UTC to calculate the total downtime for Server Shutdown
-  #   ansible.builtin.set_fact:
-  #     current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
-  #   when: variables.please_select_server_shutdown_time is defined 
+  - name: Get current time in UTC to calculate the total downtime for Server Shutdown
+    ansible.builtin.set_fact:
+      current_time_utc: "{{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}"
+    when: variables.please_select_server_shutdown_time is defined 
 
-  # - name: Calculate SL maintenance duration for Shutdown
-  #   block:
-  #     - name: Ensure shutdown_period has a time component
-  #       set_fact:
-  #         shutdown_period_with_time: "{{ variables.shutdown_period + ' 00:00:00' }}"
+  - name: Calculate SL maintenance duration for Shutdown
+    block:
+      - name: Ensure shutdown_period has a time component
+        set_fact:
+          shutdown_period_with_time: "{{ variables.shutdown_period + ' 00:00:00' }}"
 
-  #     - name: Calculate the difference in seconds
-  #       set_fact:
-  #         seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+      - name: Calculate the difference in seconds
+        set_fact:
+          seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
       
-  # - name: Convert seconds difference to minutes
-  #       set_fact:
-  #         minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-  #   when: variables.please_select_server_shutdown_time is defined 
+  - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+    when: variables.please_select_server_shutdown_time is defined 
 
-  # - name: Set SL minutes duration to 30 when reboot, CPU and MEM task performed immediately
-  #   set_fact:
-  #       minutes_duration: 30
-  #   when: (variables.please_select_server_reboot_time | default('') == "Immediately") or (variables.select_date_and_time | default('') == "Immediately")
+  - name: Set SL minutes duration to 30 when reboot, CPU and MEM task performed immediately
+    set_fact:
+        minutes_duration: 30
+    when: (variables.please_select_server_reboot_time | default('') == "Immediately") or (variables.select_date_and_time | default('') == "Immediately")
     
   - name: Get current time in UTC for calculating down time start
     ansible.builtin.set_fact:
