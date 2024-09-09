@@ -5,22 +5,22 @@
   tasks:
   - name: Calculate SL maintenance duration for CPU or MEM
     block:
-      - name: Calculate the difference in seconds
+      - name: Calculate the difference in seconds [  CPU or MEMORY change maintenance ]
         set_fact:
           seconds_diff: "{{ ((variables.downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
    
-      - name: Convert seconds difference to minutes
+      - name: Convert seconds difference to minutes [  CPU or MEMORY change maintenance ]
         set_fact:
           minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
     when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date"
 
   - name: Calculate SL maintenance duration for Reboot
     block:
-      - name: Calculate the difference in seconds
+      - name: Calculate the difference in seconds [  Reboot change maintenance ]
         set_fact:
           seconds_diff: "{{ ((variables.End_Date | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Start_Date | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
-      - name: Convert seconds difference to minutes
+      - name: Convert seconds difference to minutes [  Reboot change maintenance ]
         set_fact:
           minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
     when: variables.please_select_server_reboot_time is defined and variables.please_select_server_reboot_time == "Future Date"  
@@ -32,11 +32,11 @@
 
   - name: Calculate SL maintenance duration for Shutdown
     block:
-      - name: Ensure shutdown_period has a time component
+      - name: Ensure shutdown_period has a time component  [  Shutdown change maintenance ]
         set_fact:
           shutdown_period_with_time: "{{ variables.shutdown_period + ' 00:00:00' }}"
 
-      - name: Calculate the difference in seconds
+      - name: Calculate the difference in seconds  [  Shutdown change maintenance ]
         set_fact:
           seconds_diff: "{{ ((shutdown_period_with_time | to_datetime('%Y-%m-%d %H:%M:%S') - current_time_utc | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
    
