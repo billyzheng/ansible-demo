@@ -9,10 +9,10 @@
         set_fact:
           seconds_diff: "{{ ((variables.downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
    
-  - name: Convert seconds difference to minutes
-    set_fact:
-      minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-    when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date"
+      - name: Convert seconds difference to minutes
+        set_fact:
+          minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
+        when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date"
 
   - name: Calculate SL maintenance duration for Reboot
     block:
