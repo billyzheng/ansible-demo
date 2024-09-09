@@ -5,8 +5,8 @@
   tasks:
   - name: Extract and set downtime variables from SN
     ansible.builtin.set_fact:
-      cpu_mem_downtime_end: "{{ variables.downtime_windows_end }}"
-      cpu_mem_downtime_start: "{{ variables.downtime_windows_start }}"     
+      cpu_mem_downtime_end: "{{ variables['downtime_windows_end'] }}"
+      cpu_mem_downtime_start: "{{ variables['downtime_windows_start'] }}"     
          
   - name: Calculate SL maintenance duration for CPU or MEM
     block:
