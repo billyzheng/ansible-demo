@@ -44,7 +44,7 @@
         body_format: json
         body: 
           assignment_group: "{{ command_center_support_group }}"
-          work_notes: "Error has been encountered during the automation run. Error Detail: {{ Science_Logic_message }}. Deploy the change manually"
+          work_notes: "Error has been encountered during the automation run. Deploy the change manually Error: other errors"
           assigned_to : ""
           sys_id: "{{ change_task_sys_id }}"
       when: Science_Logic_message is not defined
