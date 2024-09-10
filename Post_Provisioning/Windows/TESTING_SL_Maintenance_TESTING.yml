@@ -189,27 +189,29 @@
           register: server_scheduled
 
       rescue:
-        - name: Handle errors and print message
-          ansible.builtin.debug:
-            msg: "An error occurred: {{ ansible_failed_result.msg }}"
-          when: ansible_failed_result is defined
+        # - name: Handle errors and print message
+        #   ansible.builtin.debug:
+        #     msg: "An error occurred: {{ ansible_failed_result.msg }}"
+        #   when: ansible_failed_result is defined
 
         - name: Set failure message to be used in next workflow
           ansible.builtin.set_fact:
-            failure_message: "{{ ansible_failed_result.msg }}"
+            Science_Logic_message: "{{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
 
         - name: Forward failure message
           ansible.builtin.set_stats:
             data:
-              failure_message: "{{ failure_message }}"
+              Science_Logic_message: "{{ Science_Logic_message }}"
+          when: ansible_failed_result is defined
 
         - name: Fail the playbook if there is an error
           ansible.builtin.fail:
-            msg: "Playbook failed during execution. Error message: {{ failure_message }}"
-          when: failure_message is defined
+            msg: "Playbook failed during execution. Error message: {{ Science_Logic_message }}"
+          when: ansible_failed_result is defined
 
     - name: Success message when playbook runs successfully
       ansible.builtin.set_stats:
         data:
-          success_message: "Science Logic maintenance enabled on the server "{{ VM_servername }}" . Alerts for this server will be suppressed for "{{ minutes_duration }}" minutes as per the request"
+          Science_Logic_message: "Science Logic maintenance enabled on the server "{{ VM_servername }}" . Alerts for this server will be suppressed for "{{ minutes_duration }}" minutes as per the request"
       when: ansible_failed_result is not defined
