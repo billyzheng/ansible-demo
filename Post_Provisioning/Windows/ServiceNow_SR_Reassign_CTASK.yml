@@ -27,25 +27,7 @@
         body_format: json
         body: 
           assignment_group: "{{ command_center_support_group }}"
-          work_notes: "Error has been encountered during the automation run. Error Detail: {{ Science_Logic_message }}. Deploy the change manually"
+          work_notes: "Error has been encountered during the automation run. Ticket is re-assigned for further troubleshooting"
           assigned_to : ""
           sys_id: "{{ change_task_sys_id }}"
-      when: Science_Logic_message is defined
-      register: SR_reassign_ctask  
-
-    - name: Ansible Reassign the CTASK if failed
-      ansible.builtin.uri:
-        url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
-        method: PATCH
-        headers:
-          Content-Type : application/json
-          Accept : application/json
-          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
-        body_format: json
-        body: 
-          assignment_group: "{{ command_center_support_group }}"
-          work_notes: "Error has been encountered during the automation run. Deploy the change manually Error: other errors"
-          assigned_to : ""
-          sys_id: "{{ change_task_sys_id }}"
-      when: Science_Logic_message is not defined
-      register: SR_reassign_ctask  
+      register: SR_reassign_ctask
