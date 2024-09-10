@@ -213,5 +213,5 @@
     - name: Success message when playbook runs successfully
       ansible.builtin.set_stats:
         data:
-          Science_Logic_message: "Science Logic maintenance enabled on the server "{{ VM_servername }}" . Alerts for this server will be suppressed for "{{ minutes_duration }}" minutes as per the request"
+          Science_Logic_message: "Science Logic maintenance enabled on the server '{{ VM_servername }}'. Alerts for this server will be suppressed for {{ minutes_duration }} minutes as per the request"
       when: ansible_failed_result is not defined
