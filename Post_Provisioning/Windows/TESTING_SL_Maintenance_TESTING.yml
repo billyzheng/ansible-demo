@@ -13,7 +13,7 @@
             - name: Convert seconds difference to minutes
               set_fact:
                 minutes_duration: "{{ (seconds_diff | float / 60) | int }}"
-          when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date"
+          when: variables.select_date_and_time is defined and variables.select_date_and_time == "Future Date
 
         - name: Calculate SL maintenance duration for Reboot
           block:
