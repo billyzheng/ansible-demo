@@ -49,7 +49,7 @@
         - name: Set SL minutes duration to 30 when reboot, CPU, and MEM task performed immediately
           set_fact:
             minutes_duration: 30
-          when: (variables.please_select_server_reboot_time | default('') == "Immediately") or (variables.select_date_and_time | default('') == "Immediately")
+          when: (variables.please_select_server_reboot_time | default('') == "Immediatelly") or (variables.select_date_and_time | default('') == "Immediately")
 
         - name: Get current time in UTC for calculating downtime start
           ansible.builtin.set_fact:
