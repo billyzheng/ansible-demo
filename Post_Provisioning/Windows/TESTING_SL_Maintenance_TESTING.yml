@@ -188,25 +188,25 @@
             password: "{{ SL1_PASSWORD }}"
           register: server_scheduled
 
-    rescue:
-      - name: Handle errors and print message
-        ansible.builtin.debug:
-          msg: "An error occurred: {{ ansible_failed_result.msg }}"
-        when: ansible_failed_result is defined
+      rescue:
+        - name: Handle errors and print message
+          ansible.builtin.debug:
+            msg: "An error occurred: {{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
 
-      - name: Set failure message to be used in next workflow
-        ansible.builtin.set_fact:
-          failure_message: "{{ ansible_failed_result.msg }}"
+        - name: Set failure message to be used in next workflow
+          ansible.builtin.set_fact:
+            failure_message: "{{ ansible_failed_result.msg }}"
 
-      - name: Forward failure message
-        ansible.builtin.set_stats:
-          data:
-            failure_message: "{{ failure_message }}"
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              failure_message: "{{ failure_message }}"
 
-      - name: Fail the playbook if there is an error
-        ansible.builtin.fail:
-          msg: "Playbook failed during execution. Error message: {{ failure_message }}"
-        when: failure_message is defined
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ failure_message }}"
+          when: failure_message is defined
 
     - name: Success message when playbook runs successfully
       ansible.builtin.set_stats:
