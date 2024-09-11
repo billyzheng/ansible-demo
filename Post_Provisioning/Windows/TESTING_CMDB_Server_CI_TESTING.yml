@@ -3,6 +3,10 @@
   gather_facts: false
   tasks:
     - block:
+        - name: Debug Variables in Block
+          ansible.builtin.debug:
+             msg: "SN_CLIENT_SECRET is {{ SN_CLIENT_SECRET }}"
+            
         - name: Grab token using OAuth
           ansible.builtin.uri:
             url: "{{ SN_HOST }}/oauth_token.do"
@@ -55,6 +59,10 @@
           when: catalog_item == 'Memory'
 
       rescue:
+        - name: Debug Variables in Block
+          ansible.builtin.debug:
+             msg: "SN_CLIENT_SECRET is {{ SN_CLIENT_SECRET }}"
+             
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
             cmdb_failed_message: "{{ ansible_failed_result.msg }}"
