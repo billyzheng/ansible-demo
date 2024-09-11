@@ -19,7 +19,7 @@
 
         - name: Ansible CMDB modification for CPU
           ansible.builtin.uri:
-            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
+            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansibl
             method: POST
             headers:
               Content-Type: application/json
