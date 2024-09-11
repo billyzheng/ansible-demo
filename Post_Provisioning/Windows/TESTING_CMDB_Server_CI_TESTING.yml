@@ -1,21 +1,22 @@
+---
 - hosts: localhost
   gather_facts: false
   tasks:
-    - name: Grab token using OAuth
-      ansible.builtin.uri:
-        url: "{{ SN_HOST }}/oauth_token.do"
-        method: POST
-        body_format: form-urlencoded
-        return_content: true
-        body:
-          grant_type: password
-          client_id: "{{ SN_CLIENT_ID }}"
-          client_secret: "{{ SN_CLIENT_SECRET }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-      register: oauth_return_token
-
     - block:
+        - name: Grab token using OAuth
+          ansible.builtin.uri:
+            url: "{{ SN_HOST }}/oauth_token.do"
+            method: POST
+            body_format: form-urlencoded
+            return_content: true
+            body:
+              grant_type: password
+              client_id: "{{ SN_CLIENT_ID }}"
+              client_secret: "{{ SN_CLIENT_SECERT }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+          register: oauth_return_token
+
         - name: Ansible CMDB modification for CPU
           ansible.builtin.uri:
             url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
