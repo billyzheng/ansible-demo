@@ -28,4 +28,4 @@
         body: 
           assigned_to: int_ansible
           state: WORK_IN_PROGRESS
-          work_notes: "{{ Science_Logic_message }}"
+          work_notes: "{{ SL_Success_message }}"
