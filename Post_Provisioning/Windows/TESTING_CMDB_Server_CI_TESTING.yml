@@ -33,7 +33,7 @@
                     name: "{{ VM_servername }}"
                     cpu_core_count: "{{ CPU_Core_after }}"
                     cpu_count: '1'
-                    u_work_notes: "{{ CPU_Core_after }} updated based on {{ sn_task_number }}"
+                    u_work_notes: "{{ CPU_Core_after }} CPU's updated based on {{ sn_task_number }}"
           when: catalog_item == 'CPU'
 
         - name: Ansible CMDB modification for Memory
@@ -51,7 +51,7 @@
                   values:
                     name: "{{ VM_servername }}"
                     ram: "{{ Mem_size_after_MB }}"
-                    u_work_notes: "{{ Mem_size_after_MB }} updated based on {{ sn_task_number }}"
+                    u_work_notes: "{{ Mem_size_after_MB }} Megabite Memory updated based on {{ sn_task_number }}"
           when: catalog_item == 'Memory'
 
       rescue:
