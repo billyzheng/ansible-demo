@@ -11,7 +11,7 @@
             return_content: true
             body:
               grant_type: password
-              client_id: "{{ SN_CLIENT_ID }}"
+              client_id: "{{ SN_CLIENT_I }}"
               client_secret: "{{ SN_CLIENT_SECERT }}"
               username: "{{ SN_USERNAME }}"
               password: "{{ SN_PASSWORD }}"
@@ -19,7 +19,7 @@
 
         - name: Ansible CMDB modification for CPU
           ansible.builtin.uri:
-            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansibl
+            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
             method: POST
             headers:
               Content-Type: application/json
