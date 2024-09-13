@@ -1,0 +1,121 @@
+---
+- name: Get data from CSV file
+  hosts: 127.0.0.1
+  vars:
+    my_list: []
+
+      
+  tasks:
+    - name: data re-format for network zone
+      debug: msg={{ variables.network_zone | split(' ') | first }}
+      register: NW_zone
+
+    - name: data re-format for datacenter 
+      debug: msg={{ variables.Datacenter_Location.split(' ')[2]}}
+      register: DC_location
+
+    - name: data re-format for application type 
+      debug: msg={{ variables.application_type | split(' ') | first }}
+      register: APP_type
+
+    - name: data re-format for OS version
+      debug: msg={{ variables.os_version.split(' ')[2] }}
+      register: OS_version
+
+    - name: set Small VM cpu mem
+      set_stats:
+        data:
+          Vmware_VM_CPU: "1"
+          Vmware_VM_mem: "4096"
+      when: variables.vm_size == "Small"
+
+    - name: set Medium VM cpu mem
+      set_stats:
+        data:
+          Vmware_VM_CPU: "2"
+          Vmware_VM_mem: "8192"
+      when: variables.vm_size == "Medium"
+
+    - name: set Large VM cpu mem
+      set_stats:
+        data:
+          Vmware_VM_CPU: "4"
+          Vmware_VM_mem: "16384"
+      when: variables.vm_size == "Large"
+
+    - name: set XLarge VM cpu mem
+      set_stats:
+        data:
+          Vmware_VM_CPU: "6"
+          Vmware_VM_mem: "32768"
+      when: variables.vm_size == "XLarge"
+
+    - name: set XXLarge VM cpu mem
+      set_stats:
+        data:
+          Vmware_VM_CPU: "8"
+          Vmware_VM_mem: "65536"
+      when: variables.vm_size == "XXLarge"
+
+    - name: Read users from CSV file and return a dictionary
+      community.general.read_csv:
+        path: 'VMware-mapping.csv'
+        key: ID
+      register: subnets
+
+    - name: Loop over subnets
+      set_fact:
+        my_list: "{{ my_list + [item] }}"
+      when: 
+        - DC_location.msg in item.Datacenter_location_input 
+        - NW_zone.msg in item.Network_zone_Input 
+        - variables.Environment in item.Environment_input
+        - APP_type.msg in item.application_input 
+      with_items: "{{ subnets.dict.values() }}"
+
+    - name: print first
+      debug:
+        var:  my_list[0]
+    
+     
+    - name: Gather vCenter datastores
+      community.vmware.vmware_datastore_info:
+      register: datastores
+  
+    - name: List the datastores
+      debug:
+        var: datastores
+  
+    - name: Filter datastores by name
+      set_fact:
+        filtered_datastores: "{{ datastores.datastores | selectattr('name', 'contains',  my_list[0].Vmware_datastore_keyword ) }}"
+  
+    - name: Sort datastores by free space and choose the one with more free space
+      set_fact:
+        vm_datastore: "{{ filtered_datastores | sort(attribute='freeSpace', reverse=true) | map(attribute='name') | first }}"
+      register: selected_datastores
+
+    - name: print selected_datastores
+      debug:
+        var: selected_datastores.ansible_facts.vm_datastore
+
+
+    - name: Set var to pass down to next Job template
+      set_stats:
+        data:
+          Vmware_datacenter: "{{ my_list[0].Vmware_datacenter }}"
+          Vmware_cluster: "{{ my_list[0].Vmware_cluster }}"  
+          Vmware_datastore: "{{ selected_datastores.ansible_facts.vm_datastore }}"  
+          Vmware_networks: "{{ my_list[0].Vmware_networks }}"
+          Vmware_Subnet_address: "{{ my_list[0].Subnet_address }}"
+          Vmware_Subnet_gateway: "{{ my_list[0].Subnet_gateway }}"
+          Vmware_Subnet_netmask: "{{ my_list[0].Subnet_netmask}}"
+          Vmware_DNS1: "{{ my_list[0].DNS1 }}"
+          Vmware_DNS2: "{{ my_list[0].DNS2 }}"                    
+          Vmware_DNS3: "{{ my_list[0].DNS3 }}"                    
+          Vmware_DNS_Suffix: "{{ my_list[0].DNS_Suffix }}"                    
+          Vmware_test_DNS_suffix: "{{ my_list[0].test_DNS_suffix}}"                    
+          VMware_VM_name: "xf-s-aapwin06t"
+          VMware_VM_disk_size: "120"
+          VMware_VM_folder: "POC-Ansible-automation-platform"
+          VMware_VM_template: "WIN2019-GOLD"
