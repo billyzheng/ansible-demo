@@ -27,7 +27,7 @@
           ip: "{{ VMware_VM_IP_address }}"
           netmask: "{{ Vmware_Subnet_netmask }}"
           gateway: "{{ Vmware_Subnet_gateway }}"
-          domain: "{{ Vmware_test_DNS_suffix }}"
+          domain: "{{ Vmware_DNS_Suffix }}"
           dns_servers:
           - "{{ Vmware_DNS1 }}"
           - "{{ Vmware_DNS2 }}"
