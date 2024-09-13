@@ -3,7 +3,6 @@
   hosts: 127.0.0.1
   vars:
     my_list: []
-
       
   tasks:
     - name: data re-format for network zone
@@ -22,40 +21,17 @@
       debug: msg={{ variables.os_version.split(' ')[2] }}
       register: OS_version
 
-    - name: set Small VM cpu mem
-      set_stats:
-        data:
-          Vmware_VM_CPU: "1"
-          Vmware_VM_mem: "4096"
-      when: variables.vm_size == "Small"
+    - name: Set memory variable
+      ansible.builtin.set_fact:
+        requested_memory_size: "{{ variables.virtual_machine_memory_gb | regex_replace(' GB', '') | int }}"
 
-    - name: set Medium VM cpu mem
-      set_stats:
-        data:
-          Vmware_VM_CPU: "2"
-          Vmware_VM_mem: "8192"
-      when: variables.vm_size == "Medium"
+    - name: Convert GB to MB
+      ansible.builtin.set_fact:
+        Vmware_VM_mem: "{{ (requested_memory_size | int) * 1024 }}"
 
-    - name: set Large VM cpu mem
-      set_stats:
-        data:
-          Vmware_VM_CPU: "4"
-          Vmware_VM_mem: "16384"
-      when: variables.vm_size == "Large"
-
-    - name: set XLarge VM cpu mem
-      set_stats:
-        data:
-          Vmware_VM_CPU: "6"
-          Vmware_VM_mem: "32768"
-      when: variables.vm_size == "XLarge"
-
-    - name: set XXLarge VM cpu mem
-      set_stats:
-        data:
-          Vmware_VM_CPU: "8"
-          Vmware_VM_mem: "65536"
-      when: variables.vm_size == "XXLarge"
+    - name: Set Pre CPU core variable
+      ansible.builtin.set_fact:
+        Vmware_VM_CPU: "{{ variables.virtual_machine_vcpu_core | regex_replace(' vCPU', '') | int }}"
 
     - name: Read users from CSV file and return a dictionary
       community.general.read_csv:
@@ -75,8 +51,7 @@
 
     - name: print first
       debug:
-        var:  my_list[0]
-    
+        var:  my_list[0] 
      
     - name: Gather vCenter datastores
       community.vmware.vmware_datastore_info:
@@ -99,7 +74,6 @@
       debug:
         var: selected_datastores.ansible_facts.vm_datastore
 
-
     - name: Set var to pass down to next Job template
       set_stats:
         data:
@@ -115,7 +89,7 @@
           Vmware_DNS3: "{{ my_list[0].DNS3 }}"                    
           Vmware_DNS_Suffix: "{{ my_list[0].DNS_Suffix }}"                    
           Vmware_test_DNS_suffix: "{{ my_list[0].test_DNS_suffix}}"                    
-          VMware_VM_name: "xf-s-aapwin06t"
+          VMware_VM_name: "{{ variables.hostname_acronym }}"
           VMware_VM_disk_size: "120"
           VMware_VM_folder: "POC-Ansible-automation-platform"
           VMware_VM_template: "WIN2019-GOLD"
