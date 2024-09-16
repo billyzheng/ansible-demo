@@ -1,0 +1,39 @@
+---
+- name: Create new host in controller
+  hosts: localhost
+  tasks:
+    - block:
+        - name: Add host
+          ansible.controller.host:
+            name: "{{ VMware_VM_IP_address }}"
+            inventory: "Windows_group_CoreIS"
+            enabled: yes
+            state: present
+          register: add_host_result
+
+        - name: Add group
+          ansible.controller.group:
+            name: windows_group
+            inventory: Windows_group_CoreIS
+            hosts:
+              - "{{ VMware_VM_IP_address }}"
+            preserve_existing_hosts: True
+            preserve_existing_children: True
+          register: add_group_result
+
+      rescue:
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+            error_message: "{{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
