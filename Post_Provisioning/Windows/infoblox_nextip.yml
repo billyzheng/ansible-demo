@@ -10,25 +10,41 @@
         password: "{{ INFOBLOX_PASSWORD }}"
 
   tasks:
-  - name: set fact for the exclude ip class
-    set_fact:
-      ip_class: "{{Vmware_Subnet_address[:-4]}}"
+    - block:
+        - name: Set fact for the exclude IP class
+          set_fact:
+            ip_class: "{{ Vmware_Subnet_address[:-4] }}"
 
-  - name: setfact the exclude as variable
-    set_fact:
-      ex_var: "['{{ip_class}}1', '{{ip_class}}2', '{{ip_class}}3', '{{ip_class}}4', '{{ip_class}}5', '{{ip_class}}6', '{{ip_class}}7', '{{ip_class}}8', '{{ip_class}}9', '{{ip_class}}10','{{ip_class}}11', '{{ip_class}}12', '{{ip_class}}13', '{{ip_class}}14', '{{ip_class}}15', '{{ip_class}}16', '{{ip_class}}17', '{{ip_class}}18', '{{ip_class}}19', '{{ip_class}}20','{{ip_class}}21', '{{ip_class}}22', '{{ip_class}}23', '{{ip_class}}24', '{{ip_class}}25', '{{ip_class}}26', '{{ip_class}}27', '{{ip_class}}28', '{{ip_class}}29', '{{ip_class}}30','{{ip_class}}31', '{{ip_class}}32', '{{ip_class}}33', '{{ip_class}}34', '{{ip_class}}35', '{{ip_class}}36', '{{ip_class}}37', '{{ip_class}}38', '{{ip_class}}39', '{{ip_class}}40','{{ip_class}}41', '{{ip_class}}42', '{{ip_class}}43', '{{ip_class}}44', '{{ip_class}}45', '{{ip_class}}46', '{{ip_class}}47', '{{ip_class}}48', '{{ip_class}}49', '{{ip_class}}50','{{ip_class}}51', '{{ip_class}}52', '{{ip_class}}53', '{{ip_class}}54', '{{ip_class}}55', '{{ip_class}}56', '{{ip_class}}57', '{{ip_class}}58', '{{ip_class}}59', '{{ip_class}}60','{{ip_class}}61', '{{ip_class}}62', '{{ip_class}}63', '{{ip_class}}64', '{{ip_class}}65', '{{ip_class}}66', '{{ip_class}}67', '{{ip_class}}68', '{{ip_class}}69', '{{ip_class}}70','{{ip_class}}71', '{{ip_class}}72', '{{ip_class}}73', '{{ip_class}}74', '{{ip_class}}75', '{{ip_class}}76', '{{ip_class}}77', '{{ip_class}}78', '{{ip_class}}79', '{{ip_class}}80','{{ip_class}}81', '{{ip_class}}82', '{{ip_class}}83', '{{ip_class}}84', '{{ip_class}}85', '{{ip_class}}86', '{{ip_class}}87', '{{ip_class}}88', '{{ip_class}}89', '{{ip_class}}90','{{ip_class}}91', '{{ip_class}}92', '{{ip_class}}93', '{{ip_class}}94', '{{ip_class}}95', '{{ip_class}}96', '{{ip_class}}97', '{{ip_class}}98', '{{ip_class}}99', '{{ip_class}}100','{{ip_class}}101', '{{ip_class}}102', '{{ip_class}}103', '{{ip_class}}104']"
-  
-  - name: Get next available IP from the given subnet
-    set_fact:
-#      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
-#      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=['10.17.122.1']) }}"
-      next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=ex_var ) }}"
+        - name: Set fact for the exclude variable
+          set_fact:
+            ex_var: "['{{ ip_class }}1', '{{ ip_class }}2', '{{ ip_class }}3', '{{ ip_class }}4', '{{ ip_class }}5', '{{ ip_class }}6', '{{ ip_class }}7', '{{ ip_class }}8', '{{ ip_class }}9', '{{ ip_class }}10','{{ ip_class }}11', '{{ ip_class }}12', '{{ ip_class }}13', '{{ ip_class }}14', '{{ ip_class }}15', '{{ ip_class }}16', '{{ ip_class }}17', '{{ ip_class }}18', '{{ ip_class }}19', '{{ ip_class }}20','{{ ip_class }}21', '{{ ip_class }}22', '{{ ip_class }}23', '{{ ip_class }}24', '{{ ip_class }}25', '{{ ip_class }}26', '{{ ip_class }}27', '{{ ip_class }}28', '{{ ip_class }}29', '{{ ip_class }}30','{{ ip_class }}31', '{{ ip_class }}32', '{{ ip_class }}33', '{{ ip_class }}34', '{{ ip_class }}35', '{{ ip_class }}36', '{{ ip_class }}37', '{{ ip_class }}38', '{{ ip_class }}39', '{{ ip_class }}40','{{ ip_class }}41', '{{ ip_class }}42', '{{ ip_class }}43', '{{ ip_class }}44', '{{ ip_class }}45', '{{ ip_class }}46', '{{ ip_class }}47', '{{ ip_class }}48', '{{ ip_class }}49', '{{ ip_class }}50','{{ ip_class }}51', '{{ ip_class }}52', '{{ ip_class }}53', '{{ ip_class }}54', '{{ ip_class }}55', '{{ ip_class }}56', '{{ ip_class }}57', '{{ ip_class }}58', '{{ ip_class }}59', '{{ ip_class }}60','{{ ip_class }}61', '{{ ip_class }}62', '{{ ip_class }}63', '{{ ip_class }}64', '{{ ip_class }}65', '{{ ip_class }}66', '{{ ip_class }}67', '{{ ip_class }}68', '{{ ip_class }}69', '{{ ip_class }}70','{{ ip_class }}71', '{{ ip_class }}72', '{{ ip_class }}73', '{{ ip_class }}74', '{{ ip_class }}75', '{{ ip_class }}76', '{{ ip_class }}77', '{{ ip_class }}78', '{{ ip_class }}79', '{{ ip_class }}80','{{ ip_class }}81', '{{ ip_class }}82', '{{ ip_class }}83', '{{ ip_class }}84', '{{ ip_class }}85', '{{ ip_class }}86', '{{ ip_class }}87', '{{ ip_class }}88', '{{ ip_class }}89', '{{ ip_class }}90','{{ ip_class }}91', '{{ ip_class }}92', '{{ ip_class }}93', '{{ ip_class }}94', '{{ ip_class }}95', '{{ ip_class }}96', '{{ ip_class }}97', '{{ ip_class }}98', '{{ ip_class }}99', '{{ ip_class }}100','{{ ip_class }}101', '{{ ip_class }}102', '{{ ip_class }}103', '{{ ip_class }}104']"
 
-  - name: Extract IP address from the list
-    set_fact:
-      next_ip: "{{ next_ip[0] }}" 
+        - name: Get next available IP from the given subnet
+          set_fact:
+            next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=ex_var ) }}"
 
-  - set_stats:
-      data:
-        VMware_VM_IP_address: "{{ next_ip }}"  
+        - name: Extract IP address from the list
+          set_fact:
+            next_ip: "{{ next_ip[0] }}"
 
+        - name: Set stats
+          set_stats:
+            data:
+              VMware_VM_IP_address: "{{ next_ip }}"
+
+      rescue:
+        - name: Set failure message to be used in next workflow
+          ansible.builtin.set_fact:
+            error_message: "{{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
