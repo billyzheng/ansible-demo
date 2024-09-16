@@ -1,5 +1,5 @@
 ---
-- name: windows post provisioning  
+- name: Windows post provisioning  
   hosts: "{{ VMware_VM_IP_address }}"
   gather_facts: no
   collections:
@@ -7,40 +7,56 @@
     - community.vmware
     - community.windows
   tasks:
+    - block:
+        - name: Validate and set the system timezone
+          import_role:
+            name: timezone
 
-  - name: Validate and set the system timezone
-    import_role:
-      name: timezone
+        - name: KMS OS registration
+          import_role:
+            name: kms_registration
 
-  - name: KMS OS registration
-    import_role:
-      name: kms_registration
+        - name: Enable the RDP
+          import_role:
+            name: enable_rdp
+        
+        - name: Disable the firewall rules
+          import_role:
+            name: disable_firewall
 
-  - name: Enable the RDP
-    import_role:
-      name: enable_rdp
-    
-  - name: Disable the firewall rules
-    import_role:
-      name: disable_firewall
+        - name: Disk Management
+          import_role:
+            name: disk_management
 
-  - name: Disk Management
-    import_role:
-      name: disk_management
+        - name: FlexNet Installation
+          import_role:
+            name: flexnet_installation   
 
-  - name: FlexNet Installation
-    import_role:
-      name: flexnet_installation   
+        - name: Onboarding the Defender
+          import_role:
+            name: defender_onboarding
 
-  - name: Onboarding the Defender
-    import_role:
-      name: defender_onboarding
+        - name: Adding the DNS Suffix
+          import_role:
+            name: dns_suffix_add
 
-  - name: Adding the DNS Suffix
-    import_role:
-      name: dns_suffix_add
+        - name: Qualys Installation
+          import_role:
+            name: qualys_installation
 
-  - name: Qualys Installation
-    import_role:
-      name: qualys_installation
+      rescue:
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+            error_message: "{{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
 
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
