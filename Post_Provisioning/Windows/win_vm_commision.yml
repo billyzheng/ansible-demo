@@ -23,7 +23,7 @@
             type: thin
             datastore: "{{ Vmware_datastore }}"
         networks:
-        - name: "{{ Vmware_networks }}"
+        - name: "{{ Vmware_networks1 }}"
           ip: "{{ VMware_VM_IP_address }}"
           netmask: "{{ Vmware_Subnet_netmask }}"
           gateway: "{{ Vmware_Subnet_gateway }}"
