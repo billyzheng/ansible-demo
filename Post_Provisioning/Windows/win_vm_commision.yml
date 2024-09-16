@@ -36,9 +36,9 @@
               memory_mb: "{{ Vmware_VM_mem }}"
             customization:
               password: "{{ template_password }}"
-            runonce:
-              - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
-              - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+              runonce:
+               - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+               - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
             wait_for_customization: yes
             wait_for_ip_address: True
             state: present
