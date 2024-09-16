@@ -1,0 +1,21 @@
+- hosts: "{{ VMware_VM_IP_address }}"
+  gather_facts: false
+  tasks:
+  - name: Join the domain
+    microsoft.ad.membership:
+      dns_domain_name: dveurope.dvabb.dev
+      domain_admin_user: "{{ AD_USERNAME }}"
+      domain_admin_password: "{{ AD_PASSWORD }}"
+      hostname: "{{ VMware_VM_name }}"
+      domain_ou_path: "OU=ANSI-AUTO,OU=Servers,OU=XE,DC=dveurope,DC=dvabb,DC=dev" 
+      state: domain
+    register: domain_state
+    failed_when: "'error' in domain_state.msg.lower()"
+
+  - name: Show domain state output
+    debug: 
+      msg: "{{ domain_state }}"
+
+  - name: Reboot if required
+    ansible.windows.win_reboot:
+    when: domain_state.reboot_required
