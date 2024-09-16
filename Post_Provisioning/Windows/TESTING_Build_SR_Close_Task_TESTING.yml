@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Grab token using OAuth
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/oauth_token.do"
+        method: POST
+        body_format: form-urlencoded
+        return_content: true
+        body:
+          grant_type : password
+          client_id : "{{ SN_CLIENT_ID }}"
+          client_secret : "{{ SN_CLIENT_SECERT }}"
+          username : "{{ SN_USERNAME }}"
+          password : "{{ SN_PASSWORD }}"
+      register: oauth_return_token
+
+    - name: Ansible close the task if sucess
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+        method: PUT
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: CLOSED_COMPLETE
+          work_notes: "Closing the task"
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1.Server {{ VMware_VM_name }} built Successfully.\n2.Server {{ VMware_VM_name }} is added to domain.\n3.Server {{ VMware_VM_name }} post provisioning completed successfully." 
+      register: SR_task_close  
