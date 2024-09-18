@@ -27,6 +27,6 @@
         body_format: json
         body: 
           state: CLOSED_IN_COMPLETE
-          work_notes: "Automation Summary:\n {{ error_message }}.\nPlease deploy the change manually"
+          work_notes: "Automation Summary:\n\n {{ error_message }}.\nPlease deploy the change manually"
           closure_notes: "Automation job is incomplete"
       register: SR_task_close_incomplete
