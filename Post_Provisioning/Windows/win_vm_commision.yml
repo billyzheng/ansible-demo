@@ -12,7 +12,7 @@
         - name: Create VM from template
           vmware_guest:
             validate_certs: False
-            datacenter: "{{ Vmware_datacenter }}"
+            datacenter: "{{ Vmware_datacenter1 }}"
             cluster: "{{ Vmware_cluster }}"
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
