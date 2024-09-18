@@ -44,6 +44,10 @@
           import_role:
             name: qualys_installation
 
+        - name: Splunk Installation
+          import_role:
+            name: splunk_agent
+
       rescue:
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
