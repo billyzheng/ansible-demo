@@ -12,7 +12,7 @@
         - name: Create VM from template
           vmware_guest:
             validate_certs: False
-            datacenter: "{{ Vmware_datacenter1 }}"
+            datacenter: "{{ Vmware_datacenter }}"
             cluster: "{{ Vmware_cluster }}"
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
@@ -47,7 +47,6 @@
       rescue:
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
-     #       error_message: "{{ ansible_failed_result.msg }}"
              error_message: "Infoblox alloted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}. But failure happend during VM built with the error: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
