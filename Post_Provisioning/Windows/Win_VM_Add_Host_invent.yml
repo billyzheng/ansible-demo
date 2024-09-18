@@ -25,6 +25,7 @@
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
             error_message: "{{ ansible_failed_result.msg }}"
+            error_message: "Infoblox alloted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}. Server {{ VMware_VM_name }} built successfully. But failure happend during adding server into ansible inventory. Error detail: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
