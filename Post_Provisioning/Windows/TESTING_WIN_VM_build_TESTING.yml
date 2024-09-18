@@ -27,6 +27,14 @@
           ]
 
   tasks:
+    - name: Debug VMware_VM_CPU
+      debug:
+        var: VMware_VM_CPU
+
+    - name: Debug VMware_VM_mem
+      debug:
+        var: VMware_VM_mem
+  
     - block:
         - name: Create VM from template
           vmware_guest:
