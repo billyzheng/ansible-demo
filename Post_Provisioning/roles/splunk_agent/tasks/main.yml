@@ -31,5 +31,5 @@
 
 - name: Log service status
   debug:
-    msg: "Splunk service status: {{ 'running' if splunk_service_status.started else 'not running' }}"
+    msg: "Splunk service status: {{ 'running' if splunk_service_status.state == 'running' else 'not running' }}"
   when: splunk_service_status is defined
