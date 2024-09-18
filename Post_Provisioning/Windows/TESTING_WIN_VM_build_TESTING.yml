@@ -31,14 +31,12 @@
         - name: Create VM from template
           vmware_guest:
             validate_certs: False
-            username: "{{ vmware_username }}"
-            password: "{{ vmware_password }}"
             datacenter: "{{ Vmware_datacenter }}"
             cluster: "{{ Vmware_cluster }}"
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
-            disk: "{{ disks }}"  # Pass the dynamically constructed disks
+            disk: "{{ disks }}"  
             networks:
             - name: "{{ Vmware_networks }}"
               ip: "{{ VMware_VM_IP_address }}"
