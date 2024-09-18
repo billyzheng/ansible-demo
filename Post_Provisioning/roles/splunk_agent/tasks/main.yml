@@ -1,0 +1,40 @@
+---
+- name: Install Splunk Universal Forwarder on Windows
+  hosts: windows_servers
+  gather_facts: no
+
+  tasks:
+  - name: Install Splunk agent
+    win_package:
+      path: "{{ splunk_binary_file_path }}"
+      state: present
+      arguments: >-
+        AGREETOLICENSE=Yes
+        SERVICESTARTTYPE=auto
+        SPLUNKPASSWORD="{{ splunk_password }}"
+    register: splunk_install
+
+  - name: Log installation result
+    debug:
+      msg: "Splunk agent installation {{ 'completed' if splunk_install.changed else 'skipped' }}"
+
+  - name: Check if Splunk installation was successful
+    win_shell: "Get-Item -Path 'C:\\Program Files\\SplunkUniversalForwarder'"
+    register: install_result
+    ignore_errors: yes
+
+  - name: Log installation status
+    debug:
+      msg: "Splunk installation status: {{ 'installed' if install_result.rc == 0 else 'failed' }}"
+
+  - name: Check Splunk service status
+    win_service:
+      name: SplunkForwarder
+      state: started
+    register: splunk_service_status
+    ignore_errors: yes
+
+  - name: Log service status
+    debug:
+      msg: "Splunk service status: {{ 'running' if splunk_service_status.started else 'not running' }}"
+    when: splunk_service_status is defined
