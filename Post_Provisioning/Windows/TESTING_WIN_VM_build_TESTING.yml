@@ -56,8 +56,8 @@
               - "{{ Vmware_DNS2 }}"
               - "{{ Vmware_DNS3 }}"
             hardware:
-              num_cpus: "{{ VMware_VM_CPU }}"
-              memory_mb: "{{ VMware_VM_mem }}"
+              num_cpus: '2'
+              memory_mb: '4096'
             customization:
               password: "{{ template_password }}"
               runonce:
