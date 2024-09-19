@@ -24,7 +24,7 @@
               - size_gb: "{{ item.disk_size_gb }}"
                 type: thin
                 datastore: "{{ Vmware_datastore }}"
-            with_items: "{{ mrvs_variables }}
+            with_items: "{{ mrvs_variables }}"
             networks:
             - name: "{{ Vmware_networks }}"
               ip: "{{ VMware_VM_IP_address }}"
