@@ -12,6 +12,19 @@
           set_fact:
             disk_sizes: "{{ mrvs_variables | map(attribute='disk_size_gb') | list }}"
             additional_disks: "{{ disk_sizes | zip_longest([], fillvalue={}) | map('combine', {'unit_number': range(1, len(disk_sizes) + 1)}) | list }}"
+            
+        - name: Pre-calculate complete disk list
+          set_fact:
+            disk_list: 
+              - size_gb: "{{ VMware_VM_disk_size }}"
+                type: thin
+                datastore: "{{ Vmware_datastore }}"
+              {% for item in additional_disks %}
+              - size_gb: "{{ item.disk_size_gb }}"
+                type: thin
+                datastore: "{{ Vmware_datastore }}"
+                unit_number: "{{ item.unit_number }}"
+              {% endfor %}
 
         - name: Create VM from template
           community.vmware.vmware_guest:
@@ -21,13 +34,7 @@
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
-            disk: 
-              {% set disks = [] %}
-              {% do disks.append({'size_gb': VMware_VM_disk_size, 'type': 'thin', 'datastore': Vmware_datastore}) %}
-              {% for item in additional_disks %}
-              {% do disks.append({'size_gb': item.disk_size_gb, 'type': 'thin', 'datastore': Vmware_datastore, 'unit_number': item.unit_number}) %}
-              {% endfor %}
-              {{ disks }}
+            disk: "{{ disk_list }}"
             networks:
               - name: "{{ Vmware_networks }}"
                 ip: "{{ VMware_VM_IP_address }}"
