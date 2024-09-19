@@ -13,8 +13,8 @@
         
     - name: Pre-calculate unit numbers for additional disks
       set_fact:
-        additional_disks: "{{ disk_sizes | zip(range(1, disk_sizes | length + 1)) | map('combine', {'unit_number': item[1], 'disk_size_gb': item[0]}) | list }}"
-
+        additional_disks: "{{ disk_sizes | zip(range(1, disk_sizes | length + 1)) | map(lambda x: {'disk_size_gb': x[0], 'unit_number': x[1]}) | list }}"
+    
     - name: Pre-calculate complete disk list
       set_fact:
         disk_list: 
