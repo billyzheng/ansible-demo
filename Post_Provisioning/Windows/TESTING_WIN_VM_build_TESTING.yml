@@ -13,7 +13,14 @@
         
     - name: Pre-calculate unit numbers for additional disks
       set_fact:
-        additional_disks: "{{ disk_sizes | zip(range(1, disk_sizes | length + 1)) | map(lambda x: {'disk_size_gb': x[0], 'unit_number': x[1]}) | list }}"
+        additional_disks: []
+
+    - name: Add unit numbers to additional disks
+      set_fact:
+        additional_disks: "{{ additional_disks + [{'disk_size_gb': item.disk_size_gb, 'unit_number': loop.index + 1}] }}"
+      loop: "{{ mrvs_variables }}"
+      loop_control:
+        label: "{{ item.disk_label }}"
     
     - name: Pre-calculate complete disk list
       set_fact:
