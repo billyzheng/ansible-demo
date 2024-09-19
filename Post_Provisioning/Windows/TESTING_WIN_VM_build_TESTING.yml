@@ -18,10 +18,12 @@
             disk_list: 
               [
                 {"size_gb": "{{ VMware_VM_disk_size }}", "type": "thin", "datastore": "{{ Vmware_datastore }}"},
-                {% for item in additional_disks %}
-                {"size_gb": "{{ item.disk_size_gb }}", "type": "thin", "datastore": "{{ Vmware_datastore }}", "unit_number": "{{ item.unit_number }}"},
-                {% endfor %}
               ]
+              {% for item in additional_disks %}
+              + [
+                {"size_gb": "{{ item.disk_size_gb }}", "type": "thin", "datastore": "{{ Vmware_datastore }}", "unit_number": "{{ item.unit_number }}"},
+              ]
+              {% endfor %}
 
         - name: Create VM from template
           community.vmware.vmware_guest:
