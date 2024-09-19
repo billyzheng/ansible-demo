@@ -21,16 +21,13 @@
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
-            disk:
-              - size_gb: "{{ VMware_VM_disk_size }}"
-                type: thin
-                datastore: "{{ Vmware_datastore }}"
+            disk: 
+              {% set disks = [] %}
+              {% do disks.append({'size_gb': VMware_VM_disk_size, 'type': 'thin', 'datastore': Vmware_datastore}) %}
               {% for item in additional_disks %}
-              - size_gb: "{{ item.disk_size_gb }}"
-                type: thin
-                datastore: "{{ Vmware_datastore }}"
-                unit_number: "{{ item.unit_number }}"
+              {% do disks.append({'size_gb': item.disk_size_gb, 'type': 'thin', 'datastore': Vmware_datastore, 'unit_number': item.unit_number}) %}
               {% endfor %}
+              {{ disks }}
             networks:
               - name: "{{ Vmware_networks }}"
                 ip: "{{ VMware_VM_IP_address }}"
