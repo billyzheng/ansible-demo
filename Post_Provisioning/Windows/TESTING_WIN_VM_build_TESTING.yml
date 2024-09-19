@@ -3,7 +3,7 @@
   gather_facts: false
   connection: local
   vars:
-    template_password: password 
+    template_password: P@ssw0rd123456
     notes: Ansible Test
     dumpfacts: False
   tasks:
