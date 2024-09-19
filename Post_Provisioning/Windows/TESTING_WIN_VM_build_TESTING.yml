@@ -7,9 +7,12 @@
     notes: Ansible Test
     dumpfacts: False
   tasks:
-    - name: Pre-calculate unit numbers for additional disks
+    - name: Get unit numbers for additional disks
       set_fact:
         disk_sizes: "{{ mrvs_variables | map(attribute='disk_size_gb') | list }}"
+        
+    - name: Pre-calculate unit numbers for additional disks
+      set_fact:
         additional_disks: "{{ disk_sizes | zip_longest([], fillvalue={}) | map('combine', {'unit_number': range(1, len(disk_sizes) + 1)}) | list }}"
 
     - name: Pre-calculate complete disk list
