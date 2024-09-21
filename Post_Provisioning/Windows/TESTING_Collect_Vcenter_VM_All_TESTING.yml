@@ -1,47 +1,65 @@
 ---
-- name: Get Vcenter and  VM details
+- name: Get Vcenter and VM details
   hosts: localhost
   gather_facts: false
   tasks:
- 
-  - name: Extract datacenter name
-    ansible.builtin.set_fact:
-      Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
 
-  - name: display info
-    ansible.builtin.debug: 
-      msg: "{{ Vcenter_Name }}"
+    - block:
+        - name: Extract datacenter name
+          ansible.builtin.set_fact:
+            Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
 
-  - name: set vminfo variable
-    block:
-      - name: Gather all registered virtual machines with lowercase variables.server
-        community.vmware.vmware_vm_info:
-          hostname: '{{ Vcenter_Name }}'
-          username: '{{ VMWARE_USERNAME }}'
-          password: '{{ VMWARE_PASSWORD }}'
-          vm_name: "{{ variables.server | lower }}"
-          validate_certs: false
-        register: vminfo
- 
-    rescue:
-      - name: Gather all registered virtual machines with uppercase variables.server
-        community.vmware.vmware_vm_info:
-          hostname: '{{ Vcenter_Name }}'
-          username: '{{ VMWARE_USERNAME }}'
-          password: '{{ VMWARE_PASSWORD }}'
-          vm_name: "{{ variables.server | upper }}"
-          validate_certs: false
-        register: vminfo
- 
-  - name: display VM info
-    ansible.builtin.debug: var=vminfo
+        - name: Display info
+          ansible.builtin.debug: 
+            msg: "{{ Vcenter_Name }}"
 
-  - name: Extract VM name
-    ansible.builtin.set_fact:
-      Vm_guest_name: "{{ vminfo.virtual_machines[0].guest_name }}"
-     
-  - name: Pass the artifacts of VM and assocated Vcenter names
-    ansible.builtin.set_stats:
-        data:
-          Vcenter_Name: "{{ Vcenter_Name }}"
-          VM_servername: "{{ Vm_guest_name }}"
+        - name: Set vminfo variable
+          block:
+            - name: Gather all registered virtual machines with lowercase variables.server
+              community.vmware.vmware_vm_info:
+                hostname: '{{ Vcenter_Name }}'
+                username: '{{ VMWARE_USERNAME }}'
+                password: '{{ VMWARE_PASSWORD }}'
+                vm_name: "{{ variables.server | lower }}"
+                validate_certs: false
+              register: vminfo
+
+          rescue:
+            - name: Gather all registered virtual machines with uppercase variables.server
+              community.vmware.vmware_vm_info:
+                hostname: '{{ Vcenter_Name }}'
+                username: '{{ VMWARE_USERNAME }}'
+                password: '{{ VMWARE_PASSWORD }}'
+                vm_name: "{{ variables.server | upper }}"
+                validate_certs: false
+              register: vminfo
+
+        - name: Display VM info
+          ansible.builtin.debug: var=vminfo
+
+        - name: Extract VM name
+          ansible.builtin.set_fact:
+            Vm_guest_name: "{{ vminfo.virtual_machines[0].guest_name }}"
+
+        - name: Pass the artifacts of VM and associated Vcenter names
+          ansible.builtin.set_stats:
+            data:
+              Vcenter_Name: "{{ Vcenter_Name }}"
+              VM_servername: "{{ Vm_guest_name }}"
+
+      rescue: 
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+            error_message: "Unable to find the server in the Vcenter.\nError detail: {{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
