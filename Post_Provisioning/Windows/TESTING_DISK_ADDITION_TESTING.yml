@@ -15,8 +15,20 @@
         validate_certs: no
         datacenter: "{{ Vmware_datacenter }}"
         name: "{{ VMware_VM_name }}"
-        disk: "{{ disks_with_unit_numbers }}"
-      register: additional_disk_results
+        disk: "{{ disks_with_unit_numbers | map(attribute='disk') | list }}"
+      vars:
+        disk: >
+          {
+            'size_gb': '{{ item.disk_size_gb }}',
+            'type': 'thin',
+            'state': 'present',
+            'scsi_controller': 0,
+            'unit_number': '{{ item.unit_number }}'
+          }
+      loop: "{{ disks_with_unit_numbers }}"
+
+    - debug:
+        var: disks_with_unit_numbers
 
     - debug:
         var: additional_disk_results
