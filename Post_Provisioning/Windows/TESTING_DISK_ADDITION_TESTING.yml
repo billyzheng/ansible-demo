@@ -22,8 +22,8 @@
             type: thin
             state: present
             scsi_controller: 0  
-            unit_number: "{{ ansible_loop.index0 }}"
-      loop: "{{ mrvs_variables }}"
+            unit_number: "{{ item.index }}"
+      with_items: "{{ mrvs_variables }}"
       register: additional_disk_results
   
     - debug:
