@@ -9,13 +9,9 @@
       loop_control:
         extended: true
 
-    - name: Add additional disks to the VM
-      community.vmware.vmware_guest_disk:
-        hostname: "{{ Vcenter_Name }}"
-        validate_certs: no
-        datacenter: "{{ Vmware_datacenter }}"
-        name: "{{ VMware_VM_name }}"
-        disk: "{{ disks_with_unit_numbers | map(attribute='disk') | list }}"
+    - name: Transform disks_with_unit_numbers for vmware_guest_disk
+      set_fact:
+        disks_for_vmware: "{{ disks_with_unit_numbers | map(attribute='disk') | default([]) | list }}"
       vars:
         disk: >
           {
@@ -25,10 +21,15 @@
             'scsi_controller': 0,
             'unit_number': '{{ item.unit_number }}'
           }
-      loop: "{{ disks_with_unit_numbers }}"
 
-    - debug:
-        var: disks_with_unit_numbers
+    - name: Add additional disks to the VM
+      community.vmware.vmware_guest_disk:
+        hostname: "{{ Vcenter_Name }}"
+        validate_certs: no
+        datacenter: "{{ Vmware_datacenter }}"
+        name: "{{ VMware_VM_name }}"
+        disk: "{{ disks_for_vmware }}"
+      register: additional_disk_results
 
     - debug:
         var: additional_disk_results
