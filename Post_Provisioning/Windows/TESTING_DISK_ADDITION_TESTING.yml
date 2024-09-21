@@ -14,6 +14,7 @@
     - name: Add additional disks to the VM
       community.vmware.vmware_guest_disk:
         hostname: "{{ Vcenter_Name }}"
+        datacenter: "{{ Vmware_datacenter }}"
         validate_certs: no
         name: "{{ VMware_VM_name }}"
         disk_size_gb: "{{ item.disk_size_gb }}"
