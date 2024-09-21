@@ -21,7 +21,7 @@
           - size_gb: "{{ item.disk_size_gb }}"
             type: thin
             state: present
-        loop: "{{ mrvs_variables }}"
+      loop: "{{ mrvs_variables }}"
       register: additional_disk_results
   
     - debug:
