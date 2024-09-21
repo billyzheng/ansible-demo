@@ -192,6 +192,7 @@
         - name: Set failure message to be used in next workflow
           ansible.builtin.set_fact:
             error_message: "{{ ansible_failed_result.msg }}"
+            error_message: "Change should be deployed manually. Automation failed to enable and schedule Science Logic maintenance.\nError detail: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
