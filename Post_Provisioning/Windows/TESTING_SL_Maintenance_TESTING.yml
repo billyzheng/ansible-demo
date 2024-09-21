@@ -191,18 +191,18 @@
       rescue:
         - name: Set failure message to be used in next workflow
           ansible.builtin.set_fact:
-            SL_error_message: "{{ ansible_failed_result.msg }}"
+            error_message: "{{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
           ansible.builtin.set_stats:
             data:
-              SL_error_message: "{{ SL_error_message }}"
+              SL_error_message: "{{ error_message }}"
           when: ansible_failed_result is defined
 
         - name: Fail the playbook if there is an error
           ansible.builtin.fail:
-            msg: "Playbook failed during execution. Error message: {{ SL_error_message }}"
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
           when: ansible_failed_result is defined
 
     - name: Success message when playbook runs successfully
