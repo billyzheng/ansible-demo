@@ -135,8 +135,8 @@
       rescue:
         - name: Set failure message for the resize operation
           ansible.builtin.set_fact:
-            error_message: "Failed to resize CPU for VM {{ VM_servername }}. Error detail: {{ ansible_failed_result.msg }}"
-
+            error_message: "1. Server {{ VMware_VM_name }} Science Logic maintenance enabled.\nBut failure happend while resizing the CPU.\nError detail: {{ ansible_failed_result.msg }}"
+         
         - name: Forward failure message
           ansible.builtin.set_stats:
             data:
