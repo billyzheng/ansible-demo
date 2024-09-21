@@ -1,31 +1,24 @@
----
 - name: Add Additional Disks to Windows VM in vCenter
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Initialize unit_number
+    - name: Prepare disk list with unit numbers
       set_fact:
-        unit_number: 0
+        disks_with_unit_numbers: "{{ mrvs_variables | map('combine', {'unit_number': ansible_loop.index0}) | list }}"
+      loop: "{{ mrvs_variables }}"
+      loop_control:
+        extended: true
 
     - name: Add additional disks to the VM
       community.vmware.vmware_guest_disk:
         hostname: "{{ Vcenter_Name }}"
-        datacenter: "{{ Vmware_datacenter }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
         validate_certs: no
+        datacenter: "{{ Vmware_datacenter }}"
         name: "{{ VMware_VM_name }}"
-        disk:
-          - size_gb: "{{ item.disk_size_gb }}"
-            type: thin
-            state: present
-            scsi_controller: 0  
-            unit_number: "{{ unit_number }}"
-      with_items: "{{ mrvs_variables }}"
+        disk: "{{ disks_with_unit_numbers }}"
       register: additional_disk_results
-
-      # Increment unit_number for the next iteration
-      post_tasks:
-        - set_fact:
-            unit_number: "{{ unit_number + 1 }}"
 
     - debug:
         var: additional_disk_results
