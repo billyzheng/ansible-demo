@@ -3,13 +3,9 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    # - name: Extract datacenter name
-    #   ansible.builtin.set_fact:
-    #     Vcenter_Name: "{{ hostvars[VMware_VM_name | upper]['tag_category']['vcenter'] | first }}"
-
-    # - name: Display info
-    #   ansible.builtin.debug: 
-    #     msg: "{{ Vcenter_Name }}"
+    - name: Initialize unit_number
+      set_fact:
+        unit_number: 0
 
     - name: Add additional disks to the VM
       community.vmware.vmware_guest_disk:
@@ -17,15 +13,19 @@
         datacenter: "{{ Vmware_datacenter }}"
         validate_certs: no
         name: "{{ VMware_VM_name }}"
-        disk: 
+        disk:
           - size_gb: "{{ item.disk_size_gb }}"
             type: thin
             state: present
             scsi_controller: 0  
-            unit_number: "{{ item.index }}"
+            unit_number: "{{ unit_number }}"
       with_items: "{{ mrvs_variables }}"
       register: additional_disk_results
-  
+
+      # Increment unit_number for the next iteration
+      post_tasks:
+        - set_fact:
+            unit_number: "{{ unit_number + 1 }}"
+
     - debug:
         var: additional_disk_results
-        
