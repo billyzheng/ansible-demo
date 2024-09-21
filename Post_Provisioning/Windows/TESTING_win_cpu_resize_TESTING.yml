@@ -3,132 +3,145 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Get the VM inventory - before changes
-      register: pre_result
-      vmware.vmware_rest.vcenter_vm_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        filter_names:
-        - "{{ VM_servername }}"
+    - block:
+        - name: Get the VM inventory - before changes
+          register: pre_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
 
-    - name: Set Pre CPU core variable
-      ansible.builtin.set_fact:
-        requested_cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
-        current_cpu_cores: "{{ pre_result.value[0].cpu_count | int }}"
+        - name: Set Pre CPU core variable
+          ansible.builtin.set_fact:
+            requested_cpu_cores: "{{ variables.CPU_Cores | regex_replace(' Core', '') | int }}"
+            current_cpu_cores: "{{ pre_result.value[0].cpu_count | int }}"
 
-    - name: Set CPU core increase variable value
-      ansible.builtin.set_fact:
-        cpu_cores_increase: "{{ (current_cpu_cores | int) + (requested_cpu_cores | int) }}"
-      when: variables.Action_Required == "Increase"
+        - name: Set CPU core increase variable value
+          ansible.builtin.set_fact:
+            cpu_cores_increase: "{{ (current_cpu_cores | int) + (requested_cpu_cores | int) }}"
+          when: variables.Action_Required == "Increase"
 
-    - name: Set CPU core decrease variable value
-      ansible.builtin.set_fact:
-        cpu_cores_decrease: "{{ (current_cpu_cores | int) - (requested_cpu_cores | int) }}"
-      when: variables.Action_Required == "Decrease"
+        - name: Set CPU core decrease variable value
+          ansible.builtin.set_fact:
+            cpu_cores_decrease: "{{ (current_cpu_cores | int) - (requested_cpu_cores | int) }}"
+          when: variables.Action_Required == "Decrease"
 
-    - name: Check if CPU decrease would result in 0 or less CPUs
-      ansible.builtin.fail:
-        msg: "Cannot decrease CPU count to 0 or less"
-      when: variables.Action_Required == 'Decrease' and (cpu_cores_decrease | int) <= 0
+        - name: Check if CPU decrease would result in 0 or less CPUs
+          ansible.builtin.fail:
+            msg: "Cannot decrease CPU count to 0 or less"
+          when: variables.Action_Required == 'Decrease' and (cpu_cores_decrease | int) <= 0
 
-    - name: Power OFF the VM
-      community.vmware.vmware_guest_powerstate:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ VM_servername }}"
-         validate_certs: false
-         state: powered-off
-      ignore_errors: yes
+        - name: Power OFF the VM
+          community.vmware.vmware_guest_powerstate:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-off
+          ignore_errors: yes
 
-    - name: Wait until virtual machine offline
-      vmware.vmware_rest.vcenter_vm_tools_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        vm: '{{ pre_result.value[0].vm }}'
-      register: vm_tools_info
-      until:
-      - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "NOT_RUNNING"
-      retries: 60
-      delay: 5
+        - name: Wait until virtual machine offline
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info
+          until:
+            - vm_tools_info is not failed
+            - vm_tools_info.value.run_state == "NOT_RUNNING"
+          retries: 60
+          delay: 5
 
-    - name: Increase the CPU size on the VM
-      community.vmware.vmware_guest:
-        hostname: '{{ Vcenter_Name }}'
-        username: '{{ VMWARE_USERNAME }}'
-        password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
-        hardware:
-          num_cpus: "{{ cpu_cores_increase }}"
-          num_cpu_cores_per_socket: "{{ cpu_cores_increase }}"
-        state: present
-      when: variables.Action_Required == 'Increase'
-      register: cpu_result_increase
+        - name: Increase the CPU size on the VM
+          community.vmware.vmware_guest:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            hardware:
+              num_cpus: "{{ cpu_cores_increase }}"
+              num_cpu_cores_per_socket: "{{ cpu_cores_increase }}"
+            state: present
+          when: variables.Action_Required == 'Increase'
+          register: cpu_result_increase
 
-    - name: Decrease the CPU size on the VM
-      community.vmware.vmware_guest:
-        hostname: '{{ Vcenter_Name }}'
-        username: '{{ VMWARE_USERNAME }}'
-        password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
-        hardware:
-          num_cpus: "{{ cpu_cores_decrease }}"
-          num_cpu_cores_per_socket: "{{ cpu_cores_decrease }}"
-        state: present
-      when: variables.Action_Required == 'Decrease'
-      register: cpu_result_decrease
+        - name: Decrease the CPU size on the VM
+          community.vmware.vmware_guest:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            hardware:
+              num_cpus: "{{ cpu_cores_decrease }}"
+              num_cpu_cores_per_socket: "{{ cpu_cores_decrease }}"
+            state: present
+          when: variables.Action_Required == 'Decrease'
+          register: cpu_result_decrease
 
-    - name: Power ON the VM
-      community.vmware.vmware_guest_powerstate:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ VM_servername }}"
-         validate_certs: false
-         name: "{{ VM_servername }}"
-         state: powered-on
+        - name: Power ON the VM
+          community.vmware.vmware_guest_powerstate:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-on
 
-    - name: Wait until my VM is ready
-      vmware.vmware_rest.vcenter_vm_tools_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        vm: '{{ pre_result.value[0].vm }}'
-      register: vm_tools_info
-      until:
-      - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "RUNNING"
-      retries: 60
-      delay: 5
+        - name: Wait until my VM is ready
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info
+          until:
+            - vm_tools_info is not failed
+            - vm_tools_info.value.run_state == "RUNNING"
+          retries: 60
+          delay: 5
 
-    - name: Get the VM inventory - post changes
-      register: post_result
-      vmware.vmware_rest.vcenter_vm_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        filter_names:
-        - "{{ VM_servername }}"
+        - name: Get the VM inventory - post changes
+          register: post_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
 
-    - name: Set Post VM Status
-      ansible.builtin.set_fact:
-        resized_cpu_count: "{{ post_result.value[0].cpu_count | int }}"
-        post_server_state: "{{ post_result.value[0].power_state }}"
-        
-    - name: Pass the collected artifacts
-      ansible.builtin.set_stats:
-        data:
-          CPU_Core_before: "{{ current_cpu_cores }}"  
-          CPU_Core_after: "{{ resized_cpu_count }}" 
-          vm_power_state: "{{ post_server_state }}" 
-          catalog_item: CPU
-        
+        - name: Set Post VM Status
+          ansible.builtin.set_fact:
+            resized_cpu_count: "{{ post_result.value[0].cpu_count | int }}"
+            post_server_state: "{{ post_result.value[0].power_state }}"
+
+        - name: Pass the collected artifacts
+          ansible.builtin.set_stats:
+            data:
+              CPU_Core_before: "{{ current_cpu_cores }}"  
+              CPU_Core_after: "{{ resized_cpu_count }}" 
+              vm_power_state: "{{ post_server_state }}" 
+              catalog_item: CPU
+
+      rescue:
+        - name: Set failure message for the resize operation
+          ansible.builtin.set_fact:
+            error_message: "Failed to resize CPU for VM {{ VM_servername }}. Error detail: {{ ansible_failed_result.msg }}"
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during CPU resize. Error message: {{ error_message }}"
