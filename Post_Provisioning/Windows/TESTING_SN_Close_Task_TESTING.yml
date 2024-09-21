@@ -29,4 +29,5 @@
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
           closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested {{ catalog_item }} related activity completed.\n3.Server {{ VMware_VM_name }} post provisioning completed successfully." 
+      when: catalog_item == 
       register: SR_task_close  
