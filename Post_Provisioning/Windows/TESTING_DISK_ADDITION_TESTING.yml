@@ -3,13 +3,13 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Extract datacenter name
-      ansible.builtin.set_fact:
-        Vcenter_Name: "{{ hostvars[VMware_VM_name | upper]['tag_category']['vcenter'] | first }}"
+    # - name: Extract datacenter name
+    #   ansible.builtin.set_fact:
+    #     Vcenter_Name: "{{ hostvars[VMware_VM_name | upper]['tag_category']['vcenter'] | first }}"
 
-    - name: Display info
-      ansible.builtin.debug: 
-        msg: "{{ Vcenter_Name }}"
+    # - name: Display info
+    #   ansible.builtin.debug: 
+    #     msg: "{{ Vcenter_Name }}"
 
     - name: Add additional disks to the VM
       community.vmware.vmware_guest_disk:
