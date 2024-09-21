@@ -1,0 +1,28 @@
+---
+- name: Add Additional Disks to Windows VM in vCenter
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Extract datacenter name
+      ansible.builtin.set_fact:
+        Vcenter_Name: "{{ hostvars[VMware_VM_name | upper]['tag_category']['vcenter'] | first }}"
+
+    - name: Display info
+      ansible.builtin.debug: 
+        msg: "{{ Vcenter_Name }}"
+
+    - name: Add additional disks to the VM
+      community.vmware.vmware_guest_disk:
+        hostname: "{{ Vcenter_Name }}"
+        validate_certs: no
+        name: "{{ VMware_VM_name }}"
+        disk_size_gb: "{{ item.disk_size_gb }}"
+        state: present
+        disk_type: 'thin'  
+        datastore: "{{ Vmware_datacenter }}"
+        disk_label: "{{ item.disk_label }}"
+      loop: "{{ mrvs_variables }}"
+      register: additional_disk_results
+
+    - debug:
+        var: additional_disk_results
