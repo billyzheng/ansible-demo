@@ -21,6 +21,8 @@
           - size_gb: "{{ item.disk_size_gb }}"
             type: thin
             state: present
+            scsi_controller: 0  
+            unit_number: "{{ loop.index0 }}"
       loop: "{{ mrvs_variables }}"
       register: additional_disk_results
   
