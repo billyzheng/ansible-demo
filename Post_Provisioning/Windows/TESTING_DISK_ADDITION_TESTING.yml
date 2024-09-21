@@ -17,12 +17,13 @@
         datacenter: "{{ Vmware_datacenter }}"
         validate_certs: no
         name: "{{ VMware_VM_name }}"
-        size_gb: "{{ item.disk_size_gb }}"
-        state: present
-        disk_type: 'thin'  
-        datastore: "{{ Vmware_datacenter }}"
-      loop: "{{ mrvs_variables }}"
+        disk: 
+          - size_gb: "{{ item.disk_size_gb }}"
+            type: thin
+            state: present
+        loop: "{{ mrvs_variables }}"
       register: additional_disk_results
-
+  
     - debug:
         var: additional_disk_results
+        
