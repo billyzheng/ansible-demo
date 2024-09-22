@@ -3,10 +3,15 @@
   gather_facts: false
   connection: local
   vars:
-    template_password: P@ssw0rd123456
+    template_password: P@ssw0rd123456 
     notes: Ansible Test
     dumpfacts: False
+    additional_disks: []  # Initialize an empty list for additional disks
   tasks:
+    - set_fact:
+        additional_disks: >-
+          [{% for disk in mrvs_variables %}
+            { size_gb: {{ disk.disk_size_gb }}, type: thin, datastore: "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
     - block:
         - name: Create VM from template
           vmware_guest:
@@ -16,15 +21,12 @@
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
-            disk:
+            disk: 
               - size_gb: "{{ VMware_VM_disk_size }}"
                 type: thin
                 datastore: "{{ Vmware_datastore }}"
-              {% for disk in mrvs_variables %}
-              - size_gb: "{{ disk.disk_size_gb }}"
-                type: thin
-                datastore: "{{ Vmware_datastore }}"
-              {% endfor %}
+              - "{{ item }}"
+            with_items: "{{ additional_disks }}"
             networks:
             - name: "{{ Vmware_networks }}"
               ip: "{{ VMware_VM_IP_address }}"
@@ -64,5 +66,3 @@
           ansible.builtin.fail:
             msg: "Playbook failed during execution. Error message: {{ error_message }}"
           when: ansible_failed_result is defined
-
-    
