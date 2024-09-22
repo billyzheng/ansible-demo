@@ -9,7 +9,7 @@
     - community.windows
   tasks:
     - name: Get all disks information
-      win_command: Get-Disk
+      win_shell: Get-Disk
       register: all_disks
 
     - name: Debug all disks
