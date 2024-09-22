@@ -13,6 +13,11 @@
         Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Select-Object -ExpandProperty Number
       register: unallocated_disks
 
+    - name: Check if there are enough unallocated disks
+      fail:
+        msg: "Not enough unallocated disks available. Found: {{ unallocated_disks.stdout_lines | length }}. Required: {{ mrvs_variables | length }}."
+      when: unallocated_disks.stdout_lines | length < mrvs_variables | length
+
     - name: Create a list of disks to format
       set_fact:
         disks_to_format: >-
@@ -30,4 +35,3 @@
         New-Partition -AssignDriveLetter -Size $disk_size | 
         Format-Volume -FileSystem NTFS -NewFileSystemLabel $disk_label -Confirm:$false
       loop: "{{ disks_to_format }}"
-      when: unallocated_disks.stdout_lines | length > 0
