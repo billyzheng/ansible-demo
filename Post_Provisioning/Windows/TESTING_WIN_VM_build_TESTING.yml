@@ -3,10 +3,9 @@
   gather_facts: false
   connection: local
   vars:
-    template_password: P@ssw0rd123456
+    template_password: P@ssw0rd123456 
     notes: Ansible Test
     dumpfacts: False
-    additional_disks: []  # Initialize an empty list for additional disks
   tasks:
     - set_fact:
         additional_disks: >-
@@ -14,15 +13,25 @@
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
     
     - set_fact:
-        all_disks: 
-          - size_gb: "{{ VMware_VM_disk_size }}"
-            type: thin
-            datastore: "{{ Vmware_datastore }}"
-          {% for disk in additional_disks %}
-          - size_gb: "{{ disk.size_gb }}"
-            type: "{{ disk.type }}"
-            datastore: "{{ disk.datastore }}"
-          {% endfor %}
+        all_disks: >-
+          [
+            {
+              "size_gb": "{{ VMware_VM_disk_size }}",
+              "type": "thin",
+              "datastore": "{{ Vmware_datastore }}"
+            }
+            {% for disk in additional_disks %}
+            ,
+            {
+              "size_gb": "{{ disk.size_gb }}",
+              "type": "{{ disk.type }}",
+              "datastore": "{{ disk.datastore }}"
+            }
+            {% endfor %}
+          ]
+
+    - set_fact:
+        all_disks: "{{ all_disks | from_json }}"  # Convert JSON string to list
 
     - block:
         - name: Create VM from template
