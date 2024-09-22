@@ -7,10 +7,15 @@
     notes: Ansible Test
     dumpfacts: False
   tasks:
-    - name: Set all disks
+    - name: Set initial disk
       set_fact:
-         all_disks: "{{ [ {'size_gb': VMware_VM_disk_size, 'type': 'thin', 'datastore': Vmware_datastore} ] + [{'size_gb': item.disk_size_gb, 'type': 'thin', 'datastore': Vmware_datastore} for item in mrvs_variables] }}"
-   
+        all_disks: "[{'size_gb': '{{ VMware_VM_disk_size }}', 'type': 'thin', 'datastore': '{{ Vmware_datastore }}'}]"
+
+    - name: Add additional disks
+      set_fact:
+        all_disks: "{{ all_disks | from_json + [{'size_gb': item.disk_size_gb, 'type': 'thin', 'datastore': Vmware_datastore} for item in mrvs_variables if mrvs_variables is defined] | to_json | from_json }}"
+      when: mrvs_variables is defined and mrvs_variables | length > 0
+  
     - block:
         - name: Create VM from template
           vmware_guest:
