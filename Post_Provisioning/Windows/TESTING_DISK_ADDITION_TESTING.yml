@@ -8,28 +8,18 @@
     - community.vmware
     - community.windows
   tasks:
-    - name: Get list of all disks
-      win_shell: Get-Disk
-      register: all_disks
-
-    - name: Debug all disks
-      debug:
-        var: all_disks.stdout_lines
+    - name: Bring offline disks online
+      win_shell: |
+        Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' -and $_.OperationalStatus -eq 'Offline' } | ForEach-Object { Set-Disk -Number $_.Number -IsOffline $false }
 
     - name: Get list of unallocated disks
       win_shell: |
-        Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' -and $_.OperationalStatus -eq 'Offline' } | Select-Object -ExpandProperty Number
+        Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Select-Object -ExpandProperty Number
       register: unallocated_disks
 
-    - name: Debug unallocated disks
-      debug:
-        var: unallocated_disks.stdout_lines
-
-    - name: Create a list of disks to format
-      set_fact:
-        disks_to_format: >-
-          [{% for disk in mrvs_variables %}
-            { "disk_number": "{{ unallocated_disks.stdout_lines[loop.index0] }}", "disk_label": "{{ disk.disk_label }}", "disk_size_gb": {{ disk.disk_size_gb }} }{% if not loop.last %}, {% endif %}{% endfor %}]
+    - name: Initialize disks as GPT
+      win_shell: |
+        Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' } | ForEach-Object { Initialize-Disk -Number $_.Number -PartitionStyle GPT }
 
     - name: Format and label each disk
       win_shell: |
@@ -37,8 +27,9 @@
         $disk_label = "{{ item.disk_label }}"
         $disk_size = {{ item.disk_size_gb }}
 
-        Initialize-Disk -Number $disk_number -PartitionStyle MBR -PassThru |
-        New-Partition -AssignDriveLetter -Size $disk_size | 
+        # Create and format the partition
+        New-Partition -DiskNumber $disk_number -UseMaximumSize -AssignDriveLetter |
         Format-Volume -FileSystem NTFS -NewFileSystemLabel $disk_label -Confirm:$false
       loop: "{{ disks_to_format }}"
       when: unallocated_disks.stdout_lines | length > 0
+    
