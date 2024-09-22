@@ -8,10 +8,23 @@
     - community.vmware
     - community.windows
   tasks:
+    - name: Wait for a few seconds to ensure system stability
+      pause:
+        seconds: 5
+
     - name: Get list of unallocated disks
       win_shell: |
         Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Select-Object -ExpandProperty Number
       register: unallocated_disks
+
+    - name: Debug unallocated disks
+      debug:
+        var: unallocated_disks.stdout_lines
+
+    - name: Check if any unallocated disks were found
+      fail:
+        msg: "No RAW disks found. Please ensure disks are available."
+      when: unallocated_disks.stdout_lines | length == 0
 
     - name: Check if there are enough unallocated disks
       fail:
@@ -24,6 +37,10 @@
           [{% for disk in mrvs_variables %}
             { "disk_number": "{{ unallocated_disks.stdout_lines[loop.index0] }}", "disk_label": "{{ disk.disk_label }}", "disk_size_gb": {{ disk.disk_size_gb }} }{% if not loop.last %}, {% endif %}{% endfor %}]
 
+    - name: Debug disks to format
+      debug:
+        var: disks_to_format
+
     - name: Format and label each disk
       win_shell: |
         $disk_number = {{ item.disk_number }}
@@ -35,3 +52,4 @@
         New-Partition -AssignDriveLetter -Size $disk_size | 
         Format-Volume -FileSystem NTFS -NewFileSystemLabel $disk_label -Confirm:$false
       loop: "{{ disks_to_format }}"
+      when: disks_to_format is defined and disks_to_format | length > 0
