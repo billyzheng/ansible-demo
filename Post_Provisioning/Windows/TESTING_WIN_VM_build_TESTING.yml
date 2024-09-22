@@ -7,15 +7,29 @@
     notes: Ansible Test
     dumpfacts: False
   tasks:
-    - name: Set initial disk
-      set_fact:
-        all_disks: "[{'size_gb': '{{ VMware_VM_disk_size }}', 'type': 'thin', 'datastore': '{{ Vmware_datastore }}'}]"
+    - set_fact:
+        additional_disks: >-
+          [{% for disk in mrvs_variables %}
+            { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
+    
+    - set_fact:
+        all_disks: >-
+          [
+            {
+              "size_gb": "{{ VMware_VM_disk_size }}",
+              "type": "thin",
+              "datastore": "{{ Vmware_datastore }}"
+            }
+            {% for disk in additional_disks %}
+            ,
+            {
+              "size_gb": "{{ disk.size_gb }}",
+              "type": "{{ disk.type }}",
+              "datastore": "{{ disk.datastore }}"
+            }
+            {% endfor %}
+          ]
 
-    - name: Add additional disks
-      set_fact:
-        all_disks: "{{ all_disks | from_json + [{'size_gb': item.disk_size_gb, 'type': 'thin', 'datastore': Vmware_datastore} for item in mrvs_variables if mrvs_variables is defined] | to_json | from_json }}"
-      when: mrvs_variables is defined and mrvs_variables | length > 0
-  
     - block:
         - name: Create VM from template
           vmware_guest:
@@ -25,7 +39,7 @@
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
-            disk: "{{ all_disks }}"  # Use the entire list of disks
+            disk: "{{ all_disks }}"  # Use the entire list of disks directly
             networks:
             - name: "{{ Vmware_networks }}"
               ip: "{{ VMware_VM_IP_address }}"
