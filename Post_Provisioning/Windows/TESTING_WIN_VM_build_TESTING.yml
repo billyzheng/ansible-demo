@@ -3,7 +3,7 @@
   gather_facts: false
   connection: local
   vars:
-    template_password: P@ssw0rd123456 
+    template_password: P@ssw0rd123456
     notes: Ansible Test
     dumpfacts: False
     additional_disks: []  # Initialize an empty list for additional disks
@@ -11,7 +11,10 @@
     - set_fact:
         additional_disks: >-
           [{% for disk in mrvs_variables %}
-            { size_gb: {{ disk.disk_size_gb }}, type: thin, datastore: "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
+            { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
+    - set_fact:
+        additional_disks: "{{ additional_disks | from_json }}"  # Convert string to list of dictionaries
+
     - block:
         - name: Create VM from template
           vmware_guest:
