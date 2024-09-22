@@ -1,6 +1,11 @@
-- name: Format and label additional disks
-  hosts: windows  # Change this to your actual Windows host group
-  gather_facts: yes
+---
+- name: Windows post provisioning  
+  hosts: "{{ VMware_VM_IP_address }}"
+  gather_facts: no
+  collections:
+    - ansible.windows
+    - community.vmware
+    - community.windows
   tasks:
     - name: Get list of unallocated disks
       win_shell: |
