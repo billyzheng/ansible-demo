@@ -12,8 +12,6 @@
         additional_disks: >-
           [{% for disk in mrvs_variables %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
-    - set_fact:
-        additional_disks: "{{ additional_disks | from_json }}"  # Convert string to list of dictionaries
 
     - block:
         - name: Create VM from template
