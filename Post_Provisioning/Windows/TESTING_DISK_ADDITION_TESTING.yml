@@ -1,35 +1,27 @@
-- name: Add Additional Disks to Windows VM in vCenter
-  hosts: localhost
-  gather_facts: no
+- name: Format and label additional disks
+  hosts: windows  # Change this to your actual Windows host group
+  gather_facts: yes
   tasks:
-    - name: Prepare disk list with unit numbers
+    - name: Get list of unallocated disks
+      win_shell: |
+        Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Select-Object -ExpandProperty Number
+      register: unallocated_disks
+
+    - name: Create a list of disks to format
       set_fact:
-        disks_with_unit_numbers: "{{ mrvs_variables | map('combine', {'unit_number': ansible_loop.index0}) | list }}"
-      loop: "{{ mrvs_variables }}"
-      loop_control:
-        extended: true
+        disks_to_format: >-
+          [{% for disk in mrvs_variables %}
+            { "disk_number": "{{ unallocated_disks.stdout_lines[loop.index0] }}", "disk_label": "{{ disk.disk_label }}", "disk_size_gb": {{ disk.disk_size_gb }} }{% if not loop.last %}, {% endif %}{% endfor %}]
+    
+    - name: Format and label each disk
+      win_shell: |
+        $disk_number = {{ item.disk_number }}
+        $disk_label = "{{ item.disk_label }}"
+        $disk_size = {{ item.disk_size_gb }}
 
-    - name: Transform disks_with_unit_numbers for vmware_guest_disk
-      set_fact:
-        disks_for_vmware: "{{ disks_with_unit_numbers | map(attribute='disk') | default([]) | list }}"
-      vars:
-        disk: >
-          {
-            'size_gb': '{{ item.disk_size_gb }}',
-            'type': 'thin',
-            'state': 'present',
-            'scsi_controller': 0,
-            'unit_number': '{{ item.unit_number }}'
-          }
-
-    - name: Add additional disks to the VM
-      community.vmware.vmware_guest_disk:
-        hostname: "{{ Vcenter_Name }}"
-        validate_certs: no
-        datacenter: "{{ Vmware_datacenter }}"
-        name: "{{ VMware_VM_name }}"
-        disk: "{{ disks_for_vmware }}"
-      register: additional_disk_results
-
-    - debug:
-        var: additional_disk_results
+        # Initialize and format the disk
+        Initialize-Disk -Number $disk_number -PartitionStyle MBR -PassThru |
+        New-Partition -AssignDriveLetter -Size $disk_size | 
+        Format-Volume -FileSystem NTFS -NewFileSystemLabel $disk_label -Confirm:$false
+      loop: "{{ disks_to_format }}"
+      when: unallocated_disks.stdout_lines | length > 0
