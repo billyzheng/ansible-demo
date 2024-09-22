@@ -18,12 +18,12 @@
         disks_to_format: >-
           [{% for disk in mrvs_variables %}
             { "disk_number": "{{ unallocated_disks.stdout_lines[loop.index0] }}", "disk_label": "{{ disk.disk_label }}", "disk_size_gb": {{ disk.disk_size_gb }} }{% if not loop.last %}, {% endif %}{% endfor %}]
-    
+
     - name: Format and label each disk
       win_shell: |
         $disk_number = {{ item.disk_number }}
         $disk_label = "{{ item.disk_label }}"
-        $disk_size = {{ item.disk_size_gb }}
+        $disk_size = {{ item.disk_size_gb }} * 1GB  # Convert GB to bytes
 
         # Initialize and format the disk
         Initialize-Disk -Number $disk_number -PartitionStyle MBR -PassThru |
