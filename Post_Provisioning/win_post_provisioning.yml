@@ -24,9 +24,9 @@
         #   import_role:
         #     name: disable_firewall
 
-        # - name: Disk Management
-        #   import_role:
-        #     name: disk_management
+        - name: Disk Management
+          import_role:
+            name: disk_management
 
         # - name: FlexNet Installation
         #   import_role:
@@ -47,24 +47,24 @@
         # - name: Splunk Installation
         #   import_role:
         #     name: splunk_agent
-        - name: Validate and set the system timezone
-          import_role:
-            name: test
+        # - name: Validate and set the system timezone
+        #   import_role:
+        #     name: test
 
 
-      # rescue:
-      #   - name: Set failure message to be used in the next workflow
-      #     ansible.builtin.set_fact:
-      #       error_message: "1. Infoblox alloted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}.\n2. Server {{ VMware_VM_name }} built successfully.\n3. Server added into ansible inventory.\n4. Server {{ VMware_VM_name }} joined the domain.\nBut failure happend during post-provisioning tasks.\nError detail: {{ ansible_failed_result.msg }}"
-      #     when: ansible_failed_result is defined
+      rescue:
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+            error_message: "1. Infoblox alloted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}.\n2. Server {{ VMware_VM_name }} built successfully.\n3. Server added into ansible inventory.\n4. Server {{ VMware_VM_name }} joined the domain.\nBut failure happend during post-provisioning tasks.\nError detail: {{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
 
-      #   - name: Forward failure message
-      #     ansible.builtin.set_stats:
-      #       data:
-      #         error_message: "{{ error_message }}"
-      #     when: ansible_failed_result is defined
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
 
-      #   - name: Fail the playbook if there is an error
-      #     ansible.builtin.fail:
-      #       msg: "Playbook failed during execution. Error message: {{ error_message }}"
-      #     when: ansible_failed_result is defined
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
