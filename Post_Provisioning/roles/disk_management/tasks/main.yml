@@ -56,6 +56,9 @@
     index_var: index
 
 - name: Partition and format disks based on input variables
+  loop: "{{ r_partition }}"
+  loop_control:
+    index_var: index
   block:
     - name: Find matching drive configuration
       set_fact:
@@ -73,15 +76,10 @@
         drive_letter: "{{ matching_drive_config.select_the_number_of_additional_drives if matching_drive_config else '%c' | format(item.number + 68) }}"
         file_system: NTFS
         new_label: "{{ matching_drive_config.disk_label if matching_drive_config else 'Default Label' }}"
-        
+
     - name: Final Disk details
       debug:
          msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ matching_drive_config.select_the_number_of_additional_drives if matching_drive_config else '%c' | format(item.number + 68) }} with label {{ matching_drive_config.disk_label if matching_drive_config else 'Default Label' }}"
-    
-  loop: "{{ r_partition }}"
-  loop_control:
-     index_var: index
-
 
 # - name: Get raw info to add additional disks 
 #   set_fact:
