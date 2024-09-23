@@ -61,7 +61,7 @@
     - name: Partition the disks
       win_partition:
         disk_number: "{{ item.number }}"
-        partition_size: "{{ mrvs_variables[index].disk_size_gb | int * 1024 * 1024 * 1024 }}"  # Size in bytes
+        partition_size: -1
         drive_letter: "{{ '%c' | format(index + 68) }}"  
         state: present
       loop: "{{ r_partition }}"
