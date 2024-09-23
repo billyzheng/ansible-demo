@@ -39,52 +39,95 @@
     msg: "C: drive expansion not required or failed"
   when: c_partition is not defined
 
+- name: Get raw info to add additional disks
+    set_fact:
+      r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
 
-- name: Get raw info to add additional disks 
-  set_fact:
-     r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
+  - name: Get the specific details of RAW
+    debug:
+      var: r_partition
 
-- name: Get the specific details of RAW
-  debug:
-    var: r_partition
+  - name: Initialize raw disks
+    win_initialize_disk:
+      disk_number: "{{ item.number }}"
+      style: gpt
+    loop: "{{ r_partition }}"
+    loop_control:
+      index_var: index
 
-- name: Initialize raw disks
-  win_initialize_disk:
-    disk_number: "{{ item.number }}"
-    style: gpt
-  loop: "{{ r_partition }}"
-  loop_control:
-    index_var: index
+  - name: Partition and format disks based on input variables
+    block:
+      - name: Find matching drive configuration
+        set_fact:
+          matching_drive_config: "{{ mrvs_variables | selectattr('select_the_number_of_additional_drives', 'equalto', '%c' | format(item.number + 68)) | first }}"
 
-- name: Create and format partitions based on input variables
-  block:
-    - name: Partition the disks
-      win_partition:
-        disk_number: "{{ item.number }}"
-        partition_size: -1
-        drive_letter: "{{ '%c' | format(index + 68) }}"  
-        state: present
-      loop: "{{ r_partition }}"
-      loop_control:
-        index_var: index
+      - name: Partition the disk
+        win_partition:
+          disk_number: "{{ item.number }}"
+          partition_size: -1  # Use full disk size by default, adjust if needed
+          drive_letter: "{{ matching_drive_config.select_the_number_of_additional_drives if matching_drive_config else '%c' | format(item.number + 68) }}"
+          state: present
 
-    - name: Format the partition
-      win_format:
-        drive_letter: "{{ '%c' | format(index + 68) }}"  
-        file_system: NTFS
-        new_label: "{{ mrvs_variables[index].disk_label }}"
-      loop: "{{ r_partition }}"
-      loop_control:
-        index_var: index
+      - name: Format the partition with specified label
+        win_format:
+          drive_letter: "{{ matching_drive_config.select_the_number_of_additional_drives if matching_drive_config else '%c' | format(item.number + 68) }}"
+          file_system: NTFS
+          new_label: "{{ matching_drive_config.disk_label if matching_drive_config else 'Default Label' }}"
+        
+      - name: Final Disk details
+        debug:
+          msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ matching_drive_config.select_the_number_of_additional_drives if matching_drive_config else '%c' | format(item.number + 68) }} with label {{ matching_drive_config.disk_label if matching_drive_config else 'Default Label' }}"
+    
+    loop: "{{ r_partition }}"
+    loop_control:
+      index_var: index
 
-    - name: Final Disk details
-      debug:
-        msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }} with label '{{ mrvs_variables[index].disk_label }}' and size '{{ mrvs_variables[index].disk_size_gb }} GB'"
-      loop: "{{ r_partition }}"
-      loop_control:
-        index_var: index
 
-  when: index < mrvs_variables | length  
+# - name: Get raw info to add additional disks 
+#   set_fact:
+#      r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
+
+# - name: Get the specific details of RAW
+#   debug:
+#     var: r_partition
+
+# - name: Initialize raw disks
+#   win_initialize_disk:
+#     disk_number: "{{ item.number }}"
+#     style: gpt
+#   loop: "{{ r_partition }}"
+#   loop_control:
+#     index_var: index
+
+# - name: Create and format partitions based on input variables
+#   block:
+#     - name: Partition the disks
+#       win_partition:
+#         disk_number: "{{ item.number }}"
+#         partition_size: -1
+#         drive_letter: "{{ '%c' | format(index + 68) }}"  
+#         state: present
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#     - name: Format the partition
+#       win_format:
+#         drive_letter: "{{ '%c' | format(index + 68) }}"  
+#         file_system: NTFS
+#         new_label: "{{ mrvs_variables[index].disk_label }}"
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#     - name: Final Disk details
+#       debug:
+#         msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }} with label '{{ mrvs_variables[index].disk_label }}' and size '{{ mrvs_variables[index].disk_size_gb }} GB'"
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#   when: index < mrvs_variables | length  
 
 
    
