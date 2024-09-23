@@ -8,28 +8,19 @@
     - community.vmware
     - community.windows
   tasks:
-    - name: Bring offline disks online
-      win_shell: |
-        Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' -and $_.OperationalStatus -eq 'Offline' } | ForEach-Object { Set-Disk -Number $_.Number -IsOffline $false }
+    - name: Find files and directories under C:\Temp
+      win_find:
+        paths: C:\Temp
+        recurse: yes
+      register: temp_contents
 
-    - name: Get list of unallocated disks
-      win_shell: |
-        Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Select-Object -ExpandProperty Number
-      register: unallocated_disks
+    - name: Display the contents of C:\Temp
+      debug:
+        var: temp_contents.files
+        verbosity: 2
 
-    - name: Initialize disks as GPT
-      win_shell: |
-        Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' } | ForEach-Object { Initialize-Disk -Number $_.Number -PartitionStyle GPT }
-
-    - name: Format and label each disk
-      win_shell: |
-        $disk_number = {{ item.disk_number }}
-        $disk_label = "{{ item.disk_label }}"
-        $disk_size = {{ item.disk_size_gb }}
-
-        # Create and format the partition
-        New-Partition -DiskNumber $disk_number -UseMaximumSize -AssignDriveLetter |
-        Format-Volume -FileSystem NTFS -NewFileSystemLabel $disk_label -Confirm:$false
-      loop: "{{ disks_to_format }}"
-      when: unallocated_disks.stdout_lines | length > 0
+    - name: Display the directories under C:\Temp
+      debug:
+        var: temp_contents.directories
+        verbosity: 2
     
