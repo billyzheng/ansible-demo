@@ -2,7 +2,7 @@
 - name: Get the template for software_packages
   template:
     src: drive_management.ps1.j2
-    dest: C:\temp\drive_management.ps1
+    dest: C:\Temp\drive_management.ps1
 
 # - name: Copy input variable file from gitlab to windows server for dns suffix
 #   ansible.builtin.copy:
@@ -11,7 +11,7 @@
 
 - name: Run PowerShell script to install software packages
   win_shell: |
-      powershell -File C:\temp\drive_management.ps1
+      powershell -File C:\Temp\drive_management.ps1
  
 # - name: Delete PowerShell script
 #   win_file:
