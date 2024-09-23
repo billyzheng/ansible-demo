@@ -1,0 +1,81 @@
+- name: VM from template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    template_password: P@ssw0rd123456 
+    notes: Ansible Test
+    dumpfacts: False
+  tasks:
+    - set_fact:
+        additional_disks: >-
+          [{% for disk in mrvs_variables %}
+            { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
+    
+    - set_fact:
+        all_disks: >-
+          [
+            {
+              "size_gb": "{{ VMware_VM_disk_size }}",
+              "type": "thin",
+              "datastore": "{{ Vmware_datastore }}"
+            }
+            {% for disk in additional_disks %}
+            ,
+            {
+              "size_gb": "{{ disk.size_gb }}",
+              "type": "{{ disk.type }}",
+              "datastore": "{{ disk.datastore }}"
+            }
+            {% endfor %}
+          ]
+
+    - block:
+        - name: Create VM from template
+          vmware_guest:
+            validate_certs: False
+            datacenter: "{{ Vmware_datacenter }}"
+            cluster: "{{ Vmware_cluster }}"
+            folder: "{{ VMware_VM_folder }}"
+            name: "{{ VMware_VM_name }}"
+            template: "{{ VMware_VM_template }}"
+            disk: "{{ all_disks }}"  # Use the entire list of disks directly
+            networks:
+            - name: "{{ Vmware_networks }}"
+              ip: "{{ VMware_VM_IP_address }}"
+              netmask: "{{ Vmware_Subnet_netmask }}"
+              gateway: "{{ Vmware_Subnet_gateway }}"
+              domain: "{{ Vmware_DNS_Suffix }}"
+              dns_servers:
+              - "{{ Vmware_DNS1 }}"
+              - "{{ Vmware_DNS2 }}"
+              - "{{ Vmware_DNS3 }}"
+            hardware:
+              num_cpus: "{{ Vmware_VM_CPU }}"
+              memory_mb: "{{ Vmware_VM_mem }}"
+            customization:
+              password: "{{ template_password }}"
+              runonce:
+               - cmd /c echo New-NetFirewallRule -DisplayName "WinRM 5985" -Direction Inbound -LocalPort 5985 -Protocol TCP -RemoteAddress Any -Action Allow > C:\enable_winrm.ps1
+               - powershell.exe -ExecutionPolicy Unrestricted -File C:\enable_winrm.ps1 -ForceNewSSLCert -EnableCredSSP
+            wait_for_customization: yes
+            wait_for_ip_address: True
+            state: present
+          register: newvm
+
+      rescue:
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+             error_message: "Infoblox allotted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_NAME }}. But failure happened during VM build with the error: {{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
