@@ -197,7 +197,7 @@
         - name: Forward failure message
           ansible.builtin.set_stats:
             data:
-              SL_error_message: "{{ error_message }}"
+              error_message: "{{ error_message }}"
           when: ansible_failed_result is defined
 
         - name: Fail the playbook if there is an error
