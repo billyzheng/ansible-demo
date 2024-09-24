@@ -28,7 +28,7 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested CPU related task completed.\n3.Server {{ VMware_VM_name }} CMDB CI updated with CPU count changes." 
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested CPU related task completed.\n3.Server {{ VM_servername }} CMDB CI updated with CPU count changes." 
       when: catalog_item == 'CPU'
       register: SR_task_close  
 
@@ -44,7 +44,7 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested Memory related task completed.\n3.Server {{ VMware_VM_name }} CMDB CI updated with Memory count changes." 
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested Memory related task completed.\n3.Server {{ VM_servername }} CMDB CI updated with Memory count changes." 
       when: catalog_item == 'Memory'
       register: SR_task_close
 
@@ -60,7 +60,7 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VMware_VM_name }} rebooted successfully." 
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VM_servername }} rebooted successfully." 
       when: catalog_item == 'Reboot'
       register: SR_task_close
 
@@ -76,6 +76,6 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VMware_VM_name }} shutdowned successfully." 
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VM_servername }} shutdowned successfully." 
       when: catalog_item == 'Shutdown'
       register: SR_task_close
