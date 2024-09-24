@@ -159,7 +159,7 @@
       rescue:
         - name: Set failure message for the reboot operation
           ansible.builtin.set_fact:
-            error_message: "1. Server {{ VM_servername }} failed to reboot.\nError detail: {{ ansible_failed_result.msg }}"
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\n 2. Server {{ VM_servername }} failed to reboot.\nError detail: {{ ansible_failed_result.msg }}"
          
         - name: Forward failure message
           ansible.builtin.set_stats:
