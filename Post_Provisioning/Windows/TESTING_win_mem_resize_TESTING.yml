@@ -3,140 +3,149 @@
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Get the VM inventory - before changes
-      register: pre_result
-      vmware.vmware_rest.vcenter_vm_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        filter_names:
-        - "{{ VM_servername }}"
-        
-    - name: Set memory variable
-      ansible.builtin.set_fact:
-        requested_memory_size: "{{ variables.Memory_Size | regex_replace(' GB', '') | int }}"
-        current_memory_size: "{{ pre_result.value[0].memory_size_MiB | int }}"
+    - block:
+        - name: Get the VM inventory - before changes
+          register: pre_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
+            
+        - name: Set memory variable
+          ansible.builtin.set_fact:
+            requested_memory_size: "{{ variables.Memory_Size | regex_replace(' GB', '') | int }}"
+            current_memory_size: "{{ pre_result.value[0].memory_size_MiB | int }}"
 
-    - name: Convert GB to MB
-      ansible.builtin.set_fact:
-         ram_in_mb: "{{ (requested_memory_size | int) * 1024 }}"
+        - name: Convert GB to MB
+          ansible.builtin.set_fact:
+            ram_in_mb: "{{ (requested_memory_size | int) * 1024 }}"
 
-    - name: Set memory increase variable
-      ansible.builtin.set_fact:
-        memory_increase: "{{ (current_memory_size | int) + (ram_in_mb | int) }}"
-      when: variables.Action_Required == "Increase"
+        - name: Set memory increase variable
+          ansible.builtin.set_fact:
+            memory_increase: "{{ (current_memory_size | int) + (ram_in_mb | int) }}"
+          when: variables.Action_Required == "Increase"
 
-    - name: Set memory decrease variable
-      ansible.builtin.set_fact:
-        memory_decrease: "{{ (current_memory_size | int) - (ram_in_mb | int) }}"
-      when: variables.Action_Required == "Decrease"
+        - name: Set memory decrease variable
+          ansible.builtin.set_fact:
+            memory_decrease: "{{ (current_memory_size | int) - (ram_in_mb | int) }}"
+          when: variables.Action_Required == "Decrease"
 
-    - name: Check if Memory decrease would result in 0 or less Memory
-      ansible.builtin.fail:
-        msg: "Cannot decrease memory size to 1GB or less, please check manually"
-      when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
+        - name: Check if Memory decrease would result in 0 or less Memory
+          ansible.builtin.fail:
+            msg: "Cannot decrease memory size to 1GB or less, please check manually"
+          when: variables.Action_Required == 'Decrease' and (memory_decrease | int) < 1024
 
-    # - name: Check if Memory increase would result in 64000 or more Memory
-    #   ansible.builtin.fail:
-    #     msg: "Cannot increase memory size to 64GB or more, please check manually"
-    #   when: variables.Action_Required == 'Increase' and (memory_increase | int) > 64000
+        - name: Power OFF the VM
+          community.vmware.vmware_guest_powerstate:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-off
+          ignore_errors: yes
 
-    - name: Power OFF the VM
-      community.vmware.vmware_guest_powerstate:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ VM_servername }}"
-         validate_certs: false
-         state: powered-off
-      ignore_errors: yes
+        - name: Wait until virtual machine goes offline
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info
+          until:
+            - vm_tools_info is not failed
+            - vm_tools_info.value.run_state == "NOT_RUNNING"
+          retries: 60
+          delay: 5
 
-    - name: Wait until virtual machine goes offline
-      vmware.vmware_rest.vcenter_vm_tools_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        vm: '{{ pre_result.value[0].vm }}'
-      register: vm_tools_info
-      until:
-      - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "NOT_RUNNING"
-      retries: 60
-      delay: 5
+        - name: Increase the Memory Size on the VM
+          community.vmware.vmware_guest:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            hardware:
+              memory_mb: "{{ memory_increase }}"
+            state: present
+          when: variables.Action_Required == 'Increase'
+          register: mem_result_increase
 
-    - name: Increase the Memory Size on the VM
-      community.vmware.vmware_guest:
-        hostname: '{{ Vcenter_Name }}'
-        username: '{{ VMWARE_USERNAME }}'
-        password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
-        hardware:
-          memory_mb: "{{ memory_increase }}"
-        state: present
-      when: variables.Action_Required == 'Increase'
-      register: mem_result_increase
+        - name: Decrease the Memory Size on the VM
+          community.vmware.vmware_guest:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            hardware:
+              memory_mb: "{{ memory_decrease }}"
+            state: present
+          when: variables.Action_Required == 'Decrease'
+          register: mem_result_decrease
 
-    - name: Decrease the  Memory Size on the VM
-      community.vmware.vmware_guest:
-        hostname: '{{ Vcenter_Name }}'
-        username: '{{ VMWARE_USERNAME }}'
-        password: '{{ VMWARE_PASSWORD }}'
-        validate_certs: false
-        name: "{{ VM_servername }}"
-        hardware:
-          memory_mb: "{{ memory_decrease }}"
-        state: present
-      when: variables.Action_Required == 'Decrease'
-      register: mem_result_decrease
+        - name: Power ON the VM
+          community.vmware.vmware_guest_powerstate:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-on
 
-    - name: Power ON the VM
-      community.vmware.vmware_guest_powerstate:
-         hostname: '{{ Vcenter_Name }}'
-         username: '{{ VMWARE_USERNAME }}'
-         password: '{{ VMWARE_PASSWORD }}'
-         name: "{{ VM_servername }}"
-         validate_certs: false
-         name: "{{ VM_servername }}"
-         state: powered-on
-        
-    - name: Wait until my VM is ready
-      vmware.vmware_rest.vcenter_vm_tools_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        vm: '{{ pre_result.value[0].vm }}'
-      register: vm_tools_info
-      until:
-      - vm_tools_info is not failed
-      - vm_tools_info.value.run_state == "RUNNING"
-      retries: 60
-      delay: 5
+        - name: Wait until my VM is ready
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info
+          until:
+            - vm_tools_info is not failed
+            - vm_tools_info.value.run_state == "RUNNING"
+          retries: 60
+          delay: 5
 
-    - name: Get the VM inventory - post changes
-      register: post_result
-      vmware.vmware_rest.vcenter_vm_info:
-        vcenter_hostname: '{{ Vcenter_Name }}'
-        vcenter_username: '{{ VMWARE_USERNAME }}'
-        vcenter_password: '{{ VMWARE_PASSWORD }}'
-        vcenter_validate_certs: false
-        filter_names:
-        - "{{ VM_servername }}"
+        - name: Get the VM inventory - post changes
+          register: post_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
 
-    - name: Set Post VM Status
-      ansible.builtin.set_fact:
-        post_server_state: "{{ post_result.value[0].power_state }}"
-        current_memory_size_GB: "{{ ((current_memory_size | int) / 1024) | int }}"
-        resized_mem_size_GB: "{{ ((post_result.value[0].memory_size_MiB | int) / 1024) | int }}" 
-        
-    - name: Pass the collected artifact evidence to update SN close records
-      ansible.builtin.set_stats:
-        data:
-          Mem_size_before: "{{ current_memory_size_GB }}"  
-          Mem_size_after: "{{ resized_mem_size_GB }}" 
-          vm_power_state: "{{ post_server_state }}"
-          Mem_size_after_MB: "{{ post_result.value[0].memory_size_MiB }}"
-          catalog_item: Memory
+        - name: Set Post VM Status
+          ansible.builtin.set_fact:
+            post_server_state: "{{ post_result.value[0].power_state }}"
+            current_memory_size_GB: "{{ ((current_memory_size | int) / 1024) | int }}"
+            resized_mem_size_GB: "{{ ((post_result.value[0].memory_size_MiB | int) / 1024) | int }}" 
+
+        - name: Pass the collected artifact evidence to update SN close records
+          ansible.builtin.set_stats:
+            data:
+              Mem_size_before: "{{ current_memory_size_GB }}"  
+              Mem_size_after: "{{ resized_mem_size_GB }}" 
+              vm_power_state: "{{ post_server_state }}"
+              Mem_size_after_MB: "{{ post_result.value[0].memory_size_MiB }}"
+              catalog_item: Memory
+
+      rescue:
+        - name: Set failure message for the resize operation
+          ansible.builtin.set_fact:
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\nBut failure happened while resizing the memory.\nError detail: {{ ansible_failed_result.msg }}"
+         
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during memory resize. Error message: {{ error_message }}"
