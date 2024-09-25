@@ -59,6 +59,7 @@
           ansible.builtin.uri:
             url: "{{ SL1_HOSTNAME }}api/device?limit=10000"
             method: GET
+            validate_certs: false
             return_content: yes
             status_code: 200
             headers:
@@ -80,6 +81,7 @@
           ansible.builtin.uri:
             url: "{{ SL1_HOSTNAME }}api/task/"
             method: POST
+            validate_certs: false
             body_format: json
             body:
               name: "Ansible Task Creation"
@@ -116,6 +118,7 @@
           ansible.builtin.uri:
             url: "{{ SL1_HOSTNAME }}api/schedule"
             method: POST
+            validate_certs: false
             body_format: json
             body:
               dtstart: "{{ epoch_unix_time }}"
@@ -163,6 +166,7 @@
           ansible.builtin.uri:
             url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
             method: PUT
+            validate_certs: false
             body_format: json
             body:
               dtstart: "{{ epoch_unix_time }}"
