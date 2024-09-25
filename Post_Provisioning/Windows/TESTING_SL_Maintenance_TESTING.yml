@@ -67,6 +67,7 @@
             body_format: form-urlencoded
             user: "{{ SL1_USERNAME }}"
             password: "{{ SL1_PASSWORD }}"
+            timeout: 60
           register: api_response
 
         - ansible.builtin.debug: var=api_response
