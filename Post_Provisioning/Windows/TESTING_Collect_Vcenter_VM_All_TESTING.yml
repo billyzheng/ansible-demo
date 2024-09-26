@@ -7,7 +7,7 @@
     - block:
         - name: Extract datacenter name
           ansible.builtin.set_fact:
-            Vcenter_Name: "{{ hostvars[variables.servers | upper]['tag_category']['vcenter'] | first }}"
+            Vcenter_Name: "{{ hostvars[variables.server | upper]['tag_category']['vcenter'] | first }}"
 
         - name: Display info
           ansible.builtin.debug: 
