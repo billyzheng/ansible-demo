@@ -64,9 +64,9 @@
           ansible.builtin.set_stats:
             data:
               error_message: "{{ error_message }}"
-          when: cmdb_failed_message is defined
+          when: ansible_failed_result is defined
 
         - name: Fail the playbook if there is an error
           ansible.builtin.fail:
             msg: "Playbook failed during execution. Error message: {{ error_message }}"
-          when: cmdb_failed_message is defined
+          when: ansible_failed_result is defined
