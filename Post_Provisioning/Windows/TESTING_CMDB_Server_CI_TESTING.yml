@@ -11,7 +11,7 @@
             return_content: true
             body:
               grant_type: password
-              client_id: "{{ SN_CLIENT_ID }}
+              client_id: "{{ SN_CLIENT_ID1 }}"
               client_secret: "{{ SN_CLIENT_SECERT }}"
               username: "{{ SN_USERNAME }}"
               password: "{{ SN_PASSWORD }}"
