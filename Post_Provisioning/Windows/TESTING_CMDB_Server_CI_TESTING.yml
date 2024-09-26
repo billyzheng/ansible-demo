@@ -63,7 +63,7 @@
         - name: Forward failure message
           ansible.builtin.set_stats:
             data:
-              cmdb_failed_message: "{{ error_message }}"
+              error_message: "{{ error_message }}"
           when: cmdb_failed_message is defined
 
         - name: Fail the playbook if there is an error
