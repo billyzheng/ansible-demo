@@ -50,7 +50,7 @@
       rescue: 
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
-            error_message: "Unable to find the server in the Vcenter.\nError detail: {{ ansible_failed_result.msg }}"
+            error_message: "Whole Change needs to be deployed manually, due to below error.\nError detail: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
