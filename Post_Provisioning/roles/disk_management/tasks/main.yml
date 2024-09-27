@@ -61,7 +61,7 @@
       win_partition:
         disk_number: "{{ item.number }}"
         partition_size: -1
-        drive_letter: "{{ '%c' | format(index + 68) }}"  
+        drive_letter: "{{ mrvs_variables[index].select_the_number_of_additional_drives }}"
         state: present
       loop: "{{ r_partition }}"
       loop_control:
@@ -69,7 +69,7 @@
 
     - name: Format the partition
       win_format:
-        drive_letter: "{{ '%c' | format(index + 68) }}"  
+        drive_letter: "{{ mrvs_variables[index].select_the_number_of_additional_drives }}"
         file_system: NTFS
         new_label: "{{ mrvs_variables[index].disk_label }}"
       loop: "{{ r_partition }}"
@@ -78,9 +78,79 @@
 
     - name: Final Disk details
       debug:
-        msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }} with label '{{ mrvs_variables[index].disk_label }}' and size '{{ mrvs_variables[index].disk_size_gb }} GB'"
+        msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ mrvs_variables[index].select_the_number_of_additional_drives }} with label '{{ mrvs_variables[index].disk_label }}' and size '{{ mrvs_variables[index].disk_size_gb }} GB'"
       loop: "{{ r_partition }}"
       loop_control:
         index_var: index
 
-  when: index < mrvs_variables | length  
+  when: index < mrvs_variables | length
+
+# - name: Gather disk facts
+#   win_disk_facts:
+#   register: disk_facts
+
+# - name: Get C partition information
+#   set_fact:
+#     c_partition: "{{ disk_facts.ansible_facts.ansible_disks[0].partitions | selectattr('drive_letter', '==', 'C') | first }}"
+
+# - name: Resize C partition to maximum supported size
+#   win_partition:
+#     drive_letter: C
+#     partition_size: -1
+#   when: c_partition is defined
+
+# - name: Display message if C drive expansion is successful
+#   debug:
+#     msg: "C: drive expanded successfully"
+#   when: c_partition is defined
+
+# - name: Display message if no action was taken
+#   debug:
+#     msg: "C: drive expansion not required or failed"
+#   when: c_partition is not defined
+
+# - name: Get raw info to add additional disks 
+#   set_fact:
+#      r_partition: "{{ disk_facts.ansible_facts.ansible_disks | selectattr('partition_style', 'eq', 'RAW') | sort(attribute='number') }}"
+
+# - name: Get the specific details of RAW
+#   debug:
+#     var: r_partition
+
+# - name: Initialize raw disks
+#   win_initialize_disk:
+#     disk_number: "{{ item.number }}"
+#     style: gpt
+#   loop: "{{ r_partition }}"
+#   loop_control:
+#     index_var: index
+
+# - name: Create and format partitions based on input variables
+#   block:
+#     - name: Partition the disks
+#       win_partition:
+#         disk_number: "{{ item.number }}"
+#         partition_size: -1
+#         drive_letter: "{{ '%c' | format(index + 68) }}"  
+#         state: present
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#     - name: Format the partition
+#       win_format:
+#         drive_letter: "{{ '%c' | format(index + 68) }}"  
+#         file_system: NTFS
+#         new_label: "{{ mrvs_variables[index].disk_label }}"
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#     - name: Final Disk details
+#       debug:
+#         msg: "Disk {{ item.number }} partitioned, formatted and assigned the drive letter as {{ '%c' | format(index + 68) }} with label '{{ mrvs_variables[index].disk_label }}' and size '{{ mrvs_variables[index].disk_size_gb }} GB'"
+#       loop: "{{ r_partition }}"
+#       loop_control:
+#         index_var: index
+
+#   when: index < mrvs_variables | length  
