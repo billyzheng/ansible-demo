@@ -78,7 +78,7 @@
 
         - name: Create the Maintenance Task for the Server "{{ VM_servername }}"
           ansible.builtin.uri:
-            url: "{{ SL1_HOSTNAME1 }}api/task/"
+            url: "{{ SL1_HOSTNAME }}api/task/"
             method: POST
             body_format: json
             body:
