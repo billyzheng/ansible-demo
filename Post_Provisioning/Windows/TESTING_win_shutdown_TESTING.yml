@@ -7,7 +7,7 @@
         - name: Collect the VM inventory details - before changes
           register: pre_result
           vmware.vmware_rest.vcenter_vm_info:
-            vcenter_hostname: '{{ Vcenter_Name1 }}'
+            vcenter_hostname: '{{ Vcenter_Name }}'
             vcenter_username: '{{ VMWARE_USERNAME }}'
             vcenter_password: '{{ VMWARE_PASSWORD }}'
             vcenter_validate_certs: false
