@@ -8,7 +8,7 @@
           block:
             - name: Calculate the difference in seconds
               set_fact:
-                seconds_diff: "{{ ((variables.downtime_windows_end | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
+                seconds_diff: "{{ ((variables.downtime_windows_end1 | to_datetime('%Y-%m-%d %H:%M:%S') - variables.Downtime_Windows_Start | to_datetime('%Y-%m-%d %H:%M:%S')).total_seconds()) | float }}"
 
             - name: Convert seconds difference to minutes
               set_fact:
