@@ -5,7 +5,7 @@
     - block:
         - name: Join VM to the Active Directory domain
           microsoft.ad.membership:
-            dns_domain_name: dveurope.dvabb.dev
+            dns_domain_name: europe.abb.com
             domain_admin_user: "{{ AD_USERNAME }}"
             domain_admin_password: "{{ AD_PASSWORD }}"
             hostname: "{{ VMware_VM_name }}"
