@@ -9,7 +9,7 @@
             domain_admin_user: "{{ AD_USERNAME }}"
             domain_admin_password: "{{ AD_PASSWORD }}"
             hostname: "{{ VMware_VM_name }}"
-            domain_ou_path: "OU=ANSI-AUTO,OU=Servers,OU=XE,DC=dveurope,DC=dvabb,DC=dev" 
+            domain_ou_path: "OU=Servers_N,OU=XEABB,OU=XE,DC=europe,DC=abb,DC=com" 
             state: domain
           register: domain_state
 
