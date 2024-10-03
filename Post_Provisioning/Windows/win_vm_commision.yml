@@ -36,7 +36,7 @@
             validate_certs: False
             datacenter: "{{ Vmware_datacenter }}"
             cluster: "{{ Vmware_cluster }}"
-           # folder: "{{ VMware_VM_folder }}"
+            folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
             template: "{{ VMware_VM_template }}"
             disk: "{{ all_disks }}"  # Use the entire list of disks directly
