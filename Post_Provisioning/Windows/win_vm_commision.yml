@@ -38,7 +38,7 @@
             cluster: "{{ Vmware_cluster }}"
             folder: "{{ VMware_VM_folder }}"
             name: "{{ VMware_VM_name }}"
-            template: "{{ VMware_VM_template }}"
+       #     template: "{{ VMware_VM_template }}"
             disk: "{{ all_disks }}"  # Use the entire list of disks directly
             networks:
             - name: "{{ Vmware_networks }}"
@@ -66,7 +66,7 @@
       rescue:
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
-             error_message: "Infoblox allotted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_NAME }}. But failure happened during VM build with the error: {{ ansible_failed_result.msg }}"
+             error_message: "Infoblox allotted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}. But failure happened during VM build with the error: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
