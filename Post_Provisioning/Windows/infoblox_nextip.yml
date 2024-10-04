@@ -35,7 +35,7 @@
       rescue:
         - name: Set failure message to be used in next workflow
           ansible.builtin.set_fact:
-            error_message: "Server { variables.hostname_acronym }} failed to build at initial stage due to the error: {{ ansible_failed_result.msg }}"
+            error_message: "Server {{ VMware_VM_name }} failed to build at initial stage due to the error: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
