@@ -78,6 +78,7 @@
         - name: Set var to pass down to next Job template
           set_stats:
             data:
+              Vmware_Vcenter: "{{ my_list[0].Vcenter }}"
               Vmware_datacenter: "{{ my_list[0].Vmware_datacenter }}"
               Vmware_cluster: "{{ my_list[0].Vmware_cluster }}"  
               Vmware_datastore: "{{ selected_datastores.ansible_facts.vm_datastore }}"  
