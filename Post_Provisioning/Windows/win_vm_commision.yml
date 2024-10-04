@@ -33,6 +33,9 @@
     - block:
         - name: Create VM from template
           vmware_guest:
+            hostname: "{{ Vmware_Vcenter }}"
+            username: "{{ VMWARE_USERNAME }}"
+            password: "{{ VMWARE_PASSWORD }}"
             validate_certs: False
             datacenter: "{{ Vmware_datacenter }}"
             cluster: "{{ Vmware_cluster }}"
