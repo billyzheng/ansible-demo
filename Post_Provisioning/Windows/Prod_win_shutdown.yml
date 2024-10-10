@@ -1,0 +1,103 @@
+---
+- name: Shutdown the VM
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - block:
+        - name: Collect the VM inventory details - before changes
+          register: pre_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"    
+        
+        - name: Check VM power state
+          community.vmware.vmware_vm_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            vm_name: "{{ VM_servername }}"
+            validate_certs: false
+          register: vm_power_state
+
+        - name: Fail if server is already shut down or shutdown task did not change state
+          ansible.builtin.fail:
+            msg: "Server is already shut down or shutdown task did not change state."
+          when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
+      
+        - name: Shutdown the VM
+          community.vmware.vmware_guest_powerstate:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: shutdown-guest
+          when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOn'
+        
+        - name: Wait until virtual machine offline
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info
+          until:
+            - vm_tools_info is not failed
+            - vm_tools_info.value.run_state == "NOT_RUNNING"
+          retries: 60
+          delay: 5
+
+        - name: Set few seconds wait time at power off state
+          ansible.builtin.wait_for:
+            timeout: 20
+
+        - name: Re-check VM power state after wait and collect the VM inventory details - after changes
+          community.vmware.vmware_vm_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            vm_name: "{{ VM_servername }}"
+            validate_certs: false
+          register: post_result
+          until:
+            - post_result.virtual_machines | length > 0
+            - post_result.virtual_machines[0].power_state == 'poweredOff'
+          retries: 20
+          delay: 5
+
+        - name: Log VM power state before and after shutdown
+          ansible.builtin.debug:
+            msg: |
+              Pre Shutdown Power State: {{ pre_result.value[0].power_state }}
+              Post Shutdown Power State: {{ post_result.virtual_machines[0].power_state }}
+
+        - name: Set Post VM Status
+          ansible.builtin.set_fact:
+            pre_server_state: "{{ pre_result.value[0].power_state }}"
+            post_server_state: "{{ post_result.virtual_machines[0].power_state }}"
+
+        - name: Pass the collected artifacts to next workflow
+          ansible.builtin.set_stats:
+            data:
+              vm_pre_power_state: "{{ pre_server_state }}" 
+              vm_post_power_state: "{{ post_server_state }}" 
+              catalog_item: Shutdown
+
+      rescue:
+        - name: Set failure message for the shutdown operation
+          ansible.builtin.set_fact:
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\n2. Server {{ VM_servername }} failed to shut down.\nError detail: {{ ansible_failed_result.msg }}"
+         
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during VM shutdown. Error message: {{ error_message }}"
