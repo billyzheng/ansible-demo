@@ -161,7 +161,7 @@
 
         - name: Link Task with Schedule for the Server "{{ VM_servername }}"
           ansible.builtin.uri:
-            url: https://test.monitoring.abb.com/api/schedule/{{ schedule_id }}
+            url: "{{ SL1_HOSTNAME }}api/schedule/{{ schedule_id }}"
             method: PUT
             body_format: json
             body:
