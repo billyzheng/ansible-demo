@@ -1,0 +1,89 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Grab token using OAuth
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/oauth_token.do"
+        method: POST
+        body_format: form-urlencoded
+        return_content: true
+        body:
+          grant_type : password
+          client_id : "{{ SN_CLIENT_ID }}"
+          client_secret : "{{ SN_CLIENT_SECERT }}"
+          username : "{{ SN_USERNAME }}"
+          password : "{{ SN_PASSWORD }}"
+      register: oauth_return_token
+
+    - name: Ansible close the CATASK if CPU resize success
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
+        method: PATCH
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: "3"
+          close_code: "successful"
+          close_notes: "Automation task successfully {{ variables.Action_Required }} the CPU on server {{ variables.server }}.\nCPU {{ variables.Action_Required }} evidence:\n Before resize: {{ CPU_Core_before }} cores\n After resize: {{ CPU_Core_after }} cores.\nVM current power state is {{ vm_power_state }}"
+          work_notes: "Automation task is resizing the CPU on server {{ variables.server }}."
+          sys_id: "{{ change_task_sys_id }}"
+      when: catalog_item == 'CPU'
+      register: SR_close_ctask  
+
+    - name: Ansible close the CATASK if Memory resize success
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
+        method: PATCH
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: "3"
+          close_code: "successful"
+          close_notes: "Automation task successfully {{ variables.Action_Required }} the Memory on server {{ variables.server }}.\nMemory {{ variables.Action_Required }} evidence:\n Before Resize: {{ Mem_size_before }} GB\n After Resize: {{ Mem_size_after }} GB.\nVM current power state is {{ vm_power_state }}"
+          work_notes: "Automation task is resizing the Memory on server {{ variables.server }}."
+          sys_id: "{{ change_task_sys_id }}"
+      when: catalog_item == 'Memory'
+      register: SR_close_ctask  
+
+    - name: Ansible close the CATASK if VM reboot is success
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
+        method: PATCH
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: "3"
+          close_code: "successful"
+          close_notes: "Automation task successfully rebooted the server {{ variables.server }}.\nServer Reboot evidence:\n Time before Reboot: {{ time_before_reboot }}\n Time after Reboot: {{ time_after_reboot }}\nVM current power state is {{ vm_power_state }}"
+          work_notes: "Automation task is rebooting the server {{ variables.server }}."
+          sys_id: "{{ change_task_sys_id }}"
+      when: catalog_item == 'Reboot'    
+      register: SR_close_ctask  
+
+    - name: Ansible close the CATASK if VM shutdown is success
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/v2/generic_change/updateChangeTask"
+        method: PATCH
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: "3"
+          close_code: "successful"
+          close_notes: "Automation task successfully shutdown the server {{ variables.server }}.\nVirtual Machin Shutdown Evidence:\n  Server status before Shutdown: {{ vm_pre_power_state }}\n  Current status of server: {{ vm_post_power_state }}"
+          work_notes: "Automation task is shuting down the server {{ variables.server }}."
+          sys_id: "{{ change_task_sys_id }}"
+      when: catalog_item == 'Shutdown'    
+      register: SR_close_ctask  
