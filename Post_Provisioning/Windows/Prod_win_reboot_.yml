@@ -1,0 +1,171 @@
+---
+- name: Reboot the VM
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - block:
+        - name: Get the VM inventory - before changes
+          register: pre_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
+
+        - name: Gather VM information
+          community.vmware.vmware_vm_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            vm_name: "{{ VM_servername }}"
+            validate_certs: false
+          register: vm_info
+
+        - ansible.builtin.debug: var=vm_info
+        
+        - name: Filter datacenter value
+          ansible.builtin.set_fact:
+            datacenter_value: "{{ vm_info.virtual_machines[0].datacenter }}"
+       
+        - name: Fetch the VM time before reboot
+          community.vmware.vmware_guest_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            datacenter: "{{ datacenter_value }}"
+            schema: "vsphere"
+            properties: ["summary.runtime.bootTime"]
+          register: time_before_boot
+
+        - ansible.builtin.debug: var=time_before_boot
+
+        - name: Set last reboot time 
+          ansible.builtin.set_fact:
+            last_boot_time: "{{ time_before_boot.instance.summary.runtime.bootTime }}"
+       
+        - name: Check VM power state
+          community.vmware.vmware_vm_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            vm_name: "{{ VM_servername }}"
+            validate_certs: false
+          register: vm_power_state
+
+        - name: Fail if server is already Powered off. 
+          ansible.builtin.fail:
+            msg: "Server is already in Powered OFF state. Please check the server manually."
+          when: vm_power_state.virtual_machines | length > 0 and vm_power_state.virtual_machines[0].power_state == 'poweredOff'
+
+        - name: Set the state of a virtual machine to power off
+          community.vmware.vmware_guest_powerstate:
+            hostname: "{{ Vcenter_Name }}"
+            username: "{{ VMWARE_USERNAME }}"
+            password: "{{ VMWARE_PASSWORD }}"
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-off
+          register: poweroff_result
+
+        - name: Wait until virtual machine offline
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info_off
+          until:
+            - vm_tools_info_off is not failed
+            - vm_tools_info_off.value.run_state == "NOT_RUNNING"
+          retries: 60
+          delay: 5
+
+        - name: Set few seconds wait time at power off state
+          ansible.builtin.wait_for:
+            timeout: 10
+
+        - name: Power ON the virtual machine
+          community.vmware.vmware_guest_powerstate:
+            hostname: "{{ Vcenter_Name }}"
+            username: "{{ VMWARE_USERNAME }}"
+            password: '{{ VMWARE_PASSWORD }}'
+            name: "{{ VM_servername }}"
+            validate_certs: false
+            state: powered-on
+          register: poweron_result
+
+        - name: Wait for reboot to happen
+          ansible.builtin.wait_for:
+            timeout: 30
+
+        - name: Wait until my VM is ready
+          vmware.vmware_rest.vcenter_vm_tools_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            vm: '{{ pre_result.value[0].vm }}'
+          register: vm_tools_info_on
+          until:
+            - vm_tools_info_on is not failed
+            - vm_tools_info_on.value.run_state == "RUNNING"
+          retries: 60
+          delay: 5
+
+        - name: Fetch the VM time after reboot
+          community.vmware.vmware_guest_info:
+            hostname: '{{ Vcenter_Name }}'
+            username: '{{ VMWARE_USERNAME }}'
+            password: '{{ VMWARE_PASSWORD }}'
+            validate_certs: false
+            name: "{{ VM_servername }}"
+            datacenter: "{{ datacenter_value }}"
+            schema: "vsphere"
+            properties: ["summary.runtime.bootTime"]
+          register: time_after_boot
+
+        - ansible.builtin.debug: var=time_after_boot
+
+        - name: Set latest reboot time
+          ansible.builtin.set_fact:
+            final_boot_time: "{{ time_after_boot.instance.summary.runtime.bootTime }}"
+    
+        - name: Get the VM inventory - post changes
+          register: post_result
+          vmware.vmware_rest.vcenter_vm_info:
+            vcenter_hostname: '{{ Vcenter_Name }}'
+            vcenter_username: '{{ VMWARE_USERNAME }}'
+            vcenter_password: '{{ VMWARE_PASSWORD }}'
+            vcenter_validate_certs: false
+            filter_names:
+            - "{{ VM_servername }}"
+      
+        - name: Set Post VM Status
+          ansible.builtin.set_fact:
+            post_server_state: "{{ post_result.value[0].power_state }}"
+        
+        - ansible.builtin.set_stats:
+            data:
+              time_before_reboot: "{{ last_boot_time }}"
+              time_after_reboot: "{{ final_boot_time }}"
+              vm_power_state: "{{ post_server_state }}" 
+              catalog_item: Reboot
+
+      rescue:
+        - name: Set failure message for the reboot operation
+          ansible.builtin.set_fact:
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\n2. Server {{ VM_servername }} failed to reboot.\nError detail: {{ ansible_failed_result.msg }}"
+         
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during VM reboot. Error message: {{ error_message }}"
