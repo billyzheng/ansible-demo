@@ -57,7 +57,7 @@
 
         - name: Login into SL to get list of Server Device ID's
           ansible.builtin.uri:
-            url: "{{ SL1_HOSTNAME }}api/device?limit=10000"
+            url: "{{ SL1_HOSTNAME }}api/device?limit=1000000"
             method: GET
             return_content: yes
             status_code: 200
@@ -89,8 +89,8 @@
                 active: 12
                 patch_window: 0
               last_run: "0"
-              owner: "/api/account/77"
-              organization: "/api/organization/0"
+              owner: "/api/account/703"
+              organization: "/api/organization/5"
               visibility: "Organization"
               aligned_resource: "{{ server_api }}"
             status_code: 201
@@ -125,8 +125,8 @@
               recur_expr: "0"
               recur_unit: null
               recur_until: "0"
-              owner: "/api/account/77"
-              organization: "/api/organization/0"
+              owner: "/api/account/703"
+              organization: "/api/organization/5"
               visibility: "Organization"
               in_window: "0"
               preserve_in_db: "0"
@@ -172,8 +172,8 @@
               recur_expr: "0"
               recur_unit: null
               recur_until: "0"
-              owner: "/api/account/77"
-              organization: "/api/organization/0"
+              owner: "/api/account/703"
+              organization: "/api/organization/5"
               visibility: "Organization"
               in_window: "0"
               preserve_in_db: "0"
