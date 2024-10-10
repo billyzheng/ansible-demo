@@ -1,0 +1,70 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - block:
+        - name: Grab token using OAuth
+          ansible.builtin.uri:
+            url: "{{ SN_HOST }}/oauth_token.do"
+            method: POST
+            body_format: form-urlencoded
+            return_content: true
+            body:
+              grant_type: password
+              client_id: "{{ SN_CLIENT_ID }}"
+              client_secret: "{{ SN_CLIENT_SECERT }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+          register: oauth_return_token
+
+        - name: Ansible CMDB modification for CPU
+          ansible.builtin.uri:
+            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
+            method: POST
+            headers:
+              Content-Type: application/json
+              Accept: application/json
+              Authorization: "Bearer {{ oauth_return_token.json.access_token }}"
+            body_format: json
+            body:
+              items:
+                - className: cmdb_ci_win_server
+                  values:
+                    name: "{{ VM_servername }}"
+                    cpu_core_count: "{{ CPU_Core_after }}"
+                    cpu_count: '1'
+          when: catalog_item == 'CPU'
+
+        - name: Ansible CMDB modification for Memory
+          ansible.builtin.uri:
+            url: "{{ SN_HOST }}/api/now/identifyreconcile?sysparm_data_source=Ansible"
+            method: POST
+            headers:
+              Content-Type: application/json
+              Accept: application/json
+              Authorization: "Bearer {{ oauth_return_token.json.access_token }}"
+            body_format: json
+            body:
+              items:
+                - className: cmdb_ci_win_server
+                  values:
+                    name: "{{ VM_servername }}"
+                    ram: "{{ Mem_size_after_MB }}"
+          when: catalog_item == 'Memory'
+
+      rescue:
+        - name: Set failure message to be used in the next workflow
+          ansible.builtin.set_fact:
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\n2. Requested {{ catalog_item }} change completed.\nBut failure happend while updating the {{ catalog_item }} CMDB CI details.\nError detail: {{ ansible_failed_result.msg }}"
+          when: ansible_failed_result is defined
+
+        - name: Forward failure message
+          ansible.builtin.set_stats:
+            data:
+              error_message: "{{ error_message }}"
+          when: ansible_failed_result is defined
+
+        - name: Fail the playbook if there is an error
+          ansible.builtin.fail:
+            msg: "Playbook failed during execution. Error message: {{ error_message }}"
+          when: ansible_failed_result is defined
