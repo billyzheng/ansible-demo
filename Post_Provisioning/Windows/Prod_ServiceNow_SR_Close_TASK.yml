@@ -1,0 +1,81 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Grab token using OAuth
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/oauth_token.do"
+        method: POST
+        body_format: form-urlencoded
+        return_content: true
+        body:
+          grant_type : password
+          client_id : "{{ SN_CLIENT_ID }}"
+          client_secret : "{{ SN_CLIENT_SECERT }}"
+          username : "{{ SN_USERNAME }}"
+          password : "{{ SN_PASSWORD }}"
+      register: oauth_return_token
+
+    - name: Ansible close the task if sucess
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+        method: PUT
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: CLOSED_COMPLETE
+          work_notes: "Closing the task"
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested CPU related task completed.\n3.Server {{ VM_servername }} CMDB CI updated with CPU count changes." 
+      when: catalog_item == 'CPU'
+      register: SR_task_close  
+
+    - name: Ansible close the task if sucess
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+        method: PUT
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: CLOSED_COMPLETE
+          work_notes: "Closing the task"
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Requested Memory related task completed.\n3.Server {{ VM_servername }} CMDB CI updated with Memory count changes." 
+      when: catalog_item == 'Memory'
+      register: SR_task_close
+
+    - name: Ansible close the task if sucess
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+        method: PUT
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: CLOSED_COMPLETE
+          work_notes: "Closing the task"
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VM_servername }} rebooted successfully." 
+      when: catalog_item == 'Reboot'
+      register: SR_task_close
+
+    - name: Ansible close the task if sucess
+      ansible.builtin.uri:
+        url: "{{ SN_HOST }}/api/abb2/fulfilment_automation/updateTask/{{ sn_task_number }}"
+        method: PUT
+        headers:
+          Content-Type : application/json
+          Accept : application/json
+          Authorization : "Bearer {{ oauth_return_token.json.access_token }}"
+        body_format: json
+        body: 
+          state: CLOSED_COMPLETE
+          work_notes: "Closing the task"
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1. {{ SL_Success_message }}.\n2.Server {{ VM_servername }} shutdowned successfully." 
+      when: catalog_item == 'Shutdown'
+      register: SR_task_close
