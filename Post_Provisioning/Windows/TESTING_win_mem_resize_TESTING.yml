@@ -139,7 +139,7 @@
       rescue:
         - name: Set failure message for the resize operation
           ansible.builtin.set_fact:
-            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\nBut failure happened while resizing the memory.\nError detail: {{ ansible_failed_result.msg }}"
+            error_message: "1. Server {{ VM_servername }} Science Logic maintenance enabled.\nBut failure happened while resizing the memory.\nError may be due to incorrect Memory value requested or server did not came up after shutdown, please check manually"
          
         - name: Forward failure message
           ansible.builtin.set_stats:
