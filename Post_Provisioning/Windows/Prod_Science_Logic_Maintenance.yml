@@ -74,7 +74,7 @@
           ansible.builtin.set_fact:
             server_api: "{{ item.URI }}"
           loop: "{{ api_response.json.result_set }}"
-          when: item.description == VM_servername
+          when: item.description == VM_servername or item.description == variables.server
 
         - name: Create the Maintenance Task for the Server "{{ VM_servername }}"
           ansible.builtin.uri:
