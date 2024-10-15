@@ -94,8 +94,8 @@
               VMware_VM_name: "{{ variables.hostname_acronym }}"
               VMware_VM_disk_size: "120"
               VMware_VM_folder: "POC-Ansible-automation-platform"
-           #   VMware_VM_template: "WIN2019-GOLD"
-              VMware_VM_template: "42147499-e3d1-b978-3e93-3f577de5b44c"
+              VMware_VM_template: "WIN2019-GOLD"
+           #   VMware_VM_template: "42147499-e3d1-b978-3e93-3f577de5b44c"
               Vmware_VM_CPU: "{{ Vmware_VM_CPU }}"
               Vmware_VM_mem: "{{ Vmware_VM_mem }}"
 
