@@ -28,9 +28,9 @@
           import_role:
             name: disk_management
 
-        - name: FlexNet Installation
-          import_role:
-            name: flexnet_installation   
+        # - name: FlexNet Installation
+        #   import_role:
+        #     name: flexnet_installation   
 
         - name: Onboarding the Defender
           import_role:
@@ -40,9 +40,9 @@
         #   import_role:
         #     name: dns_suffix_add
 
-        - name: Qualys Installation
-          import_role:
-            name: qualys_installation
+        # - name: Qualys Installation
+        #   import_role:
+        #     name: qualys_installation
 
         # - name: Splunk Installation
         #   import_role:
