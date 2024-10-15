@@ -7,11 +7,12 @@
     notes: Ansible Test
     dumpfacts: False
   tasks:
+    
     - set_fact:
         additional_disks: >-
-          [{% for disk in mrvs_variables %}
+          [{% for disk in (mrvs_variables | default([])) %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
-    
+      
     - set_fact:
         all_disks: >-
           [
@@ -33,6 +34,9 @@
     - block:
         - name: Create VM from template
           vmware_guest:
+            hostname: "{{ Vmware_Vcenter }}"
+            username: "{{ VMWARE_USERNAME }}"
+            password: "{{ VMWARE_PASSWORD }}"
             validate_certs: False
             datacenter: "{{ Vmware_datacenter }}"
             cluster: "{{ Vmware_cluster }}"
@@ -66,7 +70,7 @@
       rescue:
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
-             error_message: "Infoblox allotted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_NAME }}. But failure happened during VM build with the error: {{ ansible_failed_result.msg }}"
+             error_message: "Infoblox allotted the IP {{ VMware_VM_IP_address }} for {{ VMware_VM_name }}. But failure happened during VM build with the error: {{ ansible_failed_result.msg }}"
           when: ansible_failed_result is defined
 
         - name: Forward failure message
