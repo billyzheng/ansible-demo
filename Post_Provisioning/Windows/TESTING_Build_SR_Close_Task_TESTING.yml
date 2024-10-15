@@ -28,5 +28,5 @@
         body: 
           state: CLOSED_COMPLETE
           work_notes: "Closing the task"
-          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1.Server {{ VM_servername }} built Successfully.\n2.Server {{ VM_servername }} is added to domain.\n3.Server {{ VM_servername }} post provisioning completed successfully." 
+          closure_notes: "Ansible Automation job is completed successfully. \nCompleted Tasks Details:  \n\n1.Server {{ VMware_VM_name }} built Successfully.\n2.Server {{ VMware_VM_name }} is added to domain.\n3.Server {{ VMware_VM_name }} post provisioning completed successfully." 
       register: SR_task_close  
