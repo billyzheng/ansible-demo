@@ -7,11 +7,12 @@
     notes: Ansible Test
     dumpfacts: False
   tasks:
+    
     - set_fact:
         additional_disks: >-
-          [{% for disk in mrvs_variables %}
+          [{% for disk in (mrvs_variables | default([])) %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
-    
+      
     - set_fact:
         all_disks: >-
           [
