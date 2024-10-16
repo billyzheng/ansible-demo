@@ -22,6 +22,10 @@
           when: domain_state.reboot_required
           ignore_errors: true
 
+        - name: Wait for 60 seconds
+          ansible.windows.win_wait_for:
+             timeout: 60
+
       rescue:
         - name: Set failure message to be used in the next workflow
           ansible.builtin.set_fact:
