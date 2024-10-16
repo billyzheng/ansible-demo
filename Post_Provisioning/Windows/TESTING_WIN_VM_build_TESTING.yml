@@ -10,10 +10,9 @@
     
     - set_fact:
         additional_disks: >-
-          [{% for disk in mrvs_variables %}
+          [{% for disk in (mrvs_variables | default([])) %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
-      when: mrvs_variables is defined     
-
+      
     - set_fact:
         all_disks: >-
           [
@@ -22,18 +21,15 @@
               "type": "thin",
               "datastore": "{{ Vmware_datastore }}"
             }
-            {% if mrvs_variables is defined %}
-             {% for disk in additional_disks %}
-             ,
-             {
-               "size_gb": "{{ disk.size_gb }}",
-               "type": "{{ disk.type }}",
-               "datastore": "{{ disk.datastore }}"
-             }
-             {% endfor %}
-            {% endif %}
+            {% for disk in additional_disks %}
+            ,
+            {
+              "size_gb": "{{ disk.size_gb }}",
+              "type": "{{ disk.type }}",
+              "datastore": "{{ disk.datastore }}"
+            }
+            {% endfor %}
           ]
-      
 
     - block:
         - name: Create VM from template
