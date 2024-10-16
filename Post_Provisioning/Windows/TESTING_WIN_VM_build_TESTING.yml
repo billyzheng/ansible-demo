@@ -32,6 +32,27 @@
             {% endfor %}
           ]
 
+    - set_fact:
+        all_disks: >-
+          [
+            {
+              "size_gb": "{{ VMware_VM_disk_size }}",
+              "type": "thin",
+              "datastore": "{{ Vmware_datastore }}"
+            }
+            {% if mrvs_variables is defined %}
+             {% for disk in additional_disks %}
+             ,
+             {
+               "size_gb": "{{ disk.size_gb }}",
+               "type": "{{ disk.type }}",
+               "datastore": "{{ disk.datastore }}"
+             }
+             {% endfor %}
+            {% endif %}
+          ]
+      
+
     - block:
         - name: Create VM from template
           vmware_guest:
