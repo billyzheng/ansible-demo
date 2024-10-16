@@ -10,8 +10,9 @@
     
     - set_fact:
         additional_disks: >-
-          [{% for disk in (mrvs_variables | default([])) %}
+          [{% for disk in mrvs_variables %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
+      when: mrvs_variables is defined
       
     - set_fact:
         all_disks: >-
