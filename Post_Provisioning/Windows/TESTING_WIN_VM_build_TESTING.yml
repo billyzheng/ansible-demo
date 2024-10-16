@@ -12,25 +12,7 @@
         additional_disks: >-
           [{% for disk in mrvs_variables %}
             { "size_gb": {{ disk.disk_size_gb }}, "type": "thin", "datastore": "{{ Vmware_datastore }}" }{% if not loop.last %}, {% endif %}{% endfor %}]
-      when: mrvs_variables is defined
-      
-    - set_fact:
-        all_disks: >-
-          [
-            {
-              "size_gb": "{{ VMware_VM_disk_size }}",
-              "type": "thin",
-              "datastore": "{{ Vmware_datastore }}"
-            }
-            {% for disk in additional_disks %}
-            ,
-            {
-              "size_gb": "{{ disk.size_gb }}",
-              "type": "{{ disk.type }}",
-              "datastore": "{{ disk.datastore }}"
-            }
-            {% endfor %}
-          ]
+      when: mrvs_variables is defined     
 
     - set_fact:
         all_disks: >-
