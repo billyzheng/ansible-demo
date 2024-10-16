@@ -1,19 +1,19 @@
 ---
-- name: Check if CD drive exists
-  win_shell: Get-WmiObject win32_volume -Filter 'DriveType = "5"'
-  register: cd_drive_info
+# - name: Check if CD drive exists
+#   win_shell: Get-WmiObject win32_volume -Filter 'DriveType = "5"'
+#   register: cd_drive_info
 
-- name: Display message if CD drive does not exist
-  debug:
-    msg: "CD drive does not exist"
-  when: cd_drive_info.stdout == ''
+# - name: Display message if CD drive does not exist
+#   debug:
+#     msg: "CD drive does not exist"
+#   when: cd_drive_info.stdout == ''
 
-- name: Change CD drive letter to Z
-  win_shell: |
-    $cd = Get-WmiObject win32_volume -Filter 'DriveType = "5"'
-    $cd.DriveLetter = "Z:"
-    $cd.put()
-  when: cd_drive_info.stdout != ''
+# - name: Change CD drive letter to Z
+#   win_shell: |
+#     $cd = Get-WmiObject win32_volume -Filter 'DriveType = "5"'
+#     $cd.DriveLetter = "Z:"
+#     $cd.put()
+#   when: cd_drive_info.stdout != ''
 
 - name: Gather disk facts
   win_disk_facts:
