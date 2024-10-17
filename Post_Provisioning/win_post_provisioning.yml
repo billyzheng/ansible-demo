@@ -14,6 +14,9 @@
     ansible_winrm_server_cert_validation: ignore
   tasks:
     - block:
+        - name: Reboot the VM
+          import_role: 
+             name: reboot_vm
         # - name: Validate and set the system timezone
         #   import_role:
         #     name: timezone
@@ -30,9 +33,9 @@
         #   import_role:
         #     name: disable_firewall
 
-        - name: Disk Management
-          import_role:
-            name: disk_management
+        # - name: Disk Management
+        #   import_role:
+        #     name: disk_management
 
         # - name: FlexNet Installation
         #   import_role:
