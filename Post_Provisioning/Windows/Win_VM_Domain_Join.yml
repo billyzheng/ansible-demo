@@ -25,6 +25,8 @@
         - name: Wait for 60 seconds
           ansible.windows.win_wait_for:
              timeout: 60
+          ignore_errors: true
+          
 
       rescue:
         - name: Set failure message to be used in the next workflow
