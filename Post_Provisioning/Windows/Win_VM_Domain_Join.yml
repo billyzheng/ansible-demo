@@ -13,19 +13,19 @@
             state: domain
           register: domain_state
 
-        - name: Show domain state output
-          debug: 
-            msg: "{{ domain_state }}"
+        # - name: Show domain state output
+        #   debug: 
+        #     msg: "{{ domain_state }}"
 
-        - name: Reboot the VM if required
-          ansible.windows.win_reboot:
-          when: domain_state.reboot_required
-          ignore_errors: true
+        # - name: Reboot the VM if required
+        #   ansible.windows.win_reboot:
+        #   when: domain_state.reboot_required
+        #   ignore_errors: true
 
-        - name: Wait for 60 seconds
-          ansible.windows.win_wait_for:
-             timeout: 60
-          ignore_errors: true
+        # - name: Wait for 60 seconds
+        #   ansible.windows.win_wait_for:
+        #      timeout: 60
+        #   ignore_errors: true
           
 
       rescue:
