@@ -6,6 +6,12 @@
     - ansible.windows
     - community.vmware
     - community.windows
+  vars:
+    ansible_user: '.\srv-local-admin'
+    ansible_password: 'P@ssw0rd123456'
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm  # or basic, but ntlm is recommended for local accounts
+    ansible_winrm_server_cert_validation: ignore
   tasks:
     - block:
         # - name: Validate and set the system timezone
