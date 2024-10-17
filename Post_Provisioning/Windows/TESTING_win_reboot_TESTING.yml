@@ -66,7 +66,7 @@
             hostname: "{{ Vcenter_Name }}"
             username: "{{ VMWARE_USERNAME }}"
             password: "{{ VMWARE_PASSWORD }}"
-            name: "{{ VM_servername }}"
+            name: "{{ VMware_VM_name }}"
             validate_certs: false
             state: powered-off
           register: poweroff_result
@@ -94,7 +94,7 @@
             hostname: "{{ Vcenter_Name }}"
             username: "{{ VMWARE_USERNAME }}"
             password: '{{ VMWARE_PASSWORD }}'
-            name: "{{ VM_servername }}"
+            name: "{{ VMware_VM_name }}"
             validate_certs: false
             state: powered-on
           register: poweron_result
