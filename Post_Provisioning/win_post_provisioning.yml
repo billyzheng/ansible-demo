@@ -6,53 +6,44 @@
     - ansible.windows
     - community.vmware
     - community.windows
-  # vars:
-    # ansible_user: '.\srv-local-admin'
-    # ansible_password: 'P@ssw0rd123456'
-    # ansible_connection: winrm
-    # ansible_winrm_transport: ntlm  
-    # ansible_winrm_server_cert_validation: ignore
   tasks:
     - block:
-        # - name: Reboot the VM
-        #   import_role: 
-        #      name: reboot_vm
-             
+                   
         - name: Validate and set the system timezone
           import_role:
             name: timezone
 
-        # - name: KMS OS registration
-        #   import_role:
-        #     name: kms_registration
+        - name: KMS OS registration
+          import_role:
+            name: kms_registration
 
-        # - name: Enable the RDP
-        #   import_role:
-        #     name: enable_rdp
+        - name: Enable the RDP
+          import_role:
+            name: enable_rdp
         
-        # - name: Disable the firewall rules
-        #   import_role:
-        #     name: disable_firewall
+        - name: Disable the firewall rules
+          import_role:
+            name: disable_firewall
 
-        # - name: Disk Management
-        #   import_role:
-        #     name: disk_management
+        - name: Disk Management
+          import_role:
+            name: disk_management
 
-        # - name: FlexNet Installation
-        #   import_role:
-        #     name: flexnet_installation   
+        - name: FlexNet Installation
+          import_role:
+            name: flexnet_installation   
 
-        # - name: Onboarding the Defender
-        #   import_role:
-        #     name: defender_onboarding
+        - name: Onboarding the Defender
+          import_role:
+            name: defender_onboarding
 
-        # - name: Adding the DNS Suffix
-        #   import_role:
-        #     name: dns_suffix_add
+        - name: Adding the DNS Suffix
+          import_role:
+            name: dns_suffix_add
 
-        # - name: Qualys Installation
-        #   import_role:
-        #     name: qualys_installation
+        - name: Qualys Installation
+          import_role:
+            name: qualys_installation
 
         # - name: Splunk Installation
         #   import_role:
