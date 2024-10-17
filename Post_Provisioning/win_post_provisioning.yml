@@ -6,20 +6,21 @@
     - ansible.windows
     - community.vmware
     - community.windows
-  vars:
-    ansible_user: '.\srv-local-admin'
-    ansible_password: 'P@ssw0rd123456'
-    ansible_connection: winrm
-    ansible_winrm_transport: ntlm  
-    ansible_winrm_server_cert_validation: ignore
+  # vars:
+  #   # ansible_user: '.\srv-local-admin'
+  #   # ansible_password: 'P@ssw0rd123456'
+  #   # ansible_connection: winrm
+  #   # ansible_winrm_transport: ntlm  
+  #   # ansible_winrm_server_cert_validation: ignore
   tasks:
     - block:
         - name: Reboot the VM
           import_role: 
              name: reboot_vm
-        # - name: Validate and set the system timezone
-        #   import_role:
-        #     name: timezone
+             
+        - name: Validate and set the system timezone
+          import_role:
+            name: timezone
 
         # - name: KMS OS registration
         #   import_role:
