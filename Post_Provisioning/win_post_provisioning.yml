@@ -14,9 +14,9 @@
     # ansible_winrm_server_cert_validation: ignore
   tasks:
     - block:
-        - name: Reboot the VM
-          import_role: 
-             name: reboot_vm
+        # - name: Reboot the VM
+        #   import_role: 
+        #      name: reboot_vm
              
         - name: Validate and set the system timezone
           import_role:
