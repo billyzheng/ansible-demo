@@ -1,5 +1,5 @@
 ---
-- name: Manage local group members on Windows servers
+- name: Manage and validate local group members on Windows servers
   hosts: all
   gather_facts: no
   collections:
@@ -27,6 +27,31 @@
     debug:
       msg: "Local Administrators added"
 
+  - name: Fetch current members of Administrators group
+    win_group:
+      name: Administrators
+      state: query
+    register: admin_group_members
+
+  - name: Display current members of Administrators group
+    debug:
+      msg: "Members in Administrators group: {{ admin_group_members.members | join(', ') }}"
+
+  - name: Validate members in Administrators group
+    debug:
+      msg: "Validation: Expected members are present in Administrators group."
+    when: 
+      - 'abb\\HPAM-TCS-Backup-Servers-Admins-RW' in admin_group_members.members
+      - 'abb\\HPAM-TCS-Wintel-Servers-Admins-RW' in admin_group_members.members
+      - 'abb\\HPAM-TCS-CC-Servers-Admins-RW' in admin_group_members.members
+      - 'abb\\xeqgscan' in admin_group_members.members
+      - 'europe\\abbitim-abb_dc1_admin_access_windows' in admin_group_members.members
+      - 'europe\\abbitim-abb_dc1_rdusers_access_windows' in admin_group_members.members
+      - 'europe\\tcsitim-tcsch_windows_team' in admin_group_members.members
+      - 'europe\\tcs-eur-win-srv' in admin_group_members.members
+      - 'ABB\\GLB-ABBCMDB' in admin_group_members.members
+      - 'ABB\\TCS-PAM-Scan' in admin_group_members.members
+
   - name: Add member to Remote Desktop Users group
     win_group:
       name: Remote Desktop Users
@@ -37,4 +62,18 @@
   - name: Log message for Remote Desktop Users group addition
     debug:
       msg: "Remote Desktop Users added"
-    
+
+  - name: Fetch current members of Remote Desktop Users group
+    win_group:
+      name: Remote Desktop Users
+      state: query
+    register: rdusers_group_members
+
+  - name: Display current members of Remote Desktop Users group
+    debug:
+      msg: "Members in Remote Desktop Users group: {{ rdusers_group_members.members | join(', ') }}"
+
+  - name: Validate member in Remote Desktop Users group
+    debug:
+      msg: "Validation: Expected member is present in Remote Desktop Users group."
+    when: 'europe\\abbitim-abb_dc1_rdusers_access_windows' in rdusers_group_members.members
