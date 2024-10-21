@@ -1,0 +1,50 @@
+---
+- name: Manage local group members on Windows servers
+  hosts: all
+  gather_facts: no
+  collections:
+    - ansible.windows
+
+  tasks:
+  - name: Ping the Windows hosts
+    win_ping:
+     
+  - name: Get filesystem drives
+    win_shell: Get-PSDrive -PSProvider FileSystem
+    register: filesystem_drives
+
+  - name: Display the filesystem drives
+    debug:
+      var: filesystem_drives.stdout_lines
+  
+  - name: Add members to Administrators group
+    win_group:
+      name: Administrators
+      members:
+        - 'abb\HPAM-TCS-Backup-Servers-Admins-RW'
+        - 'abb\HPAM-TCS-Wintel-Servers-Admins-RW'
+        - 'abb\HPAM-TCS-CC-Servers-Admins-RW'
+        - 'abb\xeqgscan'
+        - 'europe\abbitim-abb_dc1_admin_access_windows'
+        - 'europe\abbitim-abb_dc1_rdusers_access_windows'
+        - 'europe\tcsitim-tcsch_windows_team'
+        - 'europe\tcs-eur-win-srv'
+        - 'ABB\GLB-ABBCMDB'
+        - 'ABB\TCS-PAM-Scan'
+    ignore_errors: yes
+
+  - name: Log message for Administrators group addition
+    debug:
+      msg: "Local Administrators added"
+
+  - name: Add member to Remote Desktop Users group
+    win_group:
+      name: Remote Desktop Users
+      members:
+        - 'europe\abbitim-abb_dc1_rdusers_access_windows'
+    ignore_errors: yes
+
+  - name: Log message for Remote Desktop Users group addition
+    debug:
+      msg: "Remote Desktop Users added"
+    
