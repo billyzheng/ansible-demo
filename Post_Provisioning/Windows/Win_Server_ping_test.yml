@@ -7,3 +7,11 @@
   tasks:
     - name: Ping the Windows hosts
       win_ping:
+     
+    - name: Get filesystem drives
+      win_shell: Get-PSDrive -PSProvider FileSystem
+      register: filesystem_drives
+
+    - name: Display the filesystem drives
+      debug:
+        var: filesystem_drives.stdout_lines
