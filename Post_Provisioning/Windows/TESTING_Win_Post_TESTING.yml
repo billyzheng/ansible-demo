@@ -1,6 +1,6 @@
 ---
 - name: Manage Local Administrators and Remote Desktop Users
-  hosts: windows
+  hosts: all
   gather_facts: no
   collections:
     - ansible.windows
