@@ -28,29 +28,28 @@
       msg: "Local Administrators added"
 
   - name: Fetch current members of Administrators group
-    win_group:
-      name: Administrators
-      state: query
+    win_shell: |
+      Get-LocalGroupMember -Group "Administrators" | Select-Object -ExpandProperty Name
     register: admin_group_members
 
   - name: Display current members of Administrators group
     debug:
-      msg: "Members in Administrators group: {{ admin_group_members.members | join(', ') }}"
+      msg: "Members in Administrators group: {{ admin_group_members.stdout_lines | join(', ') }}"
 
   - name: Validate members in Administrators group
     debug:
       msg: "Validation: Expected members are present in Administrators group."
     when:
-      - "'abb\\HPAM-TCS-Backup-Servers-Admins-RW' in admin_group_members.members and
-         'abb\\HPAM-TCS-Wintel-Servers-Admins-RW' in admin_group_members.members and
-         'abb\\HPAM-TCS-CC-Servers-Admins-RW' in admin_group_members.members and
-         'abb\\xeqgscan' in admin_group_members.members and
-         'europe\\abbitim-abb_dc1_admin_access_windows' in admin_group_members.members and
-         'europe\\abbitim-abb_dc1_rdusers_access_windows' in admin_group_members.members and
-         'europe\\tcsitim-tcsch_windows_team' in admin_group_members.members and
-         'europe\\tcs-eur-win-srv' in admin_group_members.members and
-         'ABB\\GLB-ABBCMDB' in admin_group_members.members and
-         'ABB\\TCS-PAM-Scan' in admin_group_members.members"
+      - "'abb\\HPAM-TCS-Backup-Servers-Admins-RW'" in admin_group_members.stdout_lines
+      - "'abb\\HPAM-TCS-Wintel-Servers-Admins-RW'" in admin_group_members.stdout_lines
+      - "'abb\\HPAM-TCS-CC-Servers-Admins-RW'" in admin_group_members.stdout_lines
+      - "'abb\\xeqgscan'" in admin_group_members.stdout_lines
+      - "'europe\\abbitim-abb_dc1_admin_access_windows'" in admin_group_members.stdout_lines
+      - "'europe\\abbitim-abb_dc1_rdusers_access_windows'" in admin_group_members.stdout_lines
+      - "'europe\\tcsitim-tcsch_windows_team'" in admin_group_members.stdout_lines
+      - "'europe\\tcs-eur-win-srv'" in admin_group_members.stdout_lines
+      - "'ABB\\GLB-ABBCMDB'" in admin_group_members.stdout_lines
+      - "'ABB\\TCS-PAM-Scan'" in admin_group_members.stdout_lines
 
   - name: Add member to Remote Desktop Users group
     win_group:
@@ -64,16 +63,15 @@
       msg: "Remote Desktop Users added"
 
   - name: Fetch current members of Remote Desktop Users group
-    win_group:
-      name: Remote Desktop Users
-      state: query
+    win_shell: |
+      Get-LocalGroupMember -Group "Remote Desktop Users" | Select-Object -ExpandProperty Name
     register: rdusers_group_members
 
   - name: Display current members of Remote Desktop Users group
     debug:
-      msg: "Members in Remote Desktop Users group: {{ rdusers_group_members.members | join(', ') }}"
+      msg: "Members in Remote Desktop Users group: {{ rdusers_group_members.stdout_lines | join(', ') }}"
 
   - name: Validate member in Remote Desktop Users group
     debug:
       msg: "Validation: Expected member is present in Remote Desktop Users group."
-    when: "'europe\\abbitim-abb_dc1_rdusers_access_windows' in rdusers_group_members.members"
+    when: "'europe\\abbitim-abb_dc1_rdusers_access_windows'" in rdusers_group_members.stdout_lines
