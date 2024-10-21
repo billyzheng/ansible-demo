@@ -1,65 +1,37 @@
 ---
-- name: Manage and validate local group members on Windows servers
-  hosts: all
+- name: Manage Local Administrators and Remote Desktop Users
+  hosts: windows
   gather_facts: no
   collections:
     - ansible.windows
-
   tasks:
+    - name: Add members to Administrators group
+      win_group_membership:
+        name: Administrators
+        members:
+          - 'abb\HPAM-TCS-Backup-Servers-Admins-RW'
+          - 'abb\HPAM-TCS-Wintel-Servers-Admins-RW'
+          - 'abb\HPAM-TCS-CC-Servers-Admins-RW'
+          - 'abb\xeqgscan'
+          - 'europe\abbitim-abb_dc1_admin_access_windows'
+          - 'europe\abbitim-abb_dc1_rdusers_access_windows'
+          - 'europe\tcsitim-tcsch_windows_team'
+          - 'europe\tcs-eur-win-srv'
+          - 'ABB\GLB-ABBCMDB'
+          - 'ABB\TCS-PAM-Scan'
+      register: admin_group_result
 
-  - name: Add members to Administrators group
-    win_group:
-      name: Administrators
-      members:
-        - 'abb\HPAM-TCS-Backup-Servers-Admins-RW'
-        - 'abb\HPAM-TCS-Wintel-Servers-Admins-RW'
-        - 'abb\HPAM-TCS-CC-Servers-Admins-RW'
-        - 'abb\xeqgscan'
-        - 'europe\abbitim-abb_dc1_admin_access_windows'
-        - 'europe\abbitim-abb_dc1_rdusers_access_windows'
-        - 'europe\tcsitim-tcsch_windows_team'
-        - 'europe\tcs-eur-win-srv'
-        - 'ABB\GLB-ABBCMDB'
-        - 'ABB\TCS-PAM-Scan'
-    ignore_errors: yes
+    - name: Log admin group changes
+      debug:
+        msg: "Local Administrators added: {{ admin_group_result.changed }}"
 
-  - name: Log message for Administrators group addition
-    debug:
-      msg: "Local Administrators added"
+    - name: Add members to Remote Desktop Users group
+      win_group_membership:
+        name: "Remote Desktop Users"
+        members:
+          - 'europe\abbitim-abb_dc1_rdusers_access_windows'
+      register: rd_group_result
 
-  - name: Fetch and validate a member in Administrators group
-    win_shell: |
-      if (Get-LocalGroupMember -Group "Administrators" | Where-Object { $_.Name -eq 'abb\HPAM-TCS-Backup-Servers-Admins-RW' }) {
-        Write-Output "Validation: Member 'abb\HPAM-TCS-Backup-Servers-Admins-RW' is present in Administrators group."
-      } else {
-        Write-Output "Validation: Member 'abb\HPAM-TCS-Backup-Servers-Admins-RW' is not present in Administrators group."
-      }
-    register: admin_validation
-
-  - name: Display validation result for Administrators group
-    debug:
-      msg: "{{ admin_validation.stdout }}"
-
-  - name: Add member to Remote Desktop Users group
-    win_group:
-      name: Remote Desktop Users
-      members:
-        - 'europe\abbitim-abb_dc1_rdusers_access_windows'
-    ignore_errors: yes
-
-  - name: Log message for Remote Desktop Users group addition
-    debug:
-      msg: "Remote Desktop Users added"
-
-  - name: Fetch and validate a member in Remote Desktop Users group
-    win_shell: |
-      if (Get-LocalGroupMember -Group "Remote Desktop Users" | Where-Object { $_.Name -eq 'europe\abbitim-abb_dc1_rdusers_access_windows' }) {
-        Write-Output "Validation: Member 'europe\abbitim-abb_dc1_rdusers_access_windows' is present in Remote Desktop Users group."
-      } else {
-        Write-Output "Validation: Member 'europe\abbitim-abb_dc1_rdusers_access_windows' is not present in Remote Desktop Users group."
-      }
-    register: rdusers_validation
-
-  - name: Display validation result for Remote Desktop Users group
-    debug:
-      msg: "{{ rdusers_validation.stdout }}"
+    - name: Log remote desktop users group changes
+      debug:
+        msg: "Remote Desktop Users added: {{ rd_group_result.changed }}"
