@@ -35,3 +35,19 @@
     - name: Log remote desktop users group changes
       debug:
         msg: "Remote Desktop Users added: {{ rd_group_result.changed }}"
+
+    - name: Get members of the Administrators group
+      win_command: net localgroup Administrators
+      register: admin_members
+
+    - name: Display Administrators group members
+      debug:
+        var: admin_members.stdout_lines
+
+    - name: Get members of the Remote Desktop Users group
+      win_command: net localgroup "Remote Desktop Users"
+      register: rd_members
+
+    - name: Display Remote Desktop Users group members
+      debug:
+        var: rd_members.stdout_lines
