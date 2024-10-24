@@ -45,12 +45,10 @@
           import_role:
             name: qualys_installation
 
-        # - name: Splunk Installation
-        #   import_role:
-        #     name: splunk_agent
-        # - name: Validate and set the system timezone
-        #   import_role:
-        #     name: test
+        - name: Splunk Installation
+          import_role:
+            name: splunk_agent
+        
 
 
       rescue:
