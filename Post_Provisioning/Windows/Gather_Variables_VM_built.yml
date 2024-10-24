@@ -75,9 +75,13 @@
           debug:
             var: selected_datastores.ansible_facts.vm_datastore
 
+        - name: Set VMware_dc_location fact
+          set_fact:
+            Vmware_dc_location: "{{ my_list[0].Datacenter_location_input }}"
+
         - name: Set VM template based on DC location
           set_fact:
-            VM_template: "{{ lookup('dict', dc_templates)[DC_location.msg] }}"
+            VM_template: "{{ lookup('dict', dc_templates)[Vmware_dc_location] }}"
           vars:
             dc_templates:
               DC1A: "42147499-e3d1-b978-3e93-3f577de5b44c"
