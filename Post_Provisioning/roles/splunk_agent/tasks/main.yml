@@ -1,7 +1,7 @@
 ---
 - name: Install Splunk agent
   win_package:
-    path: "{{ splunk_binary_file_path }}"
+    path: "{{ splunk_installation_file }}"
     state: present
     arguments: >-
       AGREETOLICENSE=Yes
