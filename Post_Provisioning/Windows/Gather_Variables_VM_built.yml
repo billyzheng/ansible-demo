@@ -75,7 +75,7 @@
           debug:
             var: selected_datastores.ansible_facts.vm_datastore
 
-        - name: Set VMware_VM_template based on DC_location
+        - name: Set VM template based on DC location
           set_fact:
             VM_template: "{{ lookup('dict', dc_templates)[DC_location.msg] }}"
           vars:
