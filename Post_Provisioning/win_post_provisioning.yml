@@ -45,9 +45,9 @@
           import_role:
             name: qualys_installation
 
-        # - name: Splunk Installation
-        #   import_role:
-        #     name: splunk_agent
+        - name: Splunk Installation
+          import_role:
+            name: splunk_agent
         
 
 
