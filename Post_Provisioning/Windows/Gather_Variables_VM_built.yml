@@ -79,15 +79,25 @@
           set_fact:
             Vmware_dc_location: "{{ my_list[0].Datacenter_location_input }}"
 
-        - name: Set VM template based on DC location
+        - name: Set VM template based on DC location (DC1A)
           set_fact:
-            VM_template: "{{ lookup('dict', dc_templates)[Vmware_dc_location] }}"
-          vars:
-            dc_templates:
-              DC1A: "42147499-e3d1-b978-3e93-3f577de5b44c"
-              DC1B: "4212c621-db92-2603-5ed7-9a9b0b2270c9"
-              DC2A: "421cc20f-61db-3d56-8281-b59fe1024835"
-              DC3A: "420fb92d-04a7-2ec1-050e-24c8b30dc630"
+            VM_template: "42147499-e3d1-b978-3e93-3f577de5b44c"
+          when: Vmware_dc_location == "DC1A"
+
+        - name: Set VM template based on DC location (DC1B)
+          set_fact:
+            VM_template: "4212c621-db92-2603-5ed7-9a9b0b2270c9"
+          when: Vmware_dc_location == "DC1B"
+
+        - name: Set VM template based on DC location (DC2A)
+          set_fact:
+            VM_template: "421cc20f-61db-3d56-8281-b59fe1024835"
+          when: Vmware_dc_location == "DC2A"
+
+        - name: Set VM template based on DC location (DC3A)
+          set_fact:
+            VM_template: "420fb92d-04a7-2ec1-050e-24c8b30dc630"
+          when: Vmware_dc_location == "DC3A"
 
         - debug:
             msg: "VMware_VM_template is set to {{ VM_template }}"
