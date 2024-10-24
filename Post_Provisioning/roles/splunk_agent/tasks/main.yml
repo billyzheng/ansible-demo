@@ -8,11 +8,13 @@
       SERVICESTARTTYPE=auto
       SPLUNKPASSWORD="{{ splunk_password }}"
   register: splunk_install
+  ignore_errors: yes
 
 - name: Log installation result
   debug:
     msg: "Splunk agent installation {{ 'completed' if splunk_install.changed else 'skipped' }}"
-
+  ignore_errors: yes
+  
 - name: Check if Splunk installation was successful
   win_shell: "Get-Item -Path 'C:\\Program Files\\SplunkUniversalForwarder'"
   register: install_result
@@ -21,7 +23,8 @@
 - name: Log installation status
   debug:
     msg: "Splunk installation status: {{ 'installed' if install_result.rc == 0 else 'failed' }}"
-
+  ignore_errors: yes
+  
 - name: Check Splunk service status
   win_service:
     name: SplunkForwarder
@@ -33,3 +36,4 @@
   debug:
     msg: "Splunk service status: {{ 'running' if splunk_service_status.state == 'running' else 'not running' }}"
   when: splunk_service_status is defined
+  ignore_errors: yes
