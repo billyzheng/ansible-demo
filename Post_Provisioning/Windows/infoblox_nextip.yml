@@ -29,7 +29,7 @@
 
         - name: Extract IP address from the list
           set_fact:
-            next_ip: "{{ next_ip }}"
+            next_ip: "{{ next_ip[0] }}"
 
         - name: Set stats
           set_stats:
