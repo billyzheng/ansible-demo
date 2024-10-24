@@ -101,7 +101,7 @@
 
         - name: Wait for reboot to happen
           ansible.builtin.wait_for:
-            timeout: 30
+            timeout: 60
 
         # - name: Wait until my VM is ready
         #   vmware.vmware_rest.vcenter_vm_tools_info:
