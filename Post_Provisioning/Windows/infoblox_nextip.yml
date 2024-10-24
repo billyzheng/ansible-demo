@@ -23,9 +23,9 @@
         #   set_fact:
         #     next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider, exclude=ex_var ) }}"
 
-       - name: Get next available IP from the given subnet
+        - name: Get next available IP from the given subnet
           set_fact:
-            next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
+             next_ip: "{{ lookup('infoblox.nios_modules.nios_next_ip', Vmware_Subnet_address, provider=nios_provider) }}"
 
         - name: Extract IP address from the list
           set_fact:
